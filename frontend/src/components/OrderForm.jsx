@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Plus, Minus, X, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { api, formatCAD, SOCIALS } from "@/lib/api";
+import { api, SOCIALS } from "@/lib/api";
 import { TID } from "@/constants/testIds";
 
 const emptyForm = {
@@ -15,7 +15,7 @@ const emptyForm = {
 
 export default function OrderForm({ preselected, onConsume }) {
   const [products, setProducts] = useState([]);
-  const [items, setItems] = useState([]); // [{product_id, product_name, quantity, price_cad}]
+  const [items, setItems] = useState([]); // [{product_id, product_name, quantity}]
   const [form, setForm] = useState(emptyForm);
   const [submitting, setSubmitting] = useState(false);
 
@@ -43,7 +43,7 @@ export default function OrderForm({ preselected, onConsume }) {
       }
       return [
         ...curr,
-        { product_id: p.id, product_name: p.name, quantity: 1, price_xof: p.price_xof },
+        { product_id: p.id, product_name: p.name, quantity: 1 },
       ];
     });
   };
@@ -56,8 +56,6 @@ export default function OrderForm({ preselected, onConsume }) {
         .filter((it) => it.quantity > 0)
     );
 
-  const total = items.reduce((s, it) => s + it.price_cad * it.quantity, 0);
-
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
@@ -67,7 +65,7 @@ export default function OrderForm({ preselected, onConsume }) {
       return;
     }
     if (items.length === 0) {
-      toast.error("Veuillez ajouter au moins un produit à votre commande.");
+      toast.error("Veuillez sélectionner au moins un produit.");
       return;
     }
     setSubmitting(true);
@@ -87,14 +85,14 @@ export default function OrderForm({ preselected, onConsume }) {
       const { data } = await api.post("/orders", payload);
       toast.success(
         data.email_sent
-          ? "Commande envoyée ! Nous vous contactons très vite."
-          : "Commande enregistrée ! Nous vous contactons par téléphone."
+          ? "Demande envoyée ! Nous revenons vers vous avec une soumission."
+          : "Demande enregistrée ! Nous vous contactons sous peu avec une soumission."
       );
       setItems([]);
       setForm(emptyForm);
     } catch (err) {
       console.error(err);
-      toast.error("Impossible d'envoyer la commande. Réessayez ou contactez-nous sur WhatsApp.");
+      toast.error("Impossible d'envoyer votre demande. Réessayez ou contactez-nous sur WhatsApp.");
     } finally {
       setSubmitting(false);
     }
@@ -105,12 +103,12 @@ export default function OrderForm({ preselected, onConsume }) {
       <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           <div className="lg:col-span-5">
-            <p className="text-xs uppercase tracking-[0.2em] text-brand-ruby font-semibold">Commander</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-brand-ruby font-semibold">Demander une soumission</p>
             <h2 className="mt-3 font-display text-4xl sm:text-5xl text-brand-ink tracking-tight text-balance">
-              Régalez vous, <em className="not-italic text-brand-ochre">en deux clics</em>
+              Une soumission sur mesure, <em className="not-italic text-brand-ochre">en deux clics</em>
             </h2>
             <p className="mt-5 text-brand-muted max-w-md">
-              Remplissez le formulaire — vous recevrez un appel de confirmation. Vous pouvez aussi commander directement via WhatsApp.
+              Indiquez les produits qui vous intéressent et la quantité souhaitée — nous vous reviendrons rapidement avec une soumission personnalisée.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
@@ -183,7 +181,7 @@ export default function OrderForm({ preselected, onConsume }) {
                   value={form.address}
                   onChange={handleChange}
                   className="input"
-                  placeholder="Quartier, ville, repère..."
+                  placeholder="Quartier, ville, code postal..."
                 />
               </Field>
             </div>
@@ -193,7 +191,7 @@ export default function OrderForm({ preselected, onConsume }) {
               <div className="mt-2 rounded-2xl border border-brand-line bg-white divide-y divide-brand-line">
                 {items.length === 0 && (
                   <div className="p-4 text-sm text-brand-muted">
-                    Aucun produit ajouté. Choisissez ci-dessous ou cliquez sur « Commander » dans le catalogue.
+                    Aucun produit sélectionné. Choisissez ci-dessous ou cliquez sur « Demander une soumission » dans le catalogue.
                   </div>
                 )}
                 {items.map((it) => (
@@ -204,7 +202,7 @@ export default function OrderForm({ preselected, onConsume }) {
                   >
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-brand-ink truncate">{it.product_name}</p>
-                      <p className="text-xs text-brand-muted">{formatCAD(it.price_cad)} / unité</p>
+                      <p className="text-xs text-brand-muted">Soumission sur demande</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <button
@@ -256,7 +254,7 @@ export default function OrderForm({ preselected, onConsume }) {
               </div>
             </div>
 
-            <Field label="Message (optionnel)" className="mt-6">
+            <Field label="Message / précisions (optionnel)" className="mt-6">
               <textarea
                 data-testid={TID.orderMessage}
                 name="message"
@@ -264,15 +262,14 @@ export default function OrderForm({ preselected, onConsume }) {
                 onChange={handleChange}
                 rows={3}
                 className="input resize-none"
-                placeholder="Allergies, horaire préféré, occasion..."
+                placeholder="Date de l'événement, nombre d'invités, allergies, préférences..."
               />
             </Field>
 
-            <div className="mt-6 flex items-center justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.18em] text-brand-muted">Total estimé</p>
-                <p className="font-display text-3xl text-brand-ink">{formatCAD(total)}</p>
-              </div>
+            <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <p className="text-xs text-brand-muted max-w-sm">
+                Aucun paiement maintenant. Nous vous enverrons une soumission détaillée pour validation.
+              </p>
               <button
                 type="submit"
                 disabled={submitting}
@@ -280,7 +277,7 @@ export default function OrderForm({ preselected, onConsume }) {
                 className="inline-flex items-center gap-2 rounded-full bg-brand-ruby text-white px-7 py-3.5 text-sm font-medium hover:bg-brand-ink transition-colors disabled:opacity-60"
               >
                 {submitting && <Loader2 size={16} className="animate-spin" />}
-                {submitting ? "Envoi…" : "Envoyer ma commande"}
+                {submitting ? "Envoi…" : "Demander une soumission"}
               </button>
             </div>
           </motion.form>

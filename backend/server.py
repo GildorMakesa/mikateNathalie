@@ -75,18 +75,16 @@ class ProductOut(BaseModel):
     name: str
     category: str
     description: str
-    price_cad: float
     image_url: str
 
 
-# ===== Static catalog (Mikatés = beignets africains / puff-puff, prix en CAD) =====
+# ===== Static catalog (Mikatés = beignets africains / puff-puff — demande de soumission, sans prix) =====
 PRODUCTS: List[ProductOut] = [
     ProductOut(
         id="mikate-sucre",
         name="Mikaté Sucré",
         category="Beignets",
         description="Petits beignets africains moelleux et dorés, parfumés à la vanille. La douceur d'enfance, façon Afrique de l'Ouest.",
-        price_cad=8.99,
         image_url="https://images.unsplash.com/photo-1664993085274-80c6ba725ccc?fm=jpg&q=85&w=1200&auto=format&fit=crop",
     ),
     ProductOut(
@@ -94,23 +92,27 @@ PRODUCTS: List[ProductOut] = [
         name="Mikaté Salé",
         category="Beignets",
         description="Version salée du puff-puff : croustillant dehors, fondant dedans. Parfait à l'apéritif ou en entrée.",
-        price_cad=9.99,
         image_url="https://images.unsplash.com/photo-1665833613236-7c1d087463b1?fm=jpg&q=85&w=1200&auto=format&fit=crop",
     ),
     ProductOut(
-        id="mikate-coco",
-        name="Mikaté Coco",
+        id="mikate-sucre-impalpable",
+        name="Mikaté Sucre Impalpable",
         category="Beignets",
-        description="Mikatés revisités à la noix de coco râpée et au lait concentré. Une touche tropicale dans chaque bouchée.",
-        price_cad=10.99,
-        image_url="https://images.unsplash.com/photo-1682263167429-0dbcf2c1e127?fm=jpg&q=85&w=1200&auto=format&fit=crop",
+        description="Beignets dorés généreusement saupoudrés de sucre impalpable. Fondants, nuageux, irrésistibles.",
+        image_url="https://images.unsplash.com/photo-1559598467-72cdcb04671e?fm=jpg&q=85&w=1200&auto=format&fit=crop",
+    ),
+    ProductOut(
+        id="mikate-chocolat",
+        name="Mikaté Chocolat",
+        category="Beignets",
+        description="Mikatés nappés de chocolat noir fondant et sucre glace. Le mariage parfait du croquant et du moelleux.",
+        image_url="https://images.unsplash.com/photo-1551024601-bec78aea704b?fm=jpg&q=85&w=1200&auto=format&fit=crop",
     ),
     ProductOut(
         id="bissap-royal",
         name="Bissap Royal",
         category="Boissons",
         description="Infusion d'hibiscus rouge rubis, gingembre frais et menthe. Rafraîchissant, élégant, sans alcool.",
-        price_cad=5.50,
         image_url="https://images.unsplash.com/photo-1601390395693-364c0e22031a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwyfHxoaWJpc2N1cyUyMHRlYSUyMHJlZCUyMGRyaW5rfGVufDB8fHx8MTc4MTU3Mzc1OXww&ixlib=rb-4.1.0&q=85",
     ),
     ProductOut(
@@ -118,15 +120,20 @@ PRODUCTS: List[ProductOut] = [
         name="Jus Tropical",
         category="Boissons",
         description="Cocktail maison mangue, ananas et fruit de la passion. Le soleil de l'Afrique dans un verre.",
-        price_cad=6.00,
         image_url="https://images.unsplash.com/photo-1583577612013-4fecf7bf8f13?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MDV8MHwxfHNlYXJjaHwyfHx0cm9waWNhbCUyMGZydWl0JTIwanVpY2V8ZW58MHx8fHwxNzgxNTczNzU5fDA&ixlib=rb-4.1.0&q=85",
+    ),
+    ProductOut(
+        id="jus-gingembre",
+        name="Jus de Gingembre",
+        category="Boissons",
+        description="Notre signature : gingembre frais pressé, citron vert et une pointe de miel. Servi dans un verre élégant — vivifiant et raffiné.",
+        image_url="https://images.unsplash.com/photo-1631029098074-be99eb2b425c?fm=jpg&q=85&w=1200&auto=format&fit=crop",
     ),
     ProductOut(
         id="plateau-decouverte",
         name="Plateau Découverte",
         category="Coffrets",
-        description="Assortiment de 18 mikatés (sucrés, salés, coco) + 2 boissons au choix. Idéal pour partager en famille ou au bureau.",
-        price_cad=34.99,
+        description="Assortiment de mikatés (sucrés, salés, sucre impalpable, chocolat) + boissons au choix. Idéal pour partager en famille ou au bureau.",
         image_url="https://images.unsplash.com/photo-1714596668628-79579eadba07?fm=jpg&q=85&w=1200&auto=format&fit=crop",
     ),
 ]
@@ -186,7 +193,7 @@ def _build_order_email_html(order: Order) -> str:
     return f"""
     <div style="font-family:Georgia,serif;background:#FAF8F5;padding:32px;color:#1D1914;">
       <div style="max-width:600px;margin:0 auto;background:#FFFFFF;border:1px solid #E8E2D9;border-radius:16px;padding:32px;">
-        <h1 style="color:#9A1F38;font-size:28px;margin:0 0 8px 0;">Nouvelle commande — Délices Mikaté Royal</h1>
+        <h1 style="color:#9A1F38;font-size:28px;margin:0 0 8px 0;">Nouvelle demande de soumission — Délices Mikaté Royal</h1>
         <p style="color:#665D50;margin:0 0 24px 0;">Référence : {order.id}</p>
         <h2 style="font-size:18px;color:#D19627;margin:24px 0 8px 0;">Client</h2>
         <p style="margin:4px 0;"><strong>Nom :</strong> {order.customer_name}</p>
@@ -217,7 +224,7 @@ async def create_order(payload: OrderCreate):
             params = {
                 "from": SENDER_EMAIL,
                 "to": [RECIPIENT_EMAIL],
-                "subject": f"Nouvelle commande — {order.customer_name}",
+                "subject": f"Nouvelle demande de soumission — {order.customer_name}",
                 "html": _build_order_email_html(order),
             }
             result = await asyncio.to_thread(resend.Emails.send, params)

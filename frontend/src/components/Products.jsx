@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { api, formatCAD } from "@/lib/api";
+import { api } from "@/lib/api";
 import { TID } from "@/constants/testIds";
 
 export default function Products({ onOrder }) {
@@ -21,7 +21,7 @@ export default function Products({ onOrder }) {
             </h2>
           </div>
           <p className="max-w-md text-brand-muted">
-            Chaque recette est préparée à la main, avec des ingrédients frais et locaux. Choisissez vos favoris et nous nous occupons du reste.
+            Chaque recette est préparée à la main, avec des ingrédients frais et locaux. Choisissez vos favoris — nous vous enverrons une soumission personnalisée.
           </p>
         </div>
 
@@ -48,7 +48,7 @@ export default function Products({ onOrder }) {
                 <p className="text-[11px] uppercase tracking-[0.2em] text-brand-muted">{p.category}</p>
                 <div className="mt-1 flex items-baseline justify-between gap-3">
                   <h3 className="font-display text-2xl text-brand-ink">{p.name}</h3>
-                  <span className="font-semibold text-brand-ruby">{formatCAD(p.price_cad)}</span>
+                  <span className="text-xs text-brand-ruby font-semibold uppercase tracking-[0.18em]">Sur soumission</span>
                 </div>
                 <p className="mt-2 text-sm text-brand-muted leading-relaxed">{p.description}</p>
                 <button
@@ -56,7 +56,7 @@ export default function Products({ onOrder }) {
                   onClick={() => onOrder?.(p)}
                   className="mt-5 inline-flex items-center gap-2 rounded-full bg-brand-ink text-white text-sm px-5 py-2.5 hover:bg-brand-ruby transition-colors"
                 >
-                  Commander
+                  Demander une soumission
                 </button>
               </div>
             </motion.article>
