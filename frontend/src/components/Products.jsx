@@ -17,11 +17,11 @@ export default function Products({ onOrder }) {
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-brand-ruby font-semibold">Notre catalogue</p>
             <h2 className="mt-3 font-display text-4xl sm:text-5xl text-brand-ink tracking-tight text-balance">
-              Une carte qui célèbre <em className="text-brand-ruby not-italic">l&apos;Afrique de l&apos;Ouest</em>
+              Découvrez le <em className="text-brand-ruby not-italic">goût unique</em> du mikaté
             </h2>
           </div>
           <p className="max-w-md text-brand-muted">
-            Chaque recette est préparée à la main, avec des ingrédients frais et locaux. Choisissez vos favoris — nous vous enverrons une soumission personnalisée.
+            Des recettes inspirées de nos racines, préparées avec passion pour chaque occasion.
           </p>
         </div>
 
