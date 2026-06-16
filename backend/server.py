@@ -98,15 +98,22 @@ PRODUCTS: List[ProductOut] = [
         id="mikate-sucre-impalpable",
         name="Mikaté Sucre Impalpable",
         category="Beignets",
-        description="Beignets dorés généreusement saupoudrés de sucre impalpable. Fondants, nuageux, irrésistibles.",
-        image_url="https://images.unsplash.com/photo-1559598467-72cdcb04671e?fm=jpg&q=85&w=1200&auto=format&fit=crop",
+        description="Authentiques puff-puff africains, généreusement saupoudrés de sucre impalpable. Fondants, nuageux, irrésistibles.",
+        image_url="https://images.unsplash.com/photo-1664993090321-b2caff794431?fm=jpg&q=85&w=1200&auto=format&fit=crop",
     ),
     ProductOut(
         id="mikate-chocolat",
         name="Mikaté Chocolat",
         category="Beignets",
-        description="Mikatés nappés de chocolat noir fondant et sucre glace. Le mariage parfait du croquant et du moelleux.",
-        image_url="https://images.unsplash.com/photo-1551024601-bec78aea704b?fm=jpg&q=85&w=1200&auto=format&fit=crop",
+        description="Vrais beignets africains (puff-puff) nappés de chocolat noir fondant. Le mariage parfait du croquant doré et du chocolat onctueux.",
+        image_url="https://images.unsplash.com/photo-1596548739291-05eab13b7c25?fm=jpg&q=85&w=1200&auto=format&fit=crop",
+    ),
+    ProductOut(
+        id="mikate-arachide",
+        name="Mikaté Pâte d'Arachides",
+        category="Beignets",
+        description="Puff-puff dorés servis avec une pâte d'arachides maison crémeuse — la combinaison ouest-africaine par excellence, douce et réconfortante.",
+        image_url="https://images.unsplash.com/photo-1714596668628-79579eadba07?fm=jpg&q=85&w=1200&auto=format&fit=crop",
     ),
     ProductOut(
         id="bissap-royal",
@@ -133,8 +140,8 @@ PRODUCTS: List[ProductOut] = [
         id="plateau-decouverte",
         name="Plateau Découverte",
         category="Coffrets",
-        description="Assortiment de mikatés (sucrés, salés, sucre impalpable, chocolat) + boissons au choix. Idéal pour partager en famille ou au bureau.",
-        image_url="https://images.unsplash.com/photo-1714596668628-79579eadba07?fm=jpg&q=85&w=1200&auto=format&fit=crop",
+        description="Assortiment de mikatés (sucrés, salés, sucre impalpable, chocolat, pâte d'arachides) + boissons au choix. Idéal pour partager en famille ou au bureau.",
+        image_url="https://images.unsplash.com/photo-1682263167429-0dbcf2c1e127?fm=jpg&q=85&w=1200&auto=format&fit=crop",
     ),
 ]
 
