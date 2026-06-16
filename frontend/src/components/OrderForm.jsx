@@ -10,8 +10,18 @@ const emptyForm = {
   phone: "",
   email: "",
   address: "",
+  payment_method: "",
   message: "",
 };
+
+const PAYMENT_OPTIONS = [
+  { value: "paypal", label: "PayPal" },
+  { value: "carte_credit", label: "Carte de crédit" },
+  { value: "carte_debit", label: "Carte de débit" },
+  { value: "interac", label: "Virement Interac" },
+  { value: "comptant", label: "Comptant à la livraison" },
+  { value: "autre", label: "Autre (préciser dans le message)" },
+];
 
 export default function OrderForm({ preselected, onConsume }) {
   const [products, setProducts] = useState([]);
@@ -183,6 +193,20 @@ export default function OrderForm({ preselected, onConsume }) {
                   className="input"
                   placeholder="Quartier, ville, code postal..."
                 />
+              </Field>
+              <Field label="Mode de paiement préféré" className="md:col-span-2">
+                <select
+                  data-testid="order-payment-method"
+                  name="payment_method"
+                  value={form.payment_method}
+                  onChange={handleChange}
+                  className="input"
+                >
+                  <option value="">— Choisir —</option>
+                  {PAYMENT_OPTIONS.map((p) => (
+                    <option key={p.value} value={p.value}>{p.label}</option>
+                  ))}
+                </select>
               </Field>
             </div>
 

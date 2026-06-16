@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, Header, Depends
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -25,7 +25,14 @@ db = client[os.environ['DB_NAME']]
 RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
 SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
 RECIPIENT_EMAIL = os.environ.get('RECIPIENT_EMAIL', 'mikateroyal@gmail.com')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'mikate2025')
 resend.api_key = RESEND_API_KEY
+
+
+def require_admin(x_admin_password: Optional[str] = Header(None)):
+    if not x_admin_password or x_admin_password != ADMIN_PASSWORD:
+        raise HTTPException(status_code=401, detail="Mot de passe administrateur invalide")
+    return True
 
 app = FastAPI(title="Délices Mikaté Royal API")
 api_router = APIRouter(prefix="/api")
@@ -44,6 +51,7 @@ class OrderCreate(BaseModel):
     email: Optional[EmailStr] = None
     address: str = Field(..., min_length=1, max_length=400)
     items: List[OrderItemInput] = Field(..., min_length=1)
+    payment_method: Optional[str] = Field(None, max_length=40)
     message: Optional[str] = Field(None, max_length=1000)
 
 
@@ -55,10 +63,15 @@ class Order(BaseModel):
     email: Optional[str] = None
     address: str
     items: List[OrderItemInput]
+    payment_method: Optional[str] = None
     message: Optional[str] = None
     status: str = "pending"
     email_sent: bool = False
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class OrderStatusUpdate(BaseModel):
+    status: str = Field(..., pattern="^(pending|confirmed|fulfilled|cancelled)$")
 
 
 class TestimonialOut(BaseModel):
@@ -235,6 +248,7 @@ def _build_order_email_html(order: Order) -> str:
         if order.message else ""
     )
     email_block = f"<p style='margin:4px 0;color:#1D1914;'><strong>Email :</strong> {order.email}</p>" if order.email else ""
+    pay_block = f"<p style='margin:4px 0;'><strong>Mode de paiement préféré :</strong> {order.payment_method}</p>" if order.payment_method else ""
     return f"""
     <div style="font-family:Georgia,serif;background:#FAF8F5;padding:32px;color:#1D1914;">
       <div style="max-width:600px;margin:0 auto;background:#FFFFFF;border:1px solid #E8E2D9;border-radius:16px;padding:32px;">
@@ -245,6 +259,7 @@ def _build_order_email_html(order: Order) -> str:
         <p style="margin:4px 0;"><strong>Téléphone :</strong> {order.phone}</p>
         {email_block}
         <p style="margin:4px 0;"><strong>Adresse :</strong> {order.address}</p>
+        {pay_block}
         <h2 style="font-size:18px;color:#D19627;margin:24px 0 8px 0;">Commande</h2>
         <table style="width:100%;border-collapse:collapse;">
           <thead><tr>
@@ -285,12 +300,36 @@ async def create_order(payload: OrderCreate):
 
 
 @api_router.get("/orders", response_model=List[Order])
-async def list_orders(limit: int = 100):
+async def list_orders(limit: int = 100, _: bool = Depends(require_admin)):
     docs = await db.orders.find({}, {"_id": 0}).sort("created_at", -1).to_list(limit)
     for d in docs:
         if isinstance(d.get('created_at'), str):
             d['created_at'] = datetime.fromisoformat(d['created_at'])
     return docs
+
+
+@api_router.patch("/orders/{order_id}/status", response_model=Order)
+async def update_order_status(order_id: str, payload: OrderStatusUpdate, _: bool = Depends(require_admin)):
+    res = await db.orders.update_one({"id": order_id}, {"$set": {"status": payload.status}})
+    if res.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Commande introuvable")
+    doc = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if isinstance(doc.get('created_at'), str):
+        doc['created_at'] = datetime.fromisoformat(doc['created_at'])
+    return doc
+
+
+@api_router.delete("/orders/{order_id}")
+async def delete_order(order_id: str, _: bool = Depends(require_admin)):
+    res = await db.orders.delete_one({"id": order_id})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Commande introuvable")
+    return {"deleted": True}
+
+
+@api_router.post("/admin/login")
+async def admin_login(_: bool = Depends(require_admin)):
+    return {"ok": True}
 
 
 app.include_router(api_router)
