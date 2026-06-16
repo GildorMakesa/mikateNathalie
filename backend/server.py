@@ -156,22 +156,22 @@ TESTIMONIALS: List[TestimonialOut] = [
     TestimonialOut(
         id="t1",
         name="Aminata D.",
-        role="Cliente fidèle, Montréal",
-        quote="Les mikatés sont divins, exactement comme ceux de ma grand-mère à Cotonou. Le bissap est une tuerie !",
+        role="Cliente fidèle",
+        quote="Moelleux, savoureux et toujours frais. Toute la famille a adoré !",
         avatar_url="https://images.unsplash.com/photo-1562337404-3044c84ac061?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwxfHxwb3J0cmFpdCUyMGhhcHB5JTIwcGVyc29ufGVufDB8fHx8MTc4MTU3Mzc3NXww&ixlib=rb-4.1.0&q=85",
     ),
     TestimonialOut(
         id="t2",
         name="Koffi A.",
-        role="Organisateur d'événements, Laval",
-        quote="J'ai commandé pour un événement de 80 personnes : ponctualité, qualité, présentation impeccable.",
+        role="Organisateur d'événements",
+        quote="Une présentation impeccable et un service professionnel du début à la fin.",
         avatar_url="https://images.unsplash.com/photo-1583264277168-58ceba4b84e7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwzfHxwb3J0cmFpdCUyMGhhcHB5JTIwcGVyc29ufGVufDB8fHx8MTc4MTU3Mzc3NXww&ixlib=rb-4.1.0&q=85",
     ),
     TestimonialOut(
         id="t3",
         name="Sarah M.",
-        role="Découverte culinaire, Québec",
-        quote="Je ne connaissais pas les mikatés, c'est une révélation. Le plateau découverte est parfait pour goûter à tout.",
+        role="Découverte culinaire",
+        quote="Une belle découverte. Les saveurs sont authentiques et les produits de grande qualité.",
         avatar_url="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwyfHxwb3J0cmFpdCUyMGhhcHB5JTIwcGVyc29ufGVufDB8fHx8MTc4MTU3Mzc3NXww&ixlib=rb-4.1.0&q=85",
     ),
 ]
