@@ -1,0 +1,106 @@
+{
+  "theme": "light",
+  "archetype": "1 (Organic & Earthy)",
+  "emotional_tone": "Warm, elegant, vibrant, authentic West African hospitality",
+  "colors": {
+    "background": "#FAF8F5",
+    "surface": "#FFFFFF",
+    "primary": "#9A1F38",
+    "primary_foreground": "#FFFFFF",
+    "secondary": "#D19627",
+    "secondary_foreground": "#1D1914",
+    "accent": "#E06A42",
+    "text_main": "#1D1914",
+    "text_muted": "#665D50",
+    "border": "#E8E2D9",
+    "footer_bg": "#1D1914",
+    "footer_text": "#FAF8F5"
+  },
+  "typography": {
+    "heading_font": "Cormorant Garamond",
+    "body_font": "Outfit",
+    "rules": {
+      "h1": "text-5xl sm:text-6xl+ font-bold tracking-tighter leading-none font-serif",
+      "h2": "text-3xl sm:text-4xl font-semibold tracking-tight font-serif",
+      "h3": "text-xl sm:text-2xl font-medium tracking-tight font-serif",
+      "body": "text-base leading-relaxed font-sans",
+      "overline": "uppercase text-xs tracking-[0.2em] font-sans font-semibold text-primary"
+    }
+  },
+  "layout_and_spacing": {
+    "container_padding": "px-6 md:px-12 lg:px-24",
+    "section_spacing": "py-20 md:py-32",
+    "grid_strategy": "MODE A: THE 'TETRIS' GRID (Asymmetrical bento-style for gallery)",
+    "borderRadius": {
+      "cards": "rounded-2xl",
+      "buttons": "rounded-full",
+      "images_organic": "rounded-t-full rounded-b-2xl"
+    }
+  },
+  "media": {
+    "hero": {
+      "images": [
+        "https://images.unsplash.com/photo-1527515545081-5db817172677?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDV8MHwxfHNlYXJjaHwzfHxkb251dHMlMjBwYXN0cnl8ZW58MHx8fHwxNzgxNTczNzc1fDA&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1563636680-28d36aeb83a4?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwxfHxoaWJpc2N1cyUyMHRlYSUyMHJlZCUyMGRyaW5rfGVufDB8fHx8MTc4MTU3Mzc1OXww&ixlib=rb-4.1.0&q=85"
+      ],
+      "strategy": "Since one perfect image with all elements isn't available, use a dynamic Bento Hero layout or a split screen where the golden pastries (donuts/mikatés) and the ruby red drink (bissap) are beautifully juxtaposed. Overlay subtle gradients if text is on top."
+    },
+    "products": [
+      {
+        "name": "Mikaté Sucré",
+        "url": "https://images.unsplash.com/photo-1551024601-bec78aea704b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDV8MHwxfHNlYXJjaHwxfHxkb251dHMlMjBwYXN0cnl8ZW58MHx8fHwxNzgxNTczNzc1fDA&ixlib=rb-4.1.0&q=85"
+      },
+      {
+        "name": "Mikaté Salé",
+        "url": "https://images.unsplash.com/photo-1618411640018-972400a01458?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDV8MHwxfHNlYXJjaHwyfHxkb251dHMlMjBwYXN0cnl8ZW58MHx8fHwxNzgxNTczNzc1fDA&ixlib=rb-4.1.0&q=85"
+      },
+      {
+        "name": "Bissap Royal",
+        "url": "https://images.unsplash.com/photo-1601390395693-364c0e22031a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwyfHxoaWJpc2N1cyUyMHRlYSUyMHJlZCUyMGRyaW5rfGVufDB8fHx8MTc4MTU3Mzc1OXww&ixlib=rb-4.1.0&q=85"
+      },
+      {
+        "name": "Jus Tropical",
+        "url": "https://images.unsplash.com/photo-1583577612013-4fecf7bf8f13?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MDV8MHwxfHNlYXJjaHwyfHx0cm9waWNhbCUyMGZydWl0JTIwanVpY2V8ZW58MHx8fHwxNzgxNTczNzU5fDA&ixlib=rb-4.1.0&q=85"
+      }
+    ],
+    "gallery": [
+      "https://images.unsplash.com/photo-1665400808116-f0e6339b7e9a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODd8MHwxfHNlYXJjaHwyfHxhZnJpY2FuJTIwZm9vZCUyMGVsZWdhbnR8ZW58MHx8fHwxNzgxNTczNzU5fDA&ixlib=rb-4.1.0&q=85",
+      "https://images.unsplash.com/photo-1664993119473-013502f1e3f8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MDV8MHwxfHNlYXJjaHw0fHx0cm9waWNhbCUyMGZydWl0JTIwanVpY2V8ZW58MHx8fHwxNzgxNTczNzU5fDA&ixlib=rb-4.1.0&q=85",
+      "https://images.unsplash.com/photo-1667592157294-815a7f162679?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHw0fHxoaWJpc2N1cyUyMHRlYSUyMHJlZCUyMGRyaW5rfGVufDB8fHx8MTc4MTU3Mzc1OXww&ixlib=rb-4.1.0&q=85",
+      "https://images.unsplash.com/photo-1604329756574-bda1f2cada6f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODd8MHwxfHNlYXJjaHwzfHxhZnJpY2FuJTIwZm9vZCUyMGVsZWdhbnR8ZW58MHx8fHwxNzgxNTczNzU5fDA&ixlib=rb-4.1.0&q=85",
+      "https://images.unsplash.com/photo-1570727624862-3008fe67a6be?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDV8MHwxfHNlYXJjaHw0fHxkb251dHMlMjBwYXN0cnl8ZW58MHx8fHwxNzgxNTczNzc1fDA&ixlib=rb-4.1.0&q=85"
+    ],
+    "testimonials": [
+      "https://images.unsplash.com/photo-1562337404-3044c84ac061?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwxfHxwb3J0cmFpdCUyMGhhcHB5JTIwcGVyc29ufGVufDB8fHx8MTc4MTU3Mzc3NXww&ixlib=rb-4.1.0&q=85",
+      "https://images.unsplash.com/photo-1583264277168-58ceba4b84e7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwzfHxwb3J0cmFpdCUyMGhhcHB5JTIwcGVyc29ufGVufDB8fHx8MTc4MTU3Mzc3NXww&ixlib=rb-4.1.0&q=85",
+      "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwyfHxwb3J0cmFpdCUyMGhhcHB5JTIwcGVyc29ufGVufDB8fHx8MTc4MTU3Mzc3NXww&ixlib=rb-4.1.0&q=85"
+    ]
+  },
+  "components": {
+    "navbar": "Glassmorphism navigation. 'backdrop-blur-xl bg-white/70' with delicate border underneath. Floating effect. Logo in serif font.",
+    "marquee": "Use react-fast-marquee. 'The Editorial Ribbon' style: Pale sand background, dark earthy text, serif font, huge gaps between words ('Saveurs Authentiques • Pâtisserie de Luxe • Street-food Vibrant').",
+    "product_cards": "Flat background with 1px subtle border '#E8E2D9'. No shadow by default. Hover adds slight lift (-translate-y-1) and soft shadow. Use arched top images (rounded-t-full) to add organic African elegance.",
+    "photo_gallery": "Tetris grid. Grid of images with no spacing (gap-0) or large spacing (gap-6) depending on tension desired. Mix spanning rules (col-span-1, col-span-2). Hover effect: subtle scale (scale-105) with overflow-hidden wrapper.",
+    "testimonial_carousel": "Clean minimalist cards on a slightly contrasting background section. Italic serif text for the quote. Circular avatar images.",
+    "order_form": "Shadcn based. Heavily customized with warm borders, rounded-xl inputs. Focus rings in primary Ruby Red.",
+    "whatsapp_button": "Fixed at bottom-right (z-50). Green background (#25D366) with WhatsApp icon (Lucide or react-icons). Pulse animation on hover.",
+    "footer": "Dark background (#1D1914). Massive typographic CTA 'Envie de douceur ?'. Links to social media. Text color warm sand."
+  },
+  "interactions": {
+    "hover_states": "All buttons must change to a lighter/darker hue. Text color explicitly set on hover.",
+    "animations": "Use Framer Motion for scroll reveals (fade up). Staggered entrance for product cards and gallery."
+  },
+  "testing": {
+    "required_attributes": "Add 'data-testid' to all interactive elements. Example: 'order-form-submit-button', 'whatsapp-float-btn', 'product-order-btn'."
+  },
+  "instructions_to_main_agent": [
+    "Install required fonts from Google Fonts: 'Cormorant Garamond' and 'Outfit'.",
+    "Install 'lucide-react' (if not already present) or 'react-icons' for the WhatsApp and social icons.",
+    "Install 'framer-motion' for scroll animations and 'react-fast-marquee' for the editorial ribbon.",
+    "Apply generous padding to sections (py-24 or py-32).",
+    "DO NOT use generic center alignment everywhere. Use optical alignment and asymmetric bento grids for the gallery.",
+    "For the hero section, since one single image doesn't combine mikatés, bissap and tropical juice perfectly, design a split-screen or 3-column bento hero displaying the pastries, the red drink, and the tropical vibes side-by-side beautifully.",
+    "The primary CTA buttons should use the ruby red color (#9A1F38) to stand out against the warm sand backgrounds.",
+    "Write the code in Javascript (.js / .jsx), NOT TypeScript."
+  ]
+}
