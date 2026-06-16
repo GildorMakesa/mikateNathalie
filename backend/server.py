@@ -66,8 +66,15 @@ class TestimonialOut(BaseModel):
     name: str
     role: str
     quote: str
-    avatar_url: str
+    avatar_url: str = ""
     rating: int = 5
+
+
+class TestimonialCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=80)
+    role: Optional[str] = Field(None, max_length=80)
+    quote: str = Field(..., min_length=5, max_length=400)
+    rating: int = Field(5, ge=1, le=5)
 
 
 class ProductOut(BaseModel):
@@ -190,7 +197,31 @@ async def list_products():
 
 @api_router.get("/testimonials", response_model=List[TestimonialOut])
 async def list_testimonials():
-    return TESTIMONIALS
+    user_docs = await db.testimonials.find({}, {"_id": 0}).sort("created_at", -1).to_list(20)
+    user_items = []
+    for d in user_docs:
+        d.pop("created_at", None)
+        try:
+            user_items.append(TestimonialOut(**d))
+        except Exception:
+            continue
+    return TESTIMONIALS + user_items
+
+
+@api_router.post("/testimonials", response_model=TestimonialOut)
+async def create_testimonial(payload: TestimonialCreate):
+    item = TestimonialOut(
+        id=str(uuid.uuid4()),
+        name=payload.name,
+        role=payload.role or "Client",
+        quote=payload.quote,
+        rating=payload.rating,
+        avatar_url="",
+    )
+    doc = item.model_dump()
+    doc["created_at"] = datetime.now(timezone.utc).isoformat()
+    await db.testimonials.insert_one(doc)
+    return item
 
 
 def _build_order_email_html(order: Order) -> str:
