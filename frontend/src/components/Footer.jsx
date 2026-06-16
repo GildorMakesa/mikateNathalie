@@ -39,7 +39,7 @@ export default function Footer() {
                 </li>
                 <li className="flex items-start gap-2">
                   <MapPin size={14} className="mt-0.5 text-brand-ochre" />
-                  <span>Cotonou, Bénin</span>
+                  <span>Montréal, Québec — Canada</span>
                 </li>
               </ul>
             </div>

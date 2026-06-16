@@ -3,7 +3,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import { TID } from "@/constants/testIds";
 
 const HERO_PASTRY =
-  "https://images.unsplash.com/photo-1551024601-bec78aea704b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDV8MHwxfHNlYXJjaHwxfHxkb251dHMlMjBwYXN0cnl8ZW58MHx8fHwxNzgxNTczNzc1fDA&ixlib=rb-4.1.0&q=85";
+  "https://images.unsplash.com/photo-1664993085274-80c6ba725ccc?fm=jpg&q=85&w=1400&auto=format&fit=crop";
 const HERO_BISSAP =
   "https://images.unsplash.com/photo-1601390395693-364c0e22031a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwyfHxoaWJpc2N1cyUyMHRlYSUyMHJlZCUyMGRyaW5rfGVufDB8fHx8MTc4MTU3Mzc1OXww&ixlib=rb-4.1.0&q=85";
 const HERO_TROPICAL =
@@ -104,7 +104,7 @@ export default function Hero() {
               <div className="col-span-4 row-span-2 rounded-3xl border border-brand-line bg-white p-5 flex items-center justify-between">
                 <div>
                   <p className="text-xs uppercase tracking-[0.2em] text-brand-muted">Livraison du jour</p>
-                  <p className="font-display text-2xl text-brand-ink mt-1">Cotonou & alentours</p>
+                  <p className="font-display text-2xl text-brand-ink mt-1">Montréal & rive-sud</p>
                 </div>
                 <span className="inline-block h-12 w-12 rounded-full bg-brand-ruby/10 flex items-center justify-center text-brand-ruby font-display text-lg">
                   J+0

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { api, formatXOF } from "@/lib/api";
+import { api, formatCAD } from "@/lib/api";
 import { TID } from "@/constants/testIds";
 
 export default function Products({ onOrder }) {
@@ -48,7 +48,7 @@ export default function Products({ onOrder }) {
                 <p className="text-[11px] uppercase tracking-[0.2em] text-brand-muted">{p.category}</p>
                 <div className="mt-1 flex items-baseline justify-between gap-3">
                   <h3 className="font-display text-2xl text-brand-ink">{p.name}</h3>
-                  <span className="font-semibold text-brand-ruby">{formatXOF(p.price_xof)}</span>
+                  <span className="font-semibold text-brand-ruby">{formatCAD(p.price_cad)}</span>
                 </div>
                 <p className="mt-2 text-sm text-brand-muted leading-relaxed">{p.description}</p>
                 <button

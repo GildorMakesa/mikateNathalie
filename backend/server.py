@@ -75,59 +75,59 @@ class ProductOut(BaseModel):
     name: str
     category: str
     description: str
-    price_xof: int
+    price_cad: float
     image_url: str
 
 
-# ===== Static catalog =====
+# ===== Static catalog (Mikatés = beignets africains / puff-puff, prix en CAD) =====
 PRODUCTS: List[ProductOut] = [
     ProductOut(
         id="mikate-sucre",
         name="Mikaté Sucré",
-        category="Pâtisseries",
-        description="Petits beignets dorés et moelleux, légèrement vanillés. La douceur d'enfance revisitée.",
-        price_xof=1500,
-        image_url="https://images.unsplash.com/photo-1551024601-bec78aea704b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDV8MHwxfHNlYXJjaHwxfHxkb251dHMlMjBwYXN0cnl8ZW58MHx8fHwxNzgxNTczNzc1fDA&ixlib=rb-4.1.0&q=85",
+        category="Beignets",
+        description="Petits beignets africains moelleux et dorés, parfumés à la vanille. La douceur d'enfance, façon Afrique de l'Ouest.",
+        price_cad=8.99,
+        image_url="https://images.unsplash.com/photo-1664993085274-80c6ba725ccc?fm=jpg&q=85&w=1200&auto=format&fit=crop",
     ),
     ProductOut(
         id="mikate-sale",
         name="Mikaté Salé",
-        category="Pâtisseries",
-        description="Version salée, croustillante à l'extérieur, fondante à l'intérieur. Parfait à l'apéritif.",
-        price_xof=1800,
-        image_url="https://images.unsplash.com/photo-1618411640018-972400a01458?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDV8MHwxfHNlYXJjaHwyfHxkb251dHMlMjBwYXN0cnl8ZW58MHx8fHwxNzgxNTczNzc1fDA&ixlib=rb-4.1.0&q=85",
+        category="Beignets",
+        description="Version salée du puff-puff : croustillant dehors, fondant dedans. Parfait à l'apéritif ou en entrée.",
+        price_cad=9.99,
+        image_url="https://images.unsplash.com/photo-1665833613236-7c1d087463b1?fm=jpg&q=85&w=1200&auto=format&fit=crop",
+    ),
+    ProductOut(
+        id="mikate-coco",
+        name="Mikaté Coco",
+        category="Beignets",
+        description="Mikatés revisités à la noix de coco râpée et au lait concentré. Une touche tropicale dans chaque bouchée.",
+        price_cad=10.99,
+        image_url="https://images.unsplash.com/photo-1682263167429-0dbcf2c1e127?fm=jpg&q=85&w=1200&auto=format&fit=crop",
     ),
     ProductOut(
         id="bissap-royal",
         name="Bissap Royal",
         category="Boissons",
-        description="Infusion d'hibiscus rouge rubis, gingembre et menthe. Rafraîchissant et élégant.",
-        price_xof=1200,
+        description="Infusion d'hibiscus rouge rubis, gingembre frais et menthe. Rafraîchissant, élégant, sans alcool.",
+        price_cad=5.50,
         image_url="https://images.unsplash.com/photo-1601390395693-364c0e22031a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwyfHxoaWJpc2N1cyUyMHRlYSUyMHJlZCUyMGRyaW5rfGVufDB8fHx8MTc4MTU3Mzc1OXww&ixlib=rb-4.1.0&q=85",
     ),
     ProductOut(
         id="jus-tropical",
         name="Jus Tropical",
         category="Boissons",
-        description="Cocktail de mangue, ananas et fruit de la passion. Le soleil dans un verre.",
-        price_xof=1500,
+        description="Cocktail maison mangue, ananas et fruit de la passion. Le soleil de l'Afrique dans un verre.",
+        price_cad=6.00,
         image_url="https://images.unsplash.com/photo-1583577612013-4fecf7bf8f13?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MDV8MHwxfHNlYXJjaHwyfHx0cm9waWNhbCUyMGZydWl0JTIwanVpY2V8ZW58MHx8fHwxNzgxNTczNzU5fDA&ixlib=rb-4.1.0&q=85",
-    ),
-    ProductOut(
-        id="gingembre-citron",
-        name="Gingembre Citron",
-        category="Boissons",
-        description="Boisson maison vivifiante au gingembre frais et citron vert. Énergie naturelle.",
-        price_xof=1300,
-        image_url="https://images.unsplash.com/photo-1664993119473-013502f1e3f8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MDV8MHwxfHNlYXJjaHw0fHx0cm9waWNhbCUyMGZydWl0JTIwanVpY2V8ZW58MHx8fHwxNzgxNTczNzU5fDA&ixlib=rb-4.1.0&q=85",
     ),
     ProductOut(
         id="plateau-decouverte",
         name="Plateau Découverte",
         category="Coffrets",
-        description="Assortiment de 12 mikatés (sucrés et salés) + 2 boissons au choix. Pour partager.",
-        price_xof=6500,
-        image_url="https://images.unsplash.com/photo-1665400808116-f0e6339b7e9a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODd8MHwxfHNlYXJjaHwyfHxhZnJpY2FuJTIwZm9vZCUyMGVsZWdhbnR8ZW58MHx8fHwxNzgxNTczNzU5fDA&ixlib=rb-4.1.0&q=85",
+        description="Assortiment de 18 mikatés (sucrés, salés, coco) + 2 boissons au choix. Idéal pour partager en famille ou au bureau.",
+        price_cad=34.99,
+        image_url="https://images.unsplash.com/photo-1714596668628-79579eadba07?fm=jpg&q=85&w=1200&auto=format&fit=crop",
     ),
 ]
 
@@ -135,22 +135,22 @@ TESTIMONIALS: List[TestimonialOut] = [
     TestimonialOut(
         id="t1",
         name="Aminata D.",
-        role="Cliente fidèle, Cotonou",
-        quote="Les mikatés sont divins, exactement comme ceux de ma grand-mère. Le bissap est une tuerie !",
+        role="Cliente fidèle, Montréal",
+        quote="Les mikatés sont divins, exactement comme ceux de ma grand-mère à Cotonou. Le bissap est une tuerie !",
         avatar_url="https://images.unsplash.com/photo-1562337404-3044c84ac061?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwxfHxwb3J0cmFpdCUyMGhhcHB5JTIwcGVyc29ufGVufDB8fHx8MTc4MTU3Mzc3NXww&ixlib=rb-4.1.0&q=85",
     ),
     TestimonialOut(
         id="t2",
         name="Koffi A.",
-        role="Organisateur d'événements",
+        role="Organisateur d'événements, Laval",
         quote="J'ai commandé pour un événement de 80 personnes : ponctualité, qualité, présentation impeccable.",
         avatar_url="https://images.unsplash.com/photo-1583264277168-58ceba4b84e7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwzfHxwb3J0cmFpdCUyMGhhcHB5JTIwcGVyc29ufGVufDB8fHx8MTc4MTU3Mzc3NXww&ixlib=rb-4.1.0&q=85",
     ),
     TestimonialOut(
         id="t3",
         name="Sarah M.",
-        role="Découverte culinaire",
-        quote="Je ne connaissais pas les mikatés, c'est une révélation. Le plateau découverte est parfait.",
+        role="Découverte culinaire, Québec",
+        quote="Je ne connaissais pas les mikatés, c'est une révélation. Le plateau découverte est parfait pour goûter à tout.",
         avatar_url="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwyfHxwb3J0cmFpdCUyMGhhcHB5JTIwcGVyc29ufGVufDB8fHx8MTc4MTU3Mzc3NXww&ixlib=rb-4.1.0&q=85",
     ),
 ]
@@ -212,7 +212,6 @@ def _build_order_email_html(order: Order) -> str:
 async def create_order(payload: OrderCreate):
     order = Order(**payload.model_dump())
 
-    # Try to send email (non-blocking, gracefully degrade if API key missing/invalid)
     if RESEND_API_KEY and RESEND_API_KEY.startswith("re_") and not RESEND_API_KEY.endswith("placeholder_replace_me"):
         try:
             params = {
@@ -227,7 +226,6 @@ async def create_order(payload: OrderCreate):
         except Exception as e:
             logger.error(f"Resend email failed: {e}")
 
-    # Store in MongoDB
     doc = order.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
     await db.orders.insert_one(doc)
@@ -243,7 +241,6 @@ async def list_orders(limit: int = 100):
     return docs
 
 
-# Include the router in the main app
 app.include_router(api_router)
 
 app.add_middleware(

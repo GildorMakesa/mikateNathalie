@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Plus, Minus, X, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { api, formatXOF, SOCIALS } from "@/lib/api";
+import { api, formatCAD, SOCIALS } from "@/lib/api";
 import { TID } from "@/constants/testIds";
 
 const emptyForm = {
@@ -15,7 +15,7 @@ const emptyForm = {
 
 export default function OrderForm({ preselected, onConsume }) {
   const [products, setProducts] = useState([]);
-  const [items, setItems] = useState([]); // [{product_id, product_name, quantity, price_xof}]
+  const [items, setItems] = useState([]); // [{product_id, product_name, quantity, price_cad}]
   const [form, setForm] = useState(emptyForm);
   const [submitting, setSubmitting] = useState(false);
 
@@ -56,7 +56,7 @@ export default function OrderForm({ preselected, onConsume }) {
         .filter((it) => it.quantity > 0)
     );
 
-  const total = items.reduce((s, it) => s + it.price_xof * it.quantity, 0);
+  const total = items.reduce((s, it) => s + it.price_cad * it.quantity, 0);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -161,7 +161,7 @@ export default function OrderForm({ preselected, onConsume }) {
                   value={form.phone}
                   onChange={handleChange}
                   className="input"
-                  placeholder="+229 ..."
+                  placeholder="+1 (438) ..."
                 />
               </Field>
               <Field label="Email (optionnel)">
@@ -204,7 +204,7 @@ export default function OrderForm({ preselected, onConsume }) {
                   >
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-brand-ink truncate">{it.product_name}</p>
-                      <p className="text-xs text-brand-muted">{formatXOF(it.price_xof)} / unité</p>
+                      <p className="text-xs text-brand-muted">{formatCAD(it.price_cad)} / unité</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <button
@@ -271,7 +271,7 @@ export default function OrderForm({ preselected, onConsume }) {
             <div className="mt-6 flex items-center justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.18em] text-brand-muted">Total estimé</p>
-                <p className="font-display text-3xl text-brand-ink">{formatXOF(total)}</p>
+                <p className="font-display text-3xl text-brand-ink">{formatCAD(total)}</p>
               </div>
               <button
                 type="submit"
