@@ -77,14 +77,39 @@ class Order(BaseModel):
     items: List[OrderItemInput]
     payment_method: Optional[str] = None
     message: Optional[str] = None
-    status: str = "pending"
+    status: str = "new"
     email_sent: bool = False
     email_error: Optional[str] = None
+    client_email_sent: bool = False
+    client_email_error: Optional[str] = None
+    read: bool = False
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
+VALID_STATUSES = ("new", "submission_sent", "payment_received", "preparing", "delivered", "cancelled")
+
+
 class OrderStatusUpdate(BaseModel):
-    status: str = Field(..., pattern="^(pending|confirmed|fulfilled|cancelled)$")
+    status: str = Field(..., pattern="^(new|submission_sent|payment_received|preparing|delivered|cancelled)$")
+
+
+class Settings(BaseModel):
+    interac_email: str = "contact@mikateroyal.com"
+    interac_question: str = "soumission"
+    interac_answer: str = "grace7"
+    interac_auto_deposit: bool = False
+    interac_note: str = (
+        "Veuillez indiquer votre nom dans le message du virement afin que nous puissions "
+        "associer votre paiement à votre commande."
+    )
+
+
+class SettingsUpdate(BaseModel):
+    interac_email: Optional[str] = None
+    interac_question: Optional[str] = None
+    interac_answer: Optional[str] = None
+    interac_auto_deposit: Optional[bool] = None
+    interac_note: Optional[str] = None
 
 
 class TestimonialOut(BaseModel):
@@ -250,6 +275,60 @@ async def create_testimonial(payload: TestimonialCreate):
     return item
 
 
+def _build_client_confirmation_html(order: Order) -> str:
+    return f"""
+    <div style="font-family:Georgia,serif;background:#FAF8F5;padding:32px;color:#1D1914;">
+      <div style="max-width:600px;margin:0 auto;background:#FFFFFF;border:1px solid #E8E2D9;border-radius:16px;padding:32px;">
+        <h1 style="color:#9A1F38;font-size:26px;margin:0 0 16px 0;">Nous avons bien reçu votre demande</h1>
+        <p style="margin:0 0 12px 0;">Bonjour {order.customer_name},</p>
+        <p style="margin:0 0 12px 0;">Merci d'avoir choisi <strong>Délices Mikaté Royal</strong> !</p>
+        <p style="margin:0 0 12px 0;">
+          Nous avons bien reçu votre demande de soumission et nous vous contacterons dans les plus
+          brefs délais avec les détails de votre commande, les frais de livraison s'il y a lieu,
+          ainsi que le montant total.
+        </p>
+        <p style="margin:0 0 12px 0;">
+          Nous sommes heureux de vous servir et de partager avec vous nos délicieux mikatés
+          préparés avec soin.
+        </p>
+        <p style="margin:24px 0 6px 0;">À très bientôt,</p>
+        <p style="margin:0;font-family:Georgia,serif;color:#9A1F38;font-size:18px;"><strong>Délices Mikaté Royal</strong></p>
+        <p style="margin:6px 0;color:#665D50;font-size:13px;">📧 contact@mikateroyal.com</p>
+        <p style="margin:6px 0;color:#665D50;font-size:13px;">🌐 <a href="https://mikateroyal.com" style="color:#9A1F38;text-decoration:none;">mikateroyal.com</a></p>
+      </div>
+    </div>
+    """
+
+
+async def _send_email(*, to: List[str], subject: str, html: str, reply_to: Optional[str] = None) -> tuple[bool, Optional[str]]:
+    """Returns (success, error_message)."""
+    if not RESEND_API_KEY:
+        return False, "RESEND_API_KEY non configurée"
+    try:
+        from_field = f"{SENDER_NAME} <{SENDER_EMAIL}>" if SENDER_NAME else SENDER_EMAIL
+        params = {"from": from_field, "to": to, "subject": subject, "html": html}
+        if reply_to:
+            params["reply_to"] = reply_to
+        resend.api_key = RESEND_API_KEY
+        result = await asyncio.to_thread(resend.Emails.send, params)
+        if isinstance(result, dict) and result.get("id"):
+            return True, None
+        return False, f"Réponse Resend inattendue : {result!r}"
+    except Exception as e:
+        tb = traceback.format_exc()
+        logger.error(f"Resend send failed: {e}\n{tb}")
+        return False, f"{type(e).__name__}: {e}"
+
+
+async def _get_settings() -> Settings:
+    doc = await db.settings.find_one({"_id": "interac"}, {"_id": 0})
+    if not doc:
+        s = Settings()
+        await db.settings.insert_one({"_id": "interac", **s.model_dump()})
+        return s
+    return Settings(**doc)
+
+
 def _build_order_email_html(order: Order) -> str:
     items_rows = "".join(
         f"<tr><td style='padding:8px;border-bottom:1px solid #E8E2D9;'>{i.product_name}</td>"
@@ -292,32 +371,26 @@ def _build_order_email_html(order: Order) -> str:
 async def create_order(payload: OrderCreate):
     order = Order(**payload.model_dump())
 
-    if not RESEND_API_KEY:
-        order.email_error = "RESEND_API_KEY non configurée"
-        logger.warning("Skipping email: RESEND_API_KEY is empty")
-    else:
-        try:
-            from_field = f"{SENDER_NAME} <{SENDER_EMAIL}>" if SENDER_NAME else SENDER_EMAIL
-            params = {
-                "from": from_field,
-                "to": [RECIPIENT_EMAIL],
-                "subject": f"Nouvelle demande de soumission — {order.customer_name}",
-                "html": _build_order_email_html(order),
-            }
-            if order.email:
-                params["reply_to"] = order.email
-            # Ensure SDK has key set even if first request beats import-time line
-            resend.api_key = RESEND_API_KEY
-            result = await asyncio.to_thread(resend.Emails.send, params)
-            logger.info(f"Resend response for order {order.id}: {result!r}")
-            if isinstance(result, dict) and result.get("id"):
-                order.email_sent = True
-            else:
-                order.email_error = f"Réponse Resend inattendue : {result!r}"
-        except Exception as e:
-            tb = traceback.format_exc()
-            order.email_error = f"{type(e).__name__}: {e}"
-            logger.error(f"Resend email failed for order {order.id}: {order.email_error}\n{tb}")
+    # Email to owner (notification)
+    ok, err = await _send_email(
+        to=[RECIPIENT_EMAIL],
+        subject=f"Nouvelle demande de soumission — {order.customer_name}",
+        html=_build_order_email_html(order),
+        reply_to=order.email,
+    )
+    order.email_sent = ok
+    order.email_error = err
+
+    # Auto confirmation email to client (if they provided an email)
+    if order.email:
+        ok2, err2 = await _send_email(
+            to=[order.email],
+            subject="Nous avons bien reçu votre demande - Délices Mikaté Royal",
+            html=_build_client_confirmation_html(order),
+            reply_to=RECIPIENT_EMAIL,
+        )
+        order.client_email_sent = ok2
+        order.client_email_error = err2
 
     doc = order.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
@@ -331,7 +404,17 @@ async def list_orders(limit: int = 100, _: bool = Depends(require_admin)):
     for d in docs:
         if isinstance(d.get('created_at'), str):
             d['created_at'] = datetime.fromisoformat(d['created_at'])
+        # Backward compat: legacy statuses -> new statuses
+        legacy_map = {"pending": "new", "confirmed": "submission_sent", "fulfilled": "delivered"}
+        if d.get("status") in legacy_map:
+            d["status"] = legacy_map[d["status"]]
     return docs
+
+
+@api_router.get("/orders/unread-count")
+async def unread_count(_: bool = Depends(require_admin)):
+    n = await db.orders.count_documents({"read": {"$ne": True}})
+    return {"count": n}
 
 
 @api_router.patch("/orders/{order_id}/status", response_model=Order)
@@ -345,12 +428,94 @@ async def update_order_status(order_id: str, payload: OrderStatusUpdate, _: bool
     return doc
 
 
+@api_router.patch("/orders/{order_id}/read", response_model=Order)
+async def mark_order_read(order_id: str, _: bool = Depends(require_admin)):
+    res = await db.orders.update_one({"id": order_id}, {"$set": {"read": True}})
+    if res.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Commande introuvable")
+    doc = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if isinstance(doc.get('created_at'), str):
+        doc['created_at'] = datetime.fromisoformat(doc['created_at'])
+    return doc
+
+
+@api_router.post("/orders/mark-all-read")
+async def mark_all_read(_: bool = Depends(require_admin)):
+    res = await db.orders.update_many({"read": {"$ne": True}}, {"$set": {"read": True}})
+    return {"updated": res.modified_count}
+
+
 @api_router.delete("/orders/{order_id}")
 async def delete_order(order_id: str, _: bool = Depends(require_admin)):
     res = await db.orders.delete_one({"id": order_id})
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Commande introuvable")
     return {"deleted": True}
+
+
+@api_router.get("/orders/{order_id}/submission")
+async def get_submission_template(order_id: str, _: bool = Depends(require_admin)):
+    doc = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Commande introuvable")
+    settings = await _get_settings()
+
+    items_lines = "\n".join(
+        f"- {it['product_name']} × {it['quantity']}" for it in doc.get("items", [])
+    )
+
+    if settings.interac_auto_deposit:
+        payment_block = (
+            f"Paiement par virement Interac\n"
+            f"Adresse de paiement : {settings.interac_email}\n"
+            f"Dépôt automatique Interac activé – aucun mot de passe requis."
+        )
+    else:
+        payment_block = (
+            f"Paiement par virement Interac\n"
+            f"Adresse de paiement : {settings.interac_email}\n"
+            f"Question de sécurité : {settings.interac_question}\n"
+            f"Réponse : {settings.interac_answer}"
+        )
+
+    subject = "Votre soumission - Délices Mikaté Royal"
+    body = (
+        f"Bonjour {doc['customer_name']},\n\n"
+        f"Merci pour votre intérêt envers Délices Mikaté Royal.\n\n"
+        f"Voici le détail de votre commande :\n\n"
+        f"{items_lines}\n\n"
+        f"Sous-total : [à compléter]\n"
+        f"Livraison : [à compléter]\n"
+        f"Total : [à compléter]\n\n"
+        f"{payment_block}\n\n"
+        f"{settings.interac_note}\n\n"
+        f"Dès réception du paiement, votre commande sera confirmée.\n\n"
+        f"Merci de votre confiance !\n\n"
+        f"Délices Mikaté Royal\n"
+        f"📧 contact@mikateroyal.com\n"
+        f"🌐 mikateroyal.com"
+    )
+    return {"subject": subject, "body": body, "to": doc.get("email") or ""}
+
+
+@api_router.get("/admin/settings", response_model=Settings)
+async def get_settings(_: bool = Depends(require_admin)):
+    return await _get_settings()
+
+
+@api_router.put("/admin/settings", response_model=Settings)
+async def update_settings(payload: SettingsUpdate, _: bool = Depends(require_admin)):
+    current = await _get_settings()
+    data = current.model_dump()
+    for k, v in payload.model_dump(exclude_none=True).items():
+        data[k] = v
+    new = Settings(**data)
+    await db.settings.update_one(
+        {"_id": "interac"},
+        {"$set": new.model_dump()},
+        upsert=True,
+    )
+    return new
 
 
 @api_router.post("/admin/login")
@@ -371,24 +536,14 @@ async def email_config(_: bool = Depends(require_admin)):
 
 @api_router.post("/admin/email-test")
 async def email_test(_: bool = Depends(require_admin)):
-    if not RESEND_API_KEY:
-        return {"ok": False, "error": "RESEND_API_KEY non configurée côté serveur"}
-    try:
-        resend.api_key = RESEND_API_KEY
-        from_field = f"{SENDER_NAME} <{SENDER_EMAIL}>" if SENDER_NAME else SENDER_EMAIL
-        result = await asyncio.to_thread(resend.Emails.send, {
-            "from": from_field,
-            "to": [RECIPIENT_EMAIL],
-            "subject": "Test — Délices Mikaté Royal",
-            "html": "<p>Email de test depuis l'admin Délices Mikaté Royal. Si vous recevez ce message, la configuration Resend fonctionne ✅</p>",
-        })
-        if isinstance(result, dict) and result.get("id"):
-            return {"ok": True, "id": result.get("id"), "result": result}
-        return {"ok": False, "error": f"Réponse inattendue : {result!r}"}
-    except Exception as e:
-        tb = traceback.format_exc()
-        logger.error(f"Email test failed: {e}\n{tb}")
-        return {"ok": False, "error": f"{type(e).__name__}: {e}"}
+    ok, err = await _send_email(
+        to=[RECIPIENT_EMAIL],
+        subject="Test — Délices Mikaté Royal",
+        html="<p>Email de test depuis l'admin Délices Mikaté Royal. Si vous recevez ce message, la configuration Resend fonctionne ✅</p>",
+    )
+    if ok:
+        return {"ok": True}
+    return {"ok": False, "error": err}
 
 
 app.include_router(api_router)
