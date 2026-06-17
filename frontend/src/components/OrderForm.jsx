@@ -102,7 +102,7 @@ export default function OrderForm({ preselected, onConsume }) {
       setForm(emptyForm);
     } catch (err) {
       console.error(err);
-      toast.error("Impossible d'envoyer votre demande. Réessayez ou contactez-nous sur WhatsApp.");
+      toast.error("Impossible d'envoyer votre demande. Réessayez ou écrivez-nous à contact@mikateroyal.com.");
     } finally {
       setSubmitting(false);
     }
@@ -121,21 +121,22 @@ export default function OrderForm({ preselected, onConsume }) {
               Indiquez les produits qui vous intéressent et la quantité souhaitée — nous vous reviendrons rapidement avec une soumission personnalisée.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href={SOCIALS.whatsapp}
-                target="_blank"
-                rel="noreferrer"
+              <button
+                type="button"
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent("mr:open-nancy"));
+                }}
                 className="inline-flex items-center gap-2 rounded-full border border-brand-line bg-brand-sand px-5 py-3 text-sm text-brand-ink hover:border-brand-ruby"
-                data-testid="order-whatsapp-cta"
+                data-testid="order-nancy-cta"
               >
-                Discuter sur WhatsApp
-              </a>
+                Discuter avec Nancy
+              </button>
               <a
                 href={SOCIALS.email}
                 className="inline-flex items-center gap-2 rounded-full border border-brand-line bg-brand-sand px-5 py-3 text-sm text-brand-ink hover:border-brand-ruby"
                 data-testid="order-email-cta"
               >
-                mikateroyal@gmail.com
+                contact@mikateroyal.com
               </a>
             </div>
           </div>

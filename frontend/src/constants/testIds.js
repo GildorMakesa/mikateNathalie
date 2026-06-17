@@ -11,7 +11,7 @@ export const TID = {
   navOrder: "nav-order",
   ctaOrderHero: "hero-cta-order",
   ctaCatalogHero: "hero-cta-catalog",
-  whatsappFloat: "whatsapp-float-btn",
+  nancyToggle: "nancy-toggle",
   productCard: "product-card",
   productOrderBtn: "product-order-btn",
   galleryItem: "gallery-item",

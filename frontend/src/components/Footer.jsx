@@ -31,11 +31,17 @@ export default function Footer() {
               <ul className="space-y-3">
                 <li className="flex items-start gap-2">
                   <Mail size={14} className="mt-0.5 text-brand-ochre" />
-                  <a href={SOCIALS.email} className="hover:text-white" data-testid="footer-email">mikateroyal@gmail.com</a>
+                  <a href={SOCIALS.email} className="hover:text-white" data-testid="footer-email">contact@mikateroyal.com</a>
                 </li>
                 <li className="flex items-start gap-2">
                   <MessageCircle size={14} className="mt-0.5 text-brand-ochre" />
-                  <a href={SOCIALS.whatsapp} target="_blank" rel="noreferrer" className="hover:text-white" data-testid="footer-whatsapp">WhatsApp</a>
+                  <button
+                    onClick={() => window.dispatchEvent(new CustomEvent("mr:open-nancy"))}
+                    className="hover:text-white text-left"
+                    data-testid="footer-nancy"
+                  >
+                    Discuter avec Nancy
+                  </button>
                 </li>
                 <li className="flex items-start gap-2">
                   <MapPin size={14} className="mt-0.5 text-brand-ochre" />

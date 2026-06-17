@@ -12,6 +12,7 @@ import uuid
 from datetime import datetime, timezone
 import resend
 import traceback
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 
 ROOT_DIR = Path(__file__).parent
@@ -34,6 +35,7 @@ SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev').strip()
 SENDER_NAME = os.environ.get('SENDER_NAME', 'Délices Mikaté Royal').strip()
 RECIPIENT_EMAIL = os.environ.get('RECIPIENT_EMAIL', 'mikateroyal@gmail.com').strip()
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'mikate2025')
+EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '').strip()
 if RESEND_API_KEY:
     resend.api_key = RESEND_API_KEY
 logger.info(
@@ -110,6 +112,56 @@ class SettingsUpdate(BaseModel):
     interac_answer: Optional[str] = None
     interac_auto_deposit: Optional[bool] = None
     interac_note: Optional[str] = None
+
+
+class ChatHistoryItem(BaseModel):
+    role: str  # "user" | "assistant"
+    content: str
+
+
+class ChatRequest(BaseModel):
+    session_id: str = Field(..., min_length=1, max_length=120)
+    message: str = Field(..., min_length=1, max_length=2000)
+    history: List[ChatHistoryItem] = Field(default_factory=list)
+
+
+NANCY_SYSTEM_PROMPT = """Tu es Nancy, l'assistante virtuelle chaleureuse et professionnelle de Délices Mikaté Royal, une pâtisserie/boissons artisanale ouest-africaine basée au Québec (zone de livraison : Sorel-Tracy, Montréal, Rive-Nord et Rive-Sud).
+
+Tu réponds TOUJOURS en français, sur un ton amical, accueillant et professionnel (tutoiement non, vouvoiement oui). Tu signes occasionnellement « Nancy » mais sans être répétitive.
+
+Ce que tu sais :
+
+PRODUITS (sans prix — toujours sur soumission) :
+- Mikaté Sucré : beignets africains dorés vanillés
+- Mikaté Salé : beignets salés croustillants à l'apéritif
+- Mikaté Sucre Impalpable : beignets saupoudrés de sucre impalpable
+- Mikaté Chocolat : beignets nappés de chocolat noir fondu
+- Mikaté Cannelle : beignets enrobés de cannelle-sucre
+- Mikaté Pâte d'Arachides : beignets servis avec pâte d'arachides maison
+- Bissap Royal : infusion d'hibiscus, gingembre et menthe
+- Jus Tropical : mangue, ananas, fruit de la passion
+- Jus de Gingembre : gingembre frais, citron, miel
+- Plateau Découverte : assortiment de mikatés + boissons
+
+ZONE DE LIVRAISON : Sorel-Tracy, Montréal, Rive-Nord, Rive-Sud (Québec, Canada).
+
+PROCESSUS DE COMMANDE :
+1. Le client remplit le formulaire de demande de soumission sur le site (section « Commander »).
+2. Notre équipe envoie une soumission personnalisée par courriel avec sous-total, livraison et total.
+3. Paiement par virement Interac à contact@mikateroyal.com.
+4. Dès paiement reçu, la commande est confirmée et préparée.
+
+CONTACT : contact@mikateroyal.com
+
+CONSIGNES :
+- Si on te demande des prix précis, explique que les prix sont sur soumission personnalisée selon la quantité et la livraison.
+- Si on veut commander, invite chaleureusement à remplir le formulaire « Demander une soumission » sur le site (section Commander).
+- Si question médicale sur le bissap/gingembre, rappelle de consulter un professionnel de santé.
+- Tu ne prends PAS les commandes toi-même — tu guides vers le formulaire ou contact@mikateroyal.com.
+- Réponds court et chaleureux (2 à 5 phrases maximum sauf si on te demande des détails).
+- Utilise occasionnellement des émojis culinaires discrets (✨ 🌺 🥤) sans abuser.
+- Si question hors-sujet, ramène gentiment vers les mikatés/boissons ou contact@mikateroyal.com.
+"""
 
 
 class TestimonialOut(BaseModel):
@@ -544,6 +596,39 @@ async def email_test(_: bool = Depends(require_admin)):
     if ok:
         return {"ok": True}
     return {"ok": False, "error": err}
+
+
+@api_router.post("/chat")
+async def chat_with_nancy(payload: ChatRequest):
+    if not EMERGENT_LLM_KEY:
+        raise HTTPException(status_code=503, detail="Assistante temporairement indisponible (clé manquante).")
+
+    history_block = ""
+    if payload.history:
+        # Keep only last 8 turns for context (anti-runaway)
+        recent = payload.history[-8:]
+        lines = []
+        for h in recent:
+            who = "Client" if h.role == "user" else "Nancy"
+            lines.append(f"{who}: {h.content}")
+        history_block = "Conversation précédente :\n" + "\n".join(lines) + "\n\n"
+
+    try:
+        chat = (
+            LlmChat(
+                api_key=EMERGENT_LLM_KEY,
+                session_id=payload.session_id,
+                system_message=NANCY_SYSTEM_PROMPT,
+            )
+            .with_model("anthropic", "claude-sonnet-4-6")
+        )
+        user_text = f"{history_block}Nouveau message du client : {payload.message}"
+        reply = await chat.send_message(UserMessage(text=user_text))
+        return {"reply": reply.strip() if isinstance(reply, str) else str(reply)}
+    except Exception as e:
+        tb = traceback.format_exc()
+        logger.error(f"Nancy chat error: {e}\n{tb}")
+        raise HTTPException(status_code=500, detail=f"Erreur de Nancy : {e}")
 
 
 app.include_router(api_router)

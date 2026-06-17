@@ -8,7 +8,7 @@ import Gallery from "@/components/Gallery";
 import Testimonials from "@/components/Testimonials";
 import OrderForm from "@/components/OrderForm";
 import Footer from "@/components/Footer";
-import WhatsAppFloat from "@/components/WhatsAppFloat";
+import NancyChat from "@/components/NancyChat";
 
 export default function Home() {
   const [preselected, setPreselected] = useState(null);
@@ -24,7 +24,7 @@ export default function Home() {
       <Testimonials />
       <OrderForm preselected={preselected} onConsume={() => setPreselected(null)} />
       <Footer />
-      <WhatsAppFloat />
+      <NancyChat />
     </div>
   );
 }
