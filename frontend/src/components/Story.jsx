@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 const MIKATE_IMG = "/products/mikate-sucre-impalpable.png";
 const BISSAP_IMG =
   "https://images.unsplash.com/photo-1601390395693-364c0e22031a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwyfHxoaWJpc2N1cyUyMHRlYSUyMHJlZCUyMGRyaW5rfGVufDB8fHx8MTc4MTU3Mzc1OXww&ixlib=rb-4.1.0&q=85";
+const GINGER_IMG = "/products/jus-gingembre-luxe.png";
 
 export default function Story() {
   return (
@@ -149,6 +150,85 @@ export default function Story() {
             </div>
           </div>
         </motion.article>
+
+        {/* Divider */}
+        <div className="my-20 md:my-24 flex items-center gap-4">
+          <span className="h-px flex-1 bg-brand-line" />
+          <span className="font-display italic text-brand-ochre/60 text-2xl">~</span>
+          <span className="h-px flex-1 bg-brand-line" />
+        </div>
+
+        {/* Article 3 - Gingembre */}
+        <motion.article
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7 }}
+          className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center"
+          data-testid="story-gingembre"
+        >
+          <div className="lg:col-span-5 order-1 lg:order-1">
+            <div className="relative overflow-hidden rounded-[2rem] arch-top bg-brand-ochre/10 h-[420px] md:h-[520px]">
+              <img
+                src={GINGER_IMG}
+                alt="Verre luxueux de jus de gingembre"
+                className="absolute inset-0 h-full w-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          </div>
+          <div className="lg:col-span-7 order-2 lg:order-2">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-brand-ochre font-semibold">Le Gingembre</p>
+            <h3 className="mt-3 font-display text-3xl sm:text-4xl text-brand-ink leading-tight">
+              Une racine aux <em className="not-italic text-brand-ochre">mille vertus</em>
+            </h3>
+
+            <div className="mt-6 space-y-5 text-brand-muted leading-relaxed text-base md:text-[17px]">
+              <p>
+                Le gingembre est une plante reconnue depuis des siècles pour ses qualités gustatives
+                et ses nombreux bienfaits. Utilisé dans les cuisines et les traditions de nombreuses
+                cultures à travers le monde, il est particulièrement apprécié en Afrique pour la
+                préparation de boissons rafraîchissantes et revigorantes. Avec sa saveur unique, à
+                la fois épicée et parfumée, le gingembre apporte une touche de caractère à chaque
+                dégustation.
+              </p>
+
+              <h4 className="font-display text-xl text-brand-ink pt-2">
+                Pourquoi le gingembre est-il si apprécié ?
+              </h4>
+              <ul className="space-y-3">
+                {GINGER_BENEFITS.map((b, i) => (
+                  <li key={i} className="flex gap-3">
+                    <span className="text-brand-ochre mt-0.5 shrink-0" aria-hidden>✔</span>
+                    <span>
+                      <span className="text-brand-ink font-medium">{b.title}</span> : {b.text}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              <h4 className="font-display text-xl text-brand-ink pt-2">Une boisson qui rassemble</h4>
+              <p>
+                Présent lors des célébrations, des rencontres familiales et des moments de partage,
+                le gingembre est bien plus qu&apos;une simple boisson. Il symbolise la convivialité,
+                la générosité et le plaisir d&apos;être réunis autour de saveurs authentiques.
+              </p>
+
+              <p className="font-display italic text-xl text-brand-ink">
+                Le gingembre, c&apos;est l&apos;énergie de la nature, la richesse des traditions et
+                le bonheur du partage.
+                <span className="block text-brand-ochre mt-2 not-italic text-base font-sans tracking-wide">
+                  ✨ 🫚 🥤
+                </span>
+              </p>
+
+              <p className="text-brand-ink/80 italic">
+                À déguster seul, entre amis ou en famille pour un moment de fraîcheur et de
+                vitalité ! ❤️
+              </p>
+            </div>
+          </div>
+        </motion.article>
       </div>
     </section>
   );
@@ -184,5 +264,38 @@ const BENEFITS = [
     title: "Beauté de la peau et des cheveux",
     text:
       "grâce à sa richesse en antioxydants, l'hibiscus est souvent utilisé dans les soins naturels pour la peau et les cheveux.",
+  },
+];
+
+const GINGER_BENEFITS = [
+  {
+    title: "Source naturelle d'antioxydants",
+    text:
+      "le gingembre contient des composés qui contribuent à protéger l'organisme contre le stress oxydatif.",
+  },
+  {
+    title: "Favorise la digestion",
+    text:
+      "il est traditionnellement utilisé pour soutenir le confort digestif et réduire les sensations d'inconfort après les repas.",
+  },
+  {
+    title: "Aide à combattre la fatigue",
+    text:
+      "sa saveur tonique et stimulante en fait une boisson appréciée pour retrouver de l'énergie au quotidien.",
+  },
+  {
+    title: "Contribue au bien-être général",
+    text:
+      "le gingembre est reconnu pour ses propriétés naturelles qui participent au maintien d'une bonne santé.",
+  },
+  {
+    title: "Soutient le système immunitaire",
+    text:
+      "grâce à ses composés naturels, il est souvent consommé durant les périodes de changement de saison.",
+  },
+  {
+    title: "Procure une sensation de chaleur et de réconfort",
+    text:
+      "servi chaud ou froid, il apporte une agréable sensation de bien-être.",
   },
 ];

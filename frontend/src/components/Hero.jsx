@@ -101,12 +101,14 @@ export default function Hero() {
                   Tropical
                 </div>
               </div>
-              <div className="col-span-4 row-span-2 rounded-3xl border border-brand-line bg-white p-5 flex items-center justify-between">
-                <div>
+              <div className="col-span-4 row-span-2 rounded-3xl border border-brand-line bg-white p-5 flex items-center justify-between gap-3">
+                <div className="min-w-0">
                   <p className="text-xs uppercase tracking-[0.2em] text-brand-muted">Livraison du jour</p>
-                  <p className="font-display text-2xl text-brand-ink mt-1">Montréal & rive-sud</p>
+                  <p className="font-display text-xl md:text-2xl text-brand-ink mt-1 leading-tight">
+                    Sorel-Tracy, Montréal,<br className="hidden md:block" /> Rive-Nord &amp; Rive-Sud
+                  </p>
                 </div>
-                <span className="inline-block h-12 w-12 rounded-full bg-brand-ruby/10 flex items-center justify-center text-brand-ruby font-display text-lg">
+                <span className="inline-block h-12 w-12 shrink-0 rounded-full bg-brand-ruby/10 flex items-center justify-center text-brand-ruby font-display text-lg">
                   J+0
                 </span>
               </div>

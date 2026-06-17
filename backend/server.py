@@ -161,7 +161,7 @@ PRODUCTS: List[ProductOut] = [
         name="Jus de Gingembre",
         category="Boissons",
         description="Notre signature : gingembre frais pressé, citron vert et une pointe de miel. Servi dans un verre élégant — vivifiant et raffiné.",
-        image_url="https://images.unsplash.com/photo-1631029098074-be99eb2b425c?fm=jpg&q=85&w=1200&auto=format&fit=crop",
+        image_url="/products/jus-gingembre-luxe.png",
     ),
     ProductOut(
         id="plateau-decouverte",
