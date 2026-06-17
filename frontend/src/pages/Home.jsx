@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Ribbon from "@/components/Ribbon";
 import Products from "@/components/Products";
+import Story from "@/components/Story";
 import Gallery from "@/components/Gallery";
 import Testimonials from "@/components/Testimonials";
 import OrderForm from "@/components/OrderForm";
@@ -18,6 +19,7 @@ export default function Home() {
       <Hero />
       <Ribbon />
       <Products onOrder={setPreselected} />
+      <Story />
       <Gallery />
       <Testimonials />
       <OrderForm preselected={preselected} onConsume={() => setPreselected(null)} />

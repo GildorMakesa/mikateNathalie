@@ -6,6 +6,7 @@ import { TID } from "@/constants/testIds";
 const links = [
   { id: "accueil", label: "Accueil", tid: TID.navHome },
   { id: "produits", label: "Catalogue", tid: TID.navProducts },
+  { id: "histoire", label: "Notre histoire", tid: "nav-story" },
   { id: "galerie", label: "Galerie", tid: TID.navGallery },
   { id: "temoignages", label: "Témoignages", tid: TID.navTestimonials },
   { id: "commander", label: "Commander", tid: TID.navOrder },
