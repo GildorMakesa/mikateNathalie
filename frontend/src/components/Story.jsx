@@ -48,6 +48,12 @@ export default function Story() {
                 apprécié dans de nombreuses régions d&apos;Afrique centrale et de l&apos;Ouest,
                 notamment en République démocratique du Congo, au Cameroun, au Bénin et au Nigéria.
               </p>
+              <p className="border-l-2 border-brand-ochre/50 pl-4">
+                Chez <span className="text-brand-ink font-medium">Délices Mikaté Royal</span>, nous
+                préparons chaque commande avec soin afin d&apos;offrir des produits frais, savoureux
+                et fidèles aux traditions africaines. Nos mikatés sont reconnus pour leurs portions
+                généreuses, leur texture moelleuse et leur goût authentique.
+              </p>
               <p>
                 Bien plus qu&apos;une simple gourmandise, le mikate est un symbole de partage, de
                 convivialité et de traditions familiales. Présent lors des célébrations, des

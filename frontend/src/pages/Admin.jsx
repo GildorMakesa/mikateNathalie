@@ -183,6 +183,28 @@ export default function Admin() {
     }
   };
 
+  const sendSubmission = async (orderId) => {
+    if (!window.confirm("Envoyer la soumission par courriel au client maintenant ?")) return;
+    try {
+      await adminClient(password).post(`/orders/${orderId}/send-submission`);
+      toast.success("Soumission envoyée au client ✅");
+      fetchOrders(password);
+    } catch (err) {
+      const msg = err?.response?.data?.detail || "Erreur d'envoi";
+      toast.error(msg);
+    }
+  };
+
+  const copyPaymentInstructions = async () => {
+    try {
+      const { data } = await adminClient(password).get("/admin/payment-instructions");
+      await navigator.clipboard.writeText(data.text);
+      toast.success("Instructions de paiement copiées 📋");
+    } catch {
+      toast.error("Impossible de copier");
+    }
+  };
+
   const testEmail = async () => {
     setEmailTesting(true);
     try {
@@ -296,6 +318,8 @@ export default function Admin() {
             onMarkRead={markRead}
             onRemove={removeOrder}
             onGenerateSubmission={openSubmission}
+            onSendSubmission={sendSubmission}
+            onCopyPayment={copyPaymentInstructions}
           />
         ) : (
           <SettingsPanel password={password} />
@@ -343,6 +367,8 @@ function OrdersPanel({
   onMarkRead,
   onRemove,
   onGenerateSubmission,
+  onSendSubmission,
+  onCopyPayment,
 }) {
   const stats = useMemo(() => {
     const by = (s) => orders.filter((o) => o.status === s).length;
@@ -389,6 +415,16 @@ function OrdersPanel({
         </div>
       )}
 
+      <div className="mb-6 flex flex-wrap gap-2">
+        <button
+          onClick={onCopyPayment}
+          data-testid="admin-copy-payment"
+          className="inline-flex items-center gap-2 rounded-full border border-brand-line bg-white text-sm px-4 py-2 hover:border-brand-ruby"
+        >
+          <Copy size={14} /> Copier les instructions de paiement
+        </button>
+      </div>
+
       {orders.length === 0 ? (
         <div className="rounded-3xl border border-brand-line bg-white p-12 text-center">
           <p className="text-brand-muted">Aucune commande pour le moment.</p>
@@ -403,6 +439,7 @@ function OrdersPanel({
               onMarkRead={onMarkRead}
               onRemove={onRemove}
               onGenerateSubmission={onGenerateSubmission}
+              onSendSubmission={onSendSubmission}
             />
           ))}
         </div>
@@ -411,7 +448,7 @@ function OrdersPanel({
   );
 }
 
-function OrderCard({ order: o, onUpdateStatus, onMarkRead, onRemove, onGenerateSubmission }) {
+function OrderCard({ order: o, onUpdateStatus, onMarkRead, onRemove, onGenerateSubmission, onSendSubmission }) {
   const meta = STATUS_META[o.status] || { label: o.status, color: "bg-gray-100 text-gray-600" };
   return (
     <article
@@ -453,7 +490,16 @@ function OrderCard({ order: o, onUpdateStatus, onMarkRead, onRemove, onGenerateS
             data-testid={`admin-generate-${o.id}`}
             className="inline-flex items-center gap-1.5 rounded-full bg-brand-ink text-white text-sm px-3 py-1.5 hover:bg-brand-ruby"
           >
-            <FileText size={13} /> Générer la soumission
+            <FileText size={13} /> Générer
+          </button>
+          <button
+            onClick={() => onSendSubmission(o.id)}
+            data-testid={`admin-send-${o.id}`}
+            disabled={!o.email}
+            title={!o.email ? "Aucun courriel client" : "Envoyer la soumission par courriel"}
+            className="inline-flex items-center gap-1.5 rounded-full bg-brand-ruby text-white text-sm px-3 py-1.5 hover:bg-brand-ink disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Mail size={13} /> Envoyer la soumission
           </button>
           {!o.read && (
             <button

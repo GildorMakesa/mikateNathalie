@@ -5,10 +5,11 @@ import { TID } from "@/constants/testIds";
 
 const links = [
   { id: "accueil", label: "Accueil", tid: TID.navHome },
-  { id: "produits", label: "Catalogue", tid: TID.navProducts },
+  { id: "produits", label: "Menu", tid: TID.navProducts },
+  { id: "livraison", label: "Livraison", tid: "nav-delivery" },
   { id: "histoire", label: "Notre histoire", tid: "nav-story" },
-  { id: "galerie", label: "Galerie", tid: TID.navGallery },
   { id: "temoignages", label: "Témoignages", tid: TID.navTestimonials },
+  { id: "evenements", label: "Événements", tid: "nav-events" },
   { id: "commander", label: "Commander", tid: TID.navOrder },
 ];
 

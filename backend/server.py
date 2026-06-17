@@ -57,6 +57,15 @@ class OrderItemInput(BaseModel):
     product_id: str
     product_name: str
     quantity: int
+    option_label: Optional[str] = None
+    unit_price_cad: Optional[float] = None
+
+
+class EventInfo(BaseModel):
+    event_type: Optional[str] = None
+    attendees: Optional[int] = None
+    event_date: Optional[str] = None  # ISO date string
+    comments: Optional[str] = None
 
 
 class OrderCreate(BaseModel):
@@ -67,6 +76,8 @@ class OrderCreate(BaseModel):
     items: List[OrderItemInput] = Field(..., min_length=1)
     payment_method: Optional[str] = Field(None, max_length=40)
     message: Optional[str] = Field(None, max_length=1000)
+    order_type: str = Field("regular", pattern="^(regular|event)$")
+    event_info: Optional[EventInfo] = None
 
 
 class Order(BaseModel):
@@ -79,11 +90,15 @@ class Order(BaseModel):
     items: List[OrderItemInput]
     payment_method: Optional[str] = None
     message: Optional[str] = None
+    order_type: str = "regular"
+    event_info: Optional[EventInfo] = None
     status: str = "new"
     email_sent: bool = False
     email_error: Optional[str] = None
     client_email_sent: bool = False
     client_email_error: Optional[str] = None
+    submission_email_sent: bool = False
+    submission_email_error: Optional[str] = None
     read: bool = False
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -127,40 +142,45 @@ class ChatRequest(BaseModel):
 
 NANCY_SYSTEM_PROMPT = """Tu es Nancy, l'assistante virtuelle chaleureuse et professionnelle de Délices Mikaté Royal, une pâtisserie/boissons artisanale ouest-africaine basée au Québec (zone de livraison : Sorel-Tracy, Montréal, Rive-Nord et Rive-Sud).
 
-Tu réponds TOUJOURS en français, sur un ton amical, accueillant et professionnel (tutoiement non, vouvoiement oui). Tu signes occasionnellement « Nancy » mais sans être répétitive.
+Tu réponds TOUJOURS en français, vouvoiement, ton amical et accueillant.
 
-Ce que tu sais :
+CATALOGUE & PRIX (commandes régulières) :
 
-PRODUITS (sans prix — toujours sur soumission) :
-- Mikaté Sucré : beignets africains dorés vanillés
-- Mikaté Salé : beignets salés croustillants à l'apéritif
-- Mikaté Sucre Impalpable : beignets saupoudrés de sucre impalpable
-- Mikaté Chocolat : beignets nappés de chocolat noir fondu
-- Mikaté Cannelle : beignets enrobés de cannelle-sucre
-- Mikaté Pâte d'Arachides : beignets servis avec pâte d'arachides maison
-- Bissap Royal : infusion d'hibiscus, gingembre et menthe
-- Jus Tropical : mangue, ananas, fruit de la passion
-- Jus de Gingembre : gingembre frais, citron, miel
-- Plateau Découverte : assortiment de mikatés + boissons
+🍩 MIKATÉS (mêmes prix pour toutes les saveurs : Sucré, Salé, Sucre Impalpable, Chocolat, Cannelle, Pâte d'Arachides) :
+- 5 mikatés : 5 $
+- 10 mikatés : 9 $
+- 20 mikatés : 17 $
 
-ZONE DE LIVRAISON : Sorel-Tracy, Montréal, Rive-Nord, Rive-Sud (Québec, Canada).
+🥤 BOISSONS (355 ml) :
+- Jus de Bissap : 4 $
+- Jus de Gingembre : 5 $
+
+👑 COMBO VEDETTE :
+- Combo Découverte (5 mikatés + 1 bissap) : 8 $
+- Combo Gingembre (5 mikatés + 1 jus de gingembre) : 9 $
+
+🎉 ÉVÉNEMENTS (mariages, baptêmes, anniversaires, réunions familiales, événements d'église, événements corporatifs) → soumission personnalisée via la section « Événements et réceptions ».
+
+ZONE DE LIVRAISON : Sorel-Tracy, Montréal, Rive-Nord, Rive-Sud. Frais de livraison confirmés lors de la soumission.
 
 PROCESSUS DE COMMANDE :
-1. Le client remplit le formulaire de demande de soumission sur le site (section « Commander »).
-2. Notre équipe envoie une soumission personnalisée par courriel avec sous-total, livraison et total.
-3. Paiement par virement Interac à contact@mikateroyal.com.
-4. Dès paiement reçu, la commande est confirmée et préparée.
+1. Le client choisit ses produits avec les prix affichés sur le site.
+2. Il remplit le formulaire « Commander maintenant ».
+3. Confirmation automatique envoyée par courriel.
+4. Nous transmettons ensuite le montant total avec les frais de livraison + instructions Interac.
+5. Paiement par virement Interac à contact@mikateroyal.com.
+6. Dès paiement reçu, commande confirmée et préparée.
 
-CONTACT : contact@mikateroyal.com
+CONTACT : contact@mikateroyal.com — site : mikateroyal.com
 
 CONSIGNES :
-- Si on te demande des prix précis, explique que les prix sont sur soumission personnalisée selon la quantité et la livraison.
-- Si on veut commander, invite chaleureusement à remplir le formulaire « Demander une soumission » sur le site (section Commander).
-- Si question médicale sur le bissap/gingembre, rappelle de consulter un professionnel de santé.
-- Tu ne prends PAS les commandes toi-même — tu guides vers le formulaire ou contact@mikateroyal.com.
+- Donne les prix directement quand on te demande (ils sont publics maintenant).
+- Pour un événement / grand groupe → guide vers « Événements et réceptions » sur le site.
+- Pour question médicale sur le bissap/gingembre, rappelle de consulter un professionnel de santé.
+- Tu ne prends PAS les commandes toi-même — tu invites à utiliser le formulaire sur le site.
 - Réponds court et chaleureux (2 à 5 phrases maximum sauf si on te demande des détails).
 - Utilise occasionnellement des émojis culinaires discrets (✨ 🌺 🥤) sans abuser.
-- Si question hors-sujet, ramène gentiment vers les mikatés/boissons ou contact@mikateroyal.com.
+- Reste poliment dans ton rôle sur les questions hors-sujet.
 """
 
 
@@ -180,15 +200,29 @@ class TestimonialCreate(BaseModel):
     rating: int = Field(5, ge=1, le=5)
 
 
+class PriceOption(BaseModel):
+    label: str
+    price_cad: float
+
+
 class ProductOut(BaseModel):
     id: str
     name: str
-    category: str
+    category: str  # "Beignets" | "Boissons" | "Combos"
     description: str
     image_url: str
+    options: List[PriceOption]
+    unit_note: Optional[str] = None
+    badge: Optional[str] = None
 
 
-# ===== Static catalog (Mikatés = beignets africains / puff-puff — demande de soumission, sans prix) =====
+# ===== Static catalog =====
+MIKATE_OPTIONS = [
+    PriceOption(label="5 mikatés", price_cad=5.0),
+    PriceOption(label="10 mikatés", price_cad=9.0),
+    PriceOption(label="20 mikatés", price_cad=17.0),
+]
+
 PRODUCTS: List[ProductOut] = [
     ProductOut(
         id="mikate-sucre",
@@ -196,6 +230,7 @@ PRODUCTS: List[ProductOut] = [
         category="Beignets",
         description="Petits beignets africains moelleux et dorés, parfumés à la vanille. La douceur d'enfance, façon Afrique de l'Ouest.",
         image_url="https://images.unsplash.com/photo-1664993085274-80c6ba725ccc?fm=jpg&q=85&w=1200&auto=format&fit=crop",
+        options=list(MIKATE_OPTIONS),
     ),
     ProductOut(
         id="mikate-sale",
@@ -203,6 +238,7 @@ PRODUCTS: List[ProductOut] = [
         category="Beignets",
         description="Version salée du puff-puff : croustillant dehors, fondant dedans. Parfait à l'apéritif ou en entrée.",
         image_url="https://images.unsplash.com/photo-1665833613236-7c1d087463b1?fm=jpg&q=85&w=1200&auto=format&fit=crop",
+        options=list(MIKATE_OPTIONS),
     ),
     ProductOut(
         id="mikate-sucre-impalpable",
@@ -210,6 +246,7 @@ PRODUCTS: List[ProductOut] = [
         category="Beignets",
         description="Authentiques puff-puff africains, généreusement saupoudrés de sucre impalpable. Fondants, nuageux, irrésistibles.",
         image_url="/products/mikate-sucre-impalpable.png",
+        options=list(MIKATE_OPTIONS),
     ),
     ProductOut(
         id="mikate-chocolat",
@@ -217,6 +254,7 @@ PRODUCTS: List[ProductOut] = [
         category="Beignets",
         description="Vrais beignets africains (puff-puff) nappés d'un filet de chocolat noir fondu. Le mariage parfait du croquant doré et du chocolat onctueux.",
         image_url="/products/mikate-chocolat.png",
+        options=list(MIKATE_OPTIONS),
     ),
     ProductOut(
         id="mikate-cannelle",
@@ -224,6 +262,7 @@ PRODUCTS: List[ProductOut] = [
         category="Beignets",
         description="Puff-puff dorés enrobés d'un mélange sucre-cannelle. Chaleureux, épicé, parfumé — l'allié parfait d'un café ou d'un thé.",
         image_url="/products/mikate-cannelle.png",
+        options=list(MIKATE_OPTIONS),
     ),
     ProductOut(
         id="mikate-arachide",
@@ -231,20 +270,16 @@ PRODUCTS: List[ProductOut] = [
         category="Beignets",
         description="Puff-puff dorés servis avec une pâte d'arachides maison crémeuse — la combinaison ouest-africaine par excellence, douce et réconfortante.",
         image_url="https://images.unsplash.com/photo-1714596668628-79579eadba07?fm=jpg&q=85&w=1200&auto=format&fit=crop",
+        options=list(MIKATE_OPTIONS),
     ),
     ProductOut(
         id="bissap-royal",
-        name="Bissap Royal",
+        name="Jus de Bissap",
         category="Boissons",
         description="Infusion d'hibiscus rouge rubis, gingembre frais et menthe. Rafraîchissant, élégant, sans alcool.",
-        image_url="https://images.unsplash.com/photo-1601390395693-364c0e22031a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwyfHxoaWJpc2N1cyUyMHRlYSUyMHJlZCUyMGRyaW5rfGVufDB8fHx8MTc4MTU3Mzc1OXww&ixlib=rb-4.1.0&q=85",
-    ),
-    ProductOut(
-        id="jus-tropical",
-        name="Jus Tropical",
-        category="Boissons",
-        description="Cocktail maison mangue, ananas et fruit de la passion. Le soleil de l'Afrique dans un verre.",
-        image_url="https://images.unsplash.com/photo-1583577612013-4fecf7bf8f13?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MDV8MHwxfHNlYXJjaHwyfHx0cm9waWNhbCUyMGZydWl0JTIwanVpY2V8ZW58MHx8fHwxNzgxNTczNzU5fDA&ixlib=rb-4.1.0&q=85",
+        image_url="https://images.unsplash.com/photo-1601390395693-364c0e22031a?crop=entropy&cs=srgb&fm=jpg&q=85",
+        unit_note="355 ml",
+        options=[PriceOption(label="355 ml", price_cad=4.0)],
     ),
     ProductOut(
         id="jus-gingembre",
@@ -252,13 +287,26 @@ PRODUCTS: List[ProductOut] = [
         category="Boissons",
         description="Notre signature : gingembre frais pressé, citron vert et une pointe de miel. Servi dans un verre élégant — vivifiant et raffiné.",
         image_url="/products/jus-gingembre-luxe.png",
+        unit_note="355 ml",
+        options=[PriceOption(label="355 ml", price_cad=5.0)],
     ),
     ProductOut(
-        id="plateau-decouverte",
-        name="Plateau Découverte",
-        category="Coffrets",
-        description="Assortiment de mikatés (sucrés, salés, sucre impalpable, chocolat, pâte d'arachides) + boissons au choix. Idéal pour partager en famille ou au bureau.",
-        image_url="https://images.unsplash.com/photo-1682263167429-0dbcf2c1e127?fm=jpg&q=85&w=1200&auto=format&fit=crop",
+        id="combo-decouverte",
+        name="Combo Découverte",
+        category="Combos",
+        description="5 Mikatés au choix + 1 Jus de Bissap (355 ml). Le combo parfait pour découvrir notre signature.",
+        image_url="/products/mikate-sucre-impalpable.png",
+        options=[PriceOption(label="5 Mikatés + 1 Bissap", price_cad=8.0)],
+        badge="👑 Vedette",
+    ),
+    ProductOut(
+        id="combo-gingembre",
+        name="Combo Gingembre",
+        category="Combos",
+        description="5 Mikatés au choix + 1 Jus de Gingembre (355 ml). Énergie, fraîcheur et gourmandise dans un seul combo.",
+        image_url="/products/jus-gingembre-luxe.png",
+        options=[PriceOption(label="5 Mikatés + 1 Gingembre", price_cad=9.0)],
+        badge="👑 Vedette",
     ),
 ]
 
@@ -379,6 +427,68 @@ async def _get_settings() -> Settings:
         await db.settings.insert_one({"_id": "interac", **s.model_dump()})
         return s
     return Settings(**doc)
+
+
+def _build_payment_block(settings: Settings) -> str:
+    if settings.interac_auto_deposit:
+        return (
+            f"Paiement par virement Interac\n"
+            f"Adresse de paiement : {settings.interac_email}\n"
+            f"Dépôt automatique Interac activé – aucun mot de passe requis."
+        )
+    return (
+        f"Paiement par virement Interac\n"
+        f"Adresse de paiement : {settings.interac_email}\n"
+        f"Question de sécurité : {settings.interac_question}\n"
+        f"Réponse : {settings.interac_answer}"
+    )
+
+
+def _build_submission_text(doc: dict, settings: Settings) -> tuple[str, str]:
+    def _fmt_item(it):
+        opt = f" ({it.get('option_label')})" if it.get('option_label') else ""
+        price = it.get('unit_price_cad')
+        sub = ""
+        if price is not None:
+            total = float(price) * int(it.get('quantity', 1))
+            sub = f" — {total:.2f} $"
+        return f"- {it['product_name']}{opt} × {it['quantity']}{sub}"
+
+    items_lines = "\n".join(_fmt_item(it) for it in doc.get("items", []))
+    subtotal = sum(
+        float(it.get('unit_price_cad') or 0) * int(it.get('quantity', 1))
+        for it in doc.get("items", [])
+    )
+
+    event_block = ""
+    if doc.get("order_type") == "event" and doc.get("event_info"):
+        ev = doc["event_info"]
+        parts = ["", "Détails de l'événement :"]
+        if ev.get("event_type"): parts.append(f"- Type : {ev['event_type']}")
+        if ev.get("attendees"): parts.append(f"- Personnes : ~{ev['attendees']}")
+        if ev.get("event_date"): parts.append(f"- Date : {ev['event_date']}")
+        if ev.get("comments"): parts.append(f"- Précisions : {ev['comments']}")
+        event_block = "\n".join(parts) + "\n"
+
+    subject = "Votre soumission - Délices Mikaté Royal"
+    body = (
+        f"Bonjour {doc['customer_name']},\n\n"
+        f"Merci pour votre intérêt envers Délices Mikaté Royal.\n\n"
+        f"Voici le détail de votre commande :\n\n"
+        f"{items_lines}\n"
+        f"{event_block}\n"
+        f"Sous-total : {subtotal:.2f} $\n"
+        f"Livraison : [à compléter]\n"
+        f"Total : [à compléter]\n\n"
+        f"{_build_payment_block(settings)}\n\n"
+        f"{settings.interac_note}\n\n"
+        f"Dès réception du paiement, votre commande sera confirmée.\n\n"
+        f"Merci de votre confiance !\n\n"
+        f"Délices Mikaté Royal\n"
+        f"📧 contact@mikateroyal.com\n"
+        f"🌐 mikateroyal.com"
+    )
+    return subject, body
 
 
 def _build_order_email_html(order: Order) -> str:
@@ -511,43 +621,36 @@ async def get_submission_template(order_id: str, _: bool = Depends(require_admin
     if not doc:
         raise HTTPException(status_code=404, detail="Commande introuvable")
     settings = await _get_settings()
-
-    items_lines = "\n".join(
-        f"- {it['product_name']} × {it['quantity']}" for it in doc.get("items", [])
-    )
-
-    if settings.interac_auto_deposit:
-        payment_block = (
-            f"Paiement par virement Interac\n"
-            f"Adresse de paiement : {settings.interac_email}\n"
-            f"Dépôt automatique Interac activé – aucun mot de passe requis."
-        )
-    else:
-        payment_block = (
-            f"Paiement par virement Interac\n"
-            f"Adresse de paiement : {settings.interac_email}\n"
-            f"Question de sécurité : {settings.interac_question}\n"
-            f"Réponse : {settings.interac_answer}"
-        )
-
-    subject = "Votre soumission - Délices Mikaté Royal"
-    body = (
-        f"Bonjour {doc['customer_name']},\n\n"
-        f"Merci pour votre intérêt envers Délices Mikaté Royal.\n\n"
-        f"Voici le détail de votre commande :\n\n"
-        f"{items_lines}\n\n"
-        f"Sous-total : [à compléter]\n"
-        f"Livraison : [à compléter]\n"
-        f"Total : [à compléter]\n\n"
-        f"{payment_block}\n\n"
-        f"{settings.interac_note}\n\n"
-        f"Dès réception du paiement, votre commande sera confirmée.\n\n"
-        f"Merci de votre confiance !\n\n"
-        f"Délices Mikaté Royal\n"
-        f"📧 contact@mikateroyal.com\n"
-        f"🌐 mikateroyal.com"
-    )
+    subject, body = _build_submission_text(doc, settings)
     return {"subject": subject, "body": body, "to": doc.get("email") or ""}
+
+
+@api_router.get("/admin/payment-instructions")
+async def get_payment_instructions(_: bool = Depends(require_admin)):
+    settings = await _get_settings()
+    text = _build_payment_block(settings)
+    return {"text": text}
+
+
+@api_router.post("/orders/{order_id}/send-submission")
+async def send_submission_email(order_id: str, _: bool = Depends(require_admin)):
+    doc = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Commande introuvable")
+    if not doc.get("email"):
+        raise HTTPException(status_code=400, detail="Aucun courriel client enregistré")
+    settings = await _get_settings()
+    subject, body = _build_submission_text(doc, settings)
+    html = "<div style='font-family:Georgia,serif;color:#1D1914;line-height:1.55;'>" + \
+           body.replace("\n", "<br>") + "</div>"
+    ok, err = await _send_email(to=[doc["email"]], subject=subject, html=html, reply_to=RECIPIENT_EMAIL)
+    update = {"submission_email_sent": ok, "submission_email_error": err}
+    if ok:
+        update["status"] = "submission_sent"
+    await db.orders.update_one({"id": order_id}, {"$set": update})
+    if not ok:
+        raise HTTPException(status_code=502, detail=f"Échec d'envoi : {err}")
+    return {"ok": True}
 
 
 @api_router.get("/admin/settings", response_model=Settings)

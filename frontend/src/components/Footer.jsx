@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Mail, MessageCircle, MapPin } from "lucide-react";
+import { Facebook, Instagram, Mail, MessageCircle, MapPin, Globe } from "lucide-react";
 import { SOCIALS } from "@/lib/api";
 import { TID } from "@/constants/testIds";
 
@@ -34,6 +34,10 @@ export default function Footer() {
                   <a href={SOCIALS.email} className="hover:text-white" data-testid="footer-email">contact@mikateroyal.com</a>
                 </li>
                 <li className="flex items-start gap-2">
+                  <Globe size={14} className="mt-0.5 text-brand-ochre" />
+                  <a href="https://mikateroyal.com" target="_blank" rel="noreferrer" className="hover:text-white" data-testid="footer-site">mikateroyal.com</a>
+                </li>
+                <li className="flex items-start gap-2">
                   <MessageCircle size={14} className="mt-0.5 text-brand-ochre" />
                   <button
                     onClick={() => window.dispatchEvent(new CustomEvent("mr:open-nancy"))}
@@ -45,7 +49,7 @@ export default function Footer() {
                 </li>
                 <li className="flex items-start gap-2">
                   <MapPin size={14} className="mt-0.5 text-brand-ochre" />
-                  <span>Montréal, Québec — Canada</span>
+                  <span>Sorel-Tracy · Montréal · Rive-Nord &amp; Sud</span>
                 </li>
               </ul>
             </div>
