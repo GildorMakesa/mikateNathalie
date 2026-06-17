@@ -11,10 +11,17 @@ from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
 import resend
+import traceback
 
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
@@ -22,11 +29,16 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 # Resend
-RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
-SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
-RECIPIENT_EMAIL = os.environ.get('RECIPIENT_EMAIL', 'mikateroyal@gmail.com')
+RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '').strip()
+SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev').strip()
+SENDER_NAME = os.environ.get('SENDER_NAME', 'Délices Mikaté Royal').strip()
+RECIPIENT_EMAIL = os.environ.get('RECIPIENT_EMAIL', 'mikateroyal@gmail.com').strip()
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'mikate2025')
-resend.api_key = RESEND_API_KEY
+if RESEND_API_KEY:
+    resend.api_key = RESEND_API_KEY
+logger.info(
+    f"Resend config: key_set={bool(RESEND_API_KEY)} sender={SENDER_EMAIL!r} recipient={RECIPIENT_EMAIL!r}"
+)
 
 
 def require_admin(x_admin_password: Optional[str] = Header(None)):
@@ -67,6 +79,7 @@ class Order(BaseModel):
     message: Optional[str] = None
     status: str = "pending"
     email_sent: bool = False
+    email_error: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
@@ -279,19 +292,32 @@ def _build_order_email_html(order: Order) -> str:
 async def create_order(payload: OrderCreate):
     order = Order(**payload.model_dump())
 
-    if RESEND_API_KEY and RESEND_API_KEY.startswith("re_") and not RESEND_API_KEY.endswith("placeholder_replace_me"):
+    if not RESEND_API_KEY:
+        order.email_error = "RESEND_API_KEY non configurée"
+        logger.warning("Skipping email: RESEND_API_KEY is empty")
+    else:
         try:
+            from_field = f"{SENDER_NAME} <{SENDER_EMAIL}>" if SENDER_NAME else SENDER_EMAIL
             params = {
-                "from": SENDER_EMAIL,
+                "from": from_field,
                 "to": [RECIPIENT_EMAIL],
                 "subject": f"Nouvelle demande de soumission — {order.customer_name}",
                 "html": _build_order_email_html(order),
             }
+            if order.email:
+                params["reply_to"] = order.email
+            # Ensure SDK has key set even if first request beats import-time line
+            resend.api_key = RESEND_API_KEY
             result = await asyncio.to_thread(resend.Emails.send, params)
-            if result and result.get("id"):
+            logger.info(f"Resend response for order {order.id}: {result!r}")
+            if isinstance(result, dict) and result.get("id"):
                 order.email_sent = True
+            else:
+                order.email_error = f"Réponse Resend inattendue : {result!r}"
         except Exception as e:
-            logger.error(f"Resend email failed: {e}")
+            tb = traceback.format_exc()
+            order.email_error = f"{type(e).__name__}: {e}"
+            logger.error(f"Resend email failed for order {order.id}: {order.email_error}\n{tb}")
 
     doc = order.model_dump()
     doc['created_at'] = doc['created_at'].isoformat()
@@ -332,6 +358,39 @@ async def admin_login(_: bool = Depends(require_admin)):
     return {"ok": True}
 
 
+@api_router.get("/admin/email-config")
+async def email_config(_: bool = Depends(require_admin)):
+    return {
+        "resend_api_key_set": bool(RESEND_API_KEY),
+        "resend_api_key_prefix": RESEND_API_KEY[:6] + "…" if RESEND_API_KEY else "",
+        "sender": SENDER_EMAIL,
+        "sender_name": SENDER_NAME,
+        "recipient": RECIPIENT_EMAIL,
+    }
+
+
+@api_router.post("/admin/email-test")
+async def email_test(_: bool = Depends(require_admin)):
+    if not RESEND_API_KEY:
+        return {"ok": False, "error": "RESEND_API_KEY non configurée côté serveur"}
+    try:
+        resend.api_key = RESEND_API_KEY
+        from_field = f"{SENDER_NAME} <{SENDER_EMAIL}>" if SENDER_NAME else SENDER_EMAIL
+        result = await asyncio.to_thread(resend.Emails.send, {
+            "from": from_field,
+            "to": [RECIPIENT_EMAIL],
+            "subject": "Test — Délices Mikaté Royal",
+            "html": "<p>Email de test depuis l'admin Délices Mikaté Royal. Si vous recevez ce message, la configuration Resend fonctionne ✅</p>",
+        })
+        if isinstance(result, dict) and result.get("id"):
+            return {"ok": True, "id": result.get("id"), "result": result}
+        return {"ok": False, "error": f"Réponse inattendue : {result!r}"}
+    except Exception as e:
+        tb = traceback.format_exc()
+        logger.error(f"Email test failed: {e}\n{tb}")
+        return {"ok": False, "error": f"{type(e).__name__}: {e}"}
+
+
 app.include_router(api_router)
 
 app.add_middleware(
@@ -341,12 +400,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
 
 
 @app.on_event("shutdown")

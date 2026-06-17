@@ -33,12 +33,19 @@ export default function Admin() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [emailConfig, setEmailConfig] = useState(null);
+  const [emailTesting, setEmailTesting] = useState(false);
 
   const fetchOrders = async (pwd) => {
     setLoading(true);
     try {
-      const { data } = await adminClient(pwd).get("/orders?limit=200");
-      setOrders(data);
+      const client = adminClient(pwd);
+      const [{ data: ordersData }, { data: cfg }] = await Promise.all([
+        client.get("/orders?limit=200"),
+        client.get("/admin/email-config").catch(() => ({ data: null })),
+      ]);
+      setOrders(ordersData);
+      setEmailConfig(cfg);
       setAuthed(true);
     } catch (err) {
       if (err?.response?.status === 401) {
@@ -50,6 +57,22 @@ export default function Admin() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const testEmail = async () => {
+    setEmailTesting(true);
+    try {
+      const { data } = await adminClient(password).post("/admin/email-test");
+      if (data.ok) {
+        toast.success(`Email de test envoyé (id: ${data.id})`);
+      } else {
+        toast.error(`Échec : ${data.error}`);
+      }
+    } catch (err) {
+      toast.error("Erreur lors du test");
+    } finally {
+      setEmailTesting(false);
     }
   };
 
@@ -176,11 +199,37 @@ export default function Admin() {
       </header>
 
       <main className="mx-auto max-w-7xl px-6 md:px-10 py-10">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
           <StatCard label="Total commandes" value={stats.total} />
           <StatCard label="En attente" value={stats.pending} accent="text-brand-ochre" />
           <StatCard label="Livrées" value={stats.fulfilled} accent="text-green-700" />
         </div>
+
+        {emailConfig && (
+          <div className="rounded-3xl border border-brand-line bg-white p-5 mb-8 flex flex-col md:flex-row md:items-center gap-4 md:justify-between" data-testid="email-config-banner">
+            <div className="text-sm">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-brand-muted">Configuration email (Resend)</p>
+              <p className="mt-1 text-brand-ink">
+                Clé : <span className={emailConfig.resend_api_key_set ? "text-green-700" : "text-red-600"}>
+                  {emailConfig.resend_api_key_set ? `✅ ${emailConfig.resend_api_key_prefix}` : "❌ non configurée"}
+                </span>
+                <span className="mx-2 text-brand-line">|</span>
+                Expéditeur : <span className="text-brand-ink">{emailConfig.sender}</span>
+                <span className="mx-2 text-brand-line">|</span>
+                Destinataire : <span className="text-brand-ink">{emailConfig.recipient}</span>
+              </p>
+            </div>
+            <button
+              onClick={testEmail}
+              disabled={emailTesting || !emailConfig.resend_api_key_set}
+              data-testid="admin-email-test"
+              className="inline-flex items-center gap-2 rounded-full bg-brand-ruby text-white px-5 py-2 text-sm hover:bg-brand-ink disabled:opacity-60"
+            >
+              {emailTesting && <Loader2 size={14} className="animate-spin" />}
+              Envoyer un email de test
+            </button>
+          </div>
+        )}
 
         {orders.length === 0 ? (
           <div className="rounded-3xl border border-brand-line bg-white p-12 text-center">
@@ -250,7 +299,12 @@ export default function Admin() {
                 </div>
 
                 <p className="mt-4 text-xs text-brand-muted">
-                  Email auto envoyé : {o.email_sent ? "✅ oui" : "⚠️ non (clé Resend non configurée ou échec)"}
+                  Email auto envoyé : {o.email_sent ? "✅ oui" : "⚠️ non"}
+                  {o.email_error && (
+                    <span className="block mt-1 text-red-600 break-words">
+                      Erreur : {o.email_error}
+                    </span>
+                  )}
                 </p>
               </article>
             ))}
