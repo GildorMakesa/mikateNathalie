@@ -39,20 +39,23 @@ export default function Navbar() {
       <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16 pt-4">
         <nav
           className={`mx-auto flex w-full items-center rounded-full border transition-all duration-500 ${scrolled
-              ? "max-w-4xl justify-center gap-10 px-6 py-2 border-brand-line bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgba(29,25,20,0.06)]"
-              : "max-w-7xl justify-between px-5 py-4 border-white/20 bg-white/10 backdrop-blur-md shadow-none"
-            }`}
+              ? "max-w-4xl px-6 py-2 border-brand-line bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgba(29,25,20,0.06)] md:justify-center md:gap-10"
+              : "max-w-7xl px-5 py-4 border-white/20 bg-white/10 backdrop-blur-md shadow-none justify-between"
+            } ${scrolled && "justify-between md:justify-center" /* Force le justify-between sur mobile même au scroll */}`}
         >
           {/* GAUCHE : Logo / titre */}
-          {/* shrink-0 empêche le logo de se faire écraser lors de la transition */}
           <Link
             to="/"
-            className="no-underline flex flex-col items-center relative group shrink-0"
+            className="no-underline flex flex-col items-center relative group shrink-0 z-10"
           >
             <div className="relative">
-              {/* Conteneur carré et circulaire qui s'adapte au scroll */}
+              {/* 
+        CORRECTION TAILLE MOBILE : 
+        On garde h-14 w-14 fixe sur mobile (qu'on scroll ou pas), 
+        et on laisse la variation de taille uniquement sur desktop (md:...)
+      */}
               <div
-                className={`overflow-hidden rounded-full border border-white/10 shadow-lg transition-all duration-500 transform group-hover:scale-105 ${scrolled ? 'h-13 w-13 md:h-14 md:w-14' : 'h-16 w-16 md:h-20 md:w-20'
+                className={`overflow-hidden rounded-full border border-white/10 shadow-lg transition-all duration-500 transform group-hover:scale-105 ${scrolled ? 'h-14 w-14 md:h-14 md:w-14' : 'h-14 w-14 md:h-20 md:w-20'
                   }`}
               >
                 <img
@@ -64,8 +67,20 @@ export default function Navbar() {
             </div>
           </Link>
 
+          {/* MOBILE UNIQUEMENT : Titre au centre */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none md:hidden text-center">
+            <span
+              className={`font-semibold tracking-wide text-lg transition-colors duration-300`}
+              style={{ fontFamily: '"", system-ui' }} 
+            >
+              <span className={`${scrolled ? 'text-brand-ink' : 'text-white'}`}>Mikaté </span>
+              <span className={`${scrolled ? 'text-black' : 'text-white bg-clip-text text-transparent'}`}>
+                Royale
+              </span>
+            </span>
+          </div>
+
           {/* CENTRE : Navigation desktop */}
-          {/* shrink-0 ajouté ici aussi pour garder la structure propre */}
           <div className="hidden md:flex items-center justify-center gap-7 shrink-0">
             {links.map((l) => (
               <button
@@ -97,9 +112,9 @@ export default function Navbar() {
           </div>
 
           {/* MOBILE : bouton menu */}
-          {/* Avec Flexbox, ml-auto pousse automatiquement le bouton mobile vers la droite si les autres éléments se centrent */}
+          {/* z-10 pour s'assurer qu'il passe au-dessus du titre absolu si la barre est très petite */}
           <button
-            className={`md:hidden ml-auto inline-flex h-9 w-9 items-center justify-center rounded-full border transition-colors duration-300 ${scrolled
+            className={`md:hidden inline-flex h-9 w-9 items-center justify-center rounded-full border transition-colors duration-300 z-10 ${scrolled
                 ? "border-brand-line text-brand-ink"
                 : "border-white/40 text-white"
               }`}
