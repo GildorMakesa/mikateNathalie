@@ -102,7 +102,9 @@ export default function Hero() {
 
             <h1 className="mt-7 font-display text-center text-5xl font-semibold leading-[0.9] tracking-tight text-white sm:text-6xl lg:text-7xl" style={{ fontFamily: '"Cherry Bomb One", system-ui', fontWeight: 400 }}>
               Délices{" "}
-              <span className="italic text-brand-ochre"> Mikaté</span>
+              <span className="inline-block pr-[0.23em] italic bg-gradient-to-r from-[#00A2E8] via-[#22B14C] to-[#FFC90E] bg-clip-text text-transparent">
+                Mikaté
+              </span>
               <br />
               <span className="text-white/90 text-center">Royal</span>
             </h1>
@@ -132,7 +134,7 @@ export default function Hero() {
               <button
                 data-testid={TID.ctaOrderHero}
                 onClick={() => scrollTo("commander")}
-                className="group inline-flex items-center gap-2 rounded-full bg-brand-ruby px-7 py-3.5 text-sm font-semibold text-white shadow-[0_16px_40px_rgba(0,0,0,0.25)] transition-all hover:-translate-y-0.5 hover:bg-brand-ochre hover:text-brand-ink"
+                className="group inline-flex items-center gap-2 rounded-full bg-brand-ochre px-7 py-3.5 text-sm font-semibold text-brand-ink shadow-[0_16px_40px_rgba(0,0,0,0.25)] transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_20px_50px_rgba(255,201,14,0.2)]"
               >
                 Commander maintenant
                 <ArrowRight
