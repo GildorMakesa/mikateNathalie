@@ -10,7 +10,6 @@ export const api = axios.create({
 
 export const SOCIALS = {
   facebook: "https://www.facebook.com/profile.php?id=61590862580694",
-  instagram: "https://www.instagram.com/mikate_royal/",
   email: "mailto:contact@mikateroyal.com",
 };
 

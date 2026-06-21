@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Mail, MessageCircle, MapPin, Globe } from "lucide-react";
+import { Facebook, Mail, MessageCircle, MapPin, Globe } from "lucide-react";
 import { SOCIALS } from "@/lib/api";
 import { TID } from "@/constants/testIds";
 
@@ -65,17 +65,6 @@ export default function Footer() {
                     className="inline-flex items-center gap-2 hover:text-white"
                   >
                     <Facebook size={14} /> Facebook
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href={SOCIALS.instagram}
-                    target="_blank"
-                    rel="noreferrer"
-                    data-testid={TID.socialInstagram}
-                    className="inline-flex items-center gap-2 hover:text-white"
-                  >
-                    <Instagram size={14} /> Instagram
                   </a>
                 </li>
               </ul>
