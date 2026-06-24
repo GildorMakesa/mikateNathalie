@@ -6,7 +6,7 @@ import LogoMikate from '../assets/Logo_mikate.jpg';
 
 const links = [
   { id: "accueil", label: "Accueil", tid: TID.navHome },
-  { id: "produits", label: "Gildor", tid: TID.navProducts },
+  { id: "produits", label: "Menu", tid: TID.navProducts },
   { id: "livraison", label: "Livraison", tid: "nav-delivery" },
   { id: "histoire", label: "Notre histoire", tid: "nav-story" },
   { id: "temoignages", label: "Témoignages", tid: TID.navTestimonials },
