@@ -79,8 +79,6 @@ export default function Hero() {
       </AnimatePresence>
 
       {/* Overlay pour lisibilité */}
-      <div className="absolute inset-0 bg-black/45" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-black/20" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
 
       {/* Effets glow */}
@@ -89,24 +87,29 @@ export default function Hero() {
         <div className="absolute bottom-10 right-0 h-96 w-96 rounded-full bg-brand-ochre/30 blur-3xl" />
       </div>
 
-      {/* Contenu */}
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl items-center px-6 pt-28 pb-16 md:px-12 lg:px-16">
+      {/* Contenu desktop */}
+      <div className="relative z-10 hidden min-h-screen max-w-7xl items-center px-6 pt-28 pb-16 md:mx-auto md:flex md:px-12 lg:px-16">
         <div className="grid w-full grid-cols-1 items-center gap-14 lg:grid-cols-12 lg:gap-20">
           {/* Texte gauche */}
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 24, x: 0 }}
+            animate={{ opacity: 1, y: -30, x: -48 }}
             transition={{ duration: 0.7 }}
-            className="lg:col-span-6"
+            className="lg:col-span-6 transform lg:-translate-x-12"
           >
-
-            <h1 className="mt-7 font-display text-center text-5xl font-semibold leading-[0.9] tracking-tight text-white sm:text-6xl lg:text-7xl" style={{ fontFamily: '"Cherry Bomb One", system-ui', fontWeight: 400 }}>
-              Délices{" "}
-              <span className="inline-block pr-[0.23em] italic bg-gradient-to-r from-[#00A2E8] via-[#22B14C] to-[#FFC90E] bg-clip-text text-transparent">
-                Mikaté
+            <h1 className="mt-7 flex flex-col items-center text-center tracking-tight">
+              <span className="text-sm font-semibold uppercase tracking-[0.25em] text-white/50 mb-0.5 sm:text-base">
+                Délices
               </span>
-              <br />
-              <span className="text-white/90 text-center">Royal</span>
+
+              <span className="mt-2 font-titan text-5xl font-semibold leading-none text-white sm:text-6xl lg:text-7xl flex flex-wrap justify-center items-center gap-x-5">
+                <span className="bg-gradient-to-r from-[#00A2E8] via-[#22B14C] to-[#FFC90E] bg-clip-text text-transparent py-1">
+                  Mikaté
+                </span>
+                <span className="text-white/90">
+                  Royal
+                </span>
+              </span>
             </h1>
 
             <AnimatePresence mode="wait">
@@ -116,9 +119,9 @@ export default function Hero() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.45 }}
-                className="lg:col-span-5 lg:col-start-1" // Réduit la colonne à 5 et force le début à gauche
+                className="lg:col-span-5 lg:col-start-1"
               >
-                <p className="mt-12 max-w-lg text-center text-xl font-medium leading-relaxed text-white">
+                <p className="mt-5 max-w-lg text-center text-xl font-medium leading-relaxed text-white">
                   {currentSlide.title}
                 </p>
 
@@ -128,13 +131,11 @@ export default function Hero() {
               </motion.div>
             </AnimatePresence>
 
-
-            {/* CTA */}
-            <div className="mt-9 flex flex-wrap justify-center gap-3">
+            <div className="mt-16 flex flex-wrap justify-center gap-3">
               <button
                 data-testid={TID.ctaOrderHero}
                 onClick={() => scrollTo("commander")}
-                className="group inline-flex items-center gap-2 rounded-full bg-brand-ochre px-7 py-3.5 text-sm font-semibold text-brand-ink shadow-[0_16px_40px_rgba(0,0,0,0.25)] transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_20px_50px_rgba(255,201,14,0.2)]"
+                className="group inline-flex items-center gap-2 rounded-full bg-[#deac22] px-7 py-3.5 text-sm font-semibold text-brand-ink shadow-[0_16px_40px_rgba(0,0,0,0.25)] transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_20px_50px_rgba(255,201,14,0.2)]"
               >
                 Commander maintenant
                 <ArrowRight
@@ -158,7 +159,7 @@ export default function Hero() {
             </p>
           </motion.div>
 
-          {/* Image centrale / carte produit */}
+          {/* Image centrale / carte produit desktop */}
           <motion.div
             initial={{ opacity: 0, scale: 0.96, y: 24 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -166,11 +167,9 @@ export default function Hero() {
             className="lg:col-span-6"
           >
             <div className="relative mx-auto flex max-w-xl items-center justify-center">
-              {/* cercle décoratif */}
               <div className="absolute h-[420px] w-[420px] rounded-full border border-white/15 bg-white/10 backdrop-blur-sm md:h-[520px] md:w-[520px]" />
               <div className="absolute h-[300px] w-[300px] rounded-full bg-brand-ochre/20 blur-3xl md:h-[420px] md:w-[420px]" />
 
-              {/* image principale */}
               <div className="relative h-[500px] w-full overflow-hidden rounded-[2rem] border border-white/20 bg-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-md md:h-[560px]">
                 <AnimatePresence mode="wait">
                   <motion.img
@@ -204,15 +203,14 @@ export default function Hero() {
                 </div>
               </div>
 
-              {/* mini thumbnails */}
               <div className="absolute -right-24 top-1/2 hidden -translate-y-1/2 flex-col gap-3 md:flex">
                 {slides.map((slide, index) => (
                   <button
                     key={slide.label}
                     onClick={() => setActiveSlide(index)}
                     className={`h-20 w-20 overflow-hidden rounded-2xl border transition-all duration-300 ${activeSlide === index
-                      ? "scale-105 border-brand-ochre shadow-lg"
-                      : "border-white/25 opacity-75 hover:opacity-100"
+                        ? "scale-105 border-brand-ochre shadow-lg"
+                        : "border-white/25 opacity-75 hover:opacity-100"
                       }`}
                     aria-label={`Voir ${slide.label}`}
                   >
@@ -226,15 +224,14 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* indicateurs mobile / desktop */}
             <div className="mt-6 flex justify-center gap-2">
               {slides.map((slide, index) => (
                 <button
                   key={slide.label}
                   onClick={() => setActiveSlide(index)}
                   className={`h-2 rounded-full transition-all duration-300 ${activeSlide === index
-                    ? "w-8 bg-brand-ochre"
-                    : "w-2 bg-white/40 hover:bg-white/70"
+                      ? "w-8 bg-brand-ochre"
+                      : "w-2 bg-white/40 hover:bg-white/70"
                     }`}
                   aria-label={`Aller à ${slide.label}`}
                 />
@@ -242,6 +239,134 @@ export default function Hero() {
             </div>
           </motion.div>
         </div>
+      </div>
+
+      {/* Contenu mobile */}
+      <div className="relative z-10 flex min-h-screen flex-col justify-center px-5 pt-28 pb-10 md:hidden">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          className="mx-auto flex w-full max-w-sm flex-col items-center text-center"
+        >
+          {/* Titre mobile */}
+          <h1 className="flex flex-col items-center text-center tracking-tight">
+            <span className="mb-1 text-xs font-semibold uppercase tracking-[0.28em] text-white/60">
+              Délices
+            </span>
+
+            <span className="font-titan text-5xl font-semibold leading-[0.9] text-white">
+              <span className="block bg-gradient-to-r from-[#00A2E8] via-[#22B14C] to-[#FFC90E] bg-clip-text text-transparent">
+                Mikaté
+              </span>
+              <span className="block text-white">
+                Royal
+              </span>
+            </span>
+          </h1>
+
+          {/* Seulement le titre du slide en mobile */}
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={`mobile-${currentSlide.title}`}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.4 }}
+              className="mt-5 max-w-xs text-base font-semibold leading-relaxed text-white/90"
+            >
+              {currentSlide.title}
+            </motion.p>
+          </AnimatePresence>
+
+          {/* Carousel images mobile */}
+          <div className="mt-7 w-full">
+            <div className="relative mx-auto h-64 w-full max-w-[320px] overflow-hidden rounded-[1.7rem] border border-white/20 bg-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.35)] backdrop-blur-md">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={`mobile-card-${currentSlide.image}`}
+                  src={currentSlide.image}
+                  alt={currentSlide.label}
+                  initial={{ opacity: 0, scale: 1.08 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.7 }}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              </AnimatePresence>
+
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
+
+              <div className="absolute left-4 top-4 rounded-full border border-white/20 bg-white/15 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-md">
+                {currentSlide.label}
+              </div>
+            </div>
+
+            {/* Mini images */}
+            <div className="mt-4 flex justify-center gap-3">
+              {slides.map((slide, index) => (
+                <button
+                  key={slide.label}
+                  onClick={() => setActiveSlide(index)}
+                  className={`h-14 w-14 overflow-hidden rounded-2xl border transition-all duration-300 ${activeSlide === index
+                      ? "scale-105 border-brand-ochre shadow-lg"
+                      : "border-white/25 opacity-70"
+                    }`}
+                  aria-label={`Voir ${slide.label}`}
+                >
+                  <img
+                    src={slide.image}
+                    alt={slide.label}
+                    className="h-full w-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+
+            {/* Indicateurs */}
+            <div className="mt-4 flex justify-center gap-2">
+              {slides.map((slide, index) => (
+                <button
+                  key={`indicator-${slide.label}`}
+                  onClick={() => setActiveSlide(index)}
+                  className={`h-2 rounded-full transition-all duration-300 ${activeSlide === index
+                      ? "w-8 bg-brand-ochre"
+                      : "w-2 bg-white/40"
+                    }`}
+                  aria-label={`Aller à ${slide.label}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Boutons mobile sur la même ligne */}
+          <div className="mt-7 grid w-full grid-cols-2 gap-3">
+            <button
+              data-testid={TID.ctaOrderHero}
+              onClick={() => scrollTo("commander")}
+              className="group inline-flex items-center justify-center gap-1.5 rounded-full bg-[#deac22] px-4 py-3 text-xs font-bold text-brand-ink shadow-[0_16px_40px_rgba(0,0,0,0.25)] transition-all active:scale-95"
+            >
+              Commander
+              <ArrowRight size={14} />
+            </button>
+
+            <button
+              data-testid={TID.ctaCatalogHero}
+              onClick={() => scrollTo("produits")}
+              className="inline-flex items-center justify-center rounded-full border border-white/25 bg-white/10 px-4 py-3 text-xs font-bold text-white backdrop-blur-md transition-all active:scale-95"
+            >
+              Voir le menu
+            </button>
+          </div>
+
+          {/* Livraison mobile */}
+          <p className="mt-5 flex items-start justify-center gap-2 text-center text-xs leading-relaxed text-white/75">
+            <Truck size={15} className="mt-0.5 shrink-0 text-brand-ochre" />
+            <span>
+              Livraison à Sorel-Tracy, Montréal, Rive-Nord et Rive-Sud
+            </span>
+          </p>
+        </motion.div>
       </div>
     </section>
   );

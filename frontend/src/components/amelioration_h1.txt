@@ -1,0 +1,41 @@
+            <h1 className="mt-7 flex flex-col items-center text-center tracking-tight">
+              {/* Le surtitre "Délices" : petit, gris clair, centré au-dessus */}
+              <span className="text-sm font-semibold uppercase tracking-[0.25em] text-white/50 mb-2 sm:text-base">
+                Délices
+              </span>
+
+              {/* La ligne principale : Mikaté Royal (même taille et même écriture qu'avant) */}
+              <span
+                className="font-display text-5xl font-semibold leading-none text-white sm:text-6xl lg:text-7xl flex flex-wrap justify-center items-center gap-x-4"
+                style={{ fontFamily: '"Cherry Bomb One", system-ui', fontWeight: 400 }}
+              >
+                <span className="inline-block pr-[0.23em]italic bg-gradient-to-r from-[#00A2E8] via-[#22B14C] to-[#FFC90E] bg-clip-text text-transparent py-1">
+                  Mikaté
+                </span>
+                <span className="text-white/90">
+                  Royal
+                </span>
+              </span>
+            </h1>
+
+
+
+
+            <h1 className="mt-7 flex flex-col items-center text-center tracking-tight ">
+              {/* Le surtitre "Délices" : petit, gris clair, centré au-dessus */}
+              <span className="text-sm font-semibold uppercase tracking-[0.25em] text-white/50 mb-0.5 sm:text-base">
+                Délices
+              </span>
+
+              {/* La ligne principale : On utilise 'flex' et 'gap-x-4' (ou gap-x-5) pour forcer un bel espace horizontal */}
+              <span
+                className="mt-2 font-display text-5xl font-semibold leading-none text-white sm:text-6xl lg:text-7xl flex flex-wrap justify-center items-center gap-x-5"
+              >
+                <span className="bg-gradient-to-r from-[#00A2E8] via-[#22B14C] to-[#FFC90E] bg-clip-text text-transparent py-1 ">
+                  Mikaté
+                </span>
+                <span className="text-white/90">
+                  Royal
+                </span>
+              </span>
+            </h1>
