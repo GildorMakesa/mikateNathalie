@@ -103,10 +103,10 @@ export default function Hero() {
               </span>
 
               <span className="mt-2 font-titan text-5xl font-semibold leading-none text-white sm:text-6xl lg:text-7xl flex flex-wrap justify-center items-center gap-x-5">
-                <span className="bg-gradient-to-r from-[#00A2E8] via-[#22B14C] to-[#FFC90E] bg-clip-text text-transparent py-1">
+                <span className="bg-gradient-to-r from-[#057caf] via-[#22B14C] to-[#FFC90E] bg-clip-text text-transparent py-1">
                   Mikaté
                 </span>
-                <span className="text-white/90">
+                <span className="text-white/95">
                   Royal
                 </span>
               </span>
