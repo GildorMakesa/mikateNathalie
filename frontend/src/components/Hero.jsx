@@ -7,9 +7,9 @@ const HERO_PASTRY =
   "https://images.unsplash.com/photo-1664993085274-80c6ba725ccc?fm=jpg&q=85&w=1600&auto=format&fit=crop";
 
 const HERO_BISSAP =
-  "https://images.unsplash.com/photo-1601390395693-364c0e22031a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwyfHxoaWJpc2N1cyUyMHRlYSUyMHJlZCUyMGRyaW5rfGVufDB8fHx8MTc4MTU3Mzc1OXww&ixlib=rb-4.1.0&q=85";
+  "/products/bissap_rouge.jpeg";
 
-const HERO_TROPICAL = "/products/jus-gingembre-luxe.png";
+const HERO_TROPICAL = "/products/bissap_orange.jpeg";
 
 const slides = [
   {
@@ -98,12 +98,12 @@ export default function Hero() {
             className="lg:col-span-6 transform lg:-translate-x-12"
           >
             <h1 className="mt-7 flex flex-col items-center text-center tracking-tight">
-              <span className="text-sm font-semibold uppercase tracking-[0.25em] text-white/50 mb-0.5 sm:text-base">
+              <span className="text-sm font-semibold uppercase text-white mb-0.5 sm:text-base">
                 Délices
               </span>
 
-              <span className="mt-2 font-titan text-5xl font-semibold leading-none text-white sm:text-6xl lg:text-7xl flex flex-wrap justify-center items-center gap-x-5">
-                <span className="bg-gradient-to-r from-[#057caf] via-[#22B14C] to-[#FFC90E] bg-clip-text text-transparent py-1">
+              <span className="mt-2 font-display text-5xl font-bold leading-none text-white sm:text-6xl lg:text-7xl flex flex-wrap justify-center items-center gap-x-5">
+                <span className="text-white bg-clip-text text-transparent py-1">
                   Mikaté
                 </span>
                 <span className="text-white/95">
@@ -242,25 +242,25 @@ export default function Hero() {
       </div>
 
       {/* Contenu mobile */}
-      <div className="relative z-10 flex min-h-screen flex-col justify-center px-5 pt-28 pb-10 md:hidden">
+      <div className="relative z-10 flex min-h-screen flex-col px-4 pt-36 pb-11 md:hidden">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          className="mx-auto flex w-full max-w-sm flex-col items-center text-center"
+          className="mx-auto flex min-h-[calc(100vh-11.5rem)] w-full max-w-sm flex-col items-center text-center"
         >
           {/* Titre mobile */}
           <h1 className="flex flex-col items-center text-center tracking-tight">
-            <span className="mb-1 text-xs font-semibold uppercase tracking-[0.28em] text-white/60">
+            <span className="mb-[40%] text-xs font-semibold uppercase tracking-[0.28em] text-white/60">
               Délices
             </span>
 
             <span className="font-titan text-5xl font-semibold leading-[0.9] text-white">
-              <span className="block bg-gradient-to-r from-[#00A2E8] via-[#22B14C] to-[#FFC90E] bg-clip-text text-transparent">
-                Mikaté
+              <span className="block bg-gradient-to-r from-[#00A2E8] via-[#22B14C] to-[#f0950c] bg-clip-text text-transparent">
+                Le Bon Goût
               </span>
               <span className="block text-white">
-                Royal
+                Maison
               </span>
             </span>
           </h1>
@@ -279,28 +279,11 @@ export default function Hero() {
             </motion.p>
           </AnimatePresence>
 
+          <div className="flex-1" />
+
           {/* Carousel images mobile */}
           <div className="mt-7 w-full">
-            <div className="relative mx-auto h-64 w-full max-w-[320px] overflow-hidden rounded-[1.7rem] border border-white/20 bg-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.35)] backdrop-blur-md">
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={`mobile-card-${currentSlide.image}`}
-                  src={currentSlide.image}
-                  alt={currentSlide.label}
-                  initial={{ opacity: 0, scale: 1.08 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.7 }}
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
-              </AnimatePresence>
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
-
-              <div className="absolute left-4 top-4 rounded-full border border-white/20 bg-white/15 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-md">
-                {currentSlide.label}
-              </div>
-            </div>
 
             {/* Mini images */}
             <div className="mt-4 flex justify-center gap-3">

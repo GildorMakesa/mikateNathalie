@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { TID } from "@/constants/testIds";
-import LogoMikate from '../assets/Logo_mikate.jpg';
+import LogoMikate from '../assets/logo_removed_2.png';
+import LogoMikateWhite from '../assets/logo_removed_3.png'; // logo blanc transparent
 
 const links = [
   { id: "accueil", label: "Accueil", tid: TID.navHome },
@@ -59,14 +60,16 @@ export default function Navbar() {
               }`}
             data-testid="brand-logo"
           >
-            <div className={`overflow-hidden rounded-full border shadow-xl transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-105 ${scrolled
-              ? "h-12 w-12 border-white/30"
-              : "h-20 w-20 border-white/20"
-              }`}>
+            <div
+              className={`overflow-hidden rounded-full border shadow-xl transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-105 ${scrolled
+                  ? "h-12 w-12 border-white/30 bg-black"
+                  : "h-20 w-20 border-white/20 bg-transparent"
+                }`}
+            >
               <img
-                src={LogoMikate}
+                src={scrolled ? LogoMikate : LogoMikateWhite}
                 alt="Delice Mikate Logo"
-                className="h-full w-full object-cover scale-105"
+                className="h-full w-full object-contain"
               />
             </div>
           </Link>
@@ -131,14 +134,14 @@ export default function Navbar() {
 
           {/* Titre mobile : Parfaitement centré au pixel près (horizontal + vertical) */}
           <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-full max-w-[60%] truncate">
-            <span className="text-base font-titan tracking-wide flex justify-center items-center gap-x-1.5">
+            <span className="text-base font-medium tracking-wide flex justify-center items-center gap-x-1.5">
               {/* "Mikaté" en Jaune (Ocre/Doré pour rester premium et lisible) */}
               <span className={scrolled ? "text-[#d4aa12]" : "text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]"}>
                 Mikaté
               </span>
 
               {/* "Royale" en Rouge */}
-              <span className={scrolled ? "text-[#FF4136]" : "text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]"}>
+              <span className={scrolled ? "text-[#d4aa12]" : "text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]"}>
                 Royale
               </span>
             </span>
