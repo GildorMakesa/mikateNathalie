@@ -10,6 +10,8 @@ module.exports = {
       fontFamily: {
         serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
         sans: ['Outfit', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        palanquin: ['"Palanquin Dark"', 'sans-serif'],
+        titan: ['"Titan One"', 'display'],
       },
       borderRadius: {
         lg: 'var(--radius)',
