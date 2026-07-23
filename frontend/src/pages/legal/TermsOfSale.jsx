@@ -2,89 +2,130 @@ import LegalLayout from "./LegalLayout";
 
 export default function TermsOfSale() {
   return (
-    <LegalLayout title="Conditions générales de vente" updated="24 juin 2026">
+    <LegalLayout title="Conditions générales de vente" updated="23 juillet 2026">
       <p>
-        Les présentes conditions générales de vente («&nbsp;CGV&nbsp;») régissent toute commande passée
-        auprès de <strong>Délices Mikaté Royal</strong> via le site
-        <a href="https://mikateroyal.com" target="_blank" rel="noreferrer"> mikateroyal.com</a>.
-        Toute commande implique l&apos;acceptation sans réserve des présentes CGV.
+        Les présentes conditions générales de vente régissent les commandes effectuées auprès de{" "}
+        <strong>Délices Mikaté Royal</strong> via le site{" "}
+        <a href="https://www.mikateroyal.com" target="_blank" rel="noreferrer">www.mikateroyal.com</a>.
       </p>
 
-      <h2>1. Produits</h2>
+      <h2>1. Présentation de l&apos;entreprise</h2>
       <p>
-        Nous proposons des mikatés (beignets africains) et des boissons artisanales (bissap, gingembre)
-        préparés de manière artisanale. Les photos et descriptions sont fournies à titre indicatif&nbsp;;
-        de légères variations peuvent survenir (couleur, taille) sans altérer la qualité ou la quantité.
+        Délices Mikaté Royal est une entreprise spécialisée dans la préparation artisanale de mikatés et
+        de produits alimentaires inspirés des traditions africaines.
       </p>
 
-      <h2>2. Prix</h2>
+      <h2>2. Acceptation des conditions</h2>
       <p>
-        Les prix sont indiqués en dollars canadiens (CAD), taxes en sus lorsque applicables. Ils peuvent
-        être modifiés à tout moment, mais la commande vous est facturée au prix affiché au moment de la
-        validation.
+        Toute commande effectuée auprès de Délices Mikaté Royal implique l&apos;acceptation complète des
+        présentes conditions générales de vente.
+      </p>
+      <p>
+        Le client reconnaît avoir pris connaissance des informations relatives aux produits, aux prix et
+        aux modalités de commande avant de confirmer son achat.
       </p>
 
       <h2>3. Commandes</h2>
+      <p>Les commandes doivent être effectuées via les moyens proposés sur le site.</p>
+      <p>
+        Une commande est considérée comme confirmée lorsque le client reçoit une confirmation de commande
+        ou une confirmation par courriel.
+      </p>
+      <p>
+        Délices Mikaté Royal se réserve le droit de refuser ou d&apos;annuler une commande en cas
+        d&apos;erreur manifeste, d&apos;indisponibilité d&apos;un produit ou de circonstances
+        exceptionnelles.
+      </p>
+
+      <h2>4. Produits alimentaires</h2>
+      <p>Nos produits sont préparés artisanalement avec soin.</p>
+      <p>
+        Comme il s&apos;agit de produits alimentaires frais, leur apparence, leur texture ou leur
+        présentation peuvent varier légèrement d&apos;une préparation à l&apos;autre.
+      </p>
+      <p>Ces variations n&apos;affectent pas la qualité ni la conformité des produits.</p>
+
+      <h2>5. Prix et taxes</h2>
+      <p>Les prix affichés sur le site sont indiqués en dollars canadiens (CAD).</p>
+      <p>
+        Délices Mikaté Royal se réserve le droit de modifier ses prix à tout moment. Les prix applicables
+        sont ceux affichés au moment de la confirmation de la commande.
+      </p>
+
+      <h2>6. Paiement</h2>
+      <p>Les modes de paiement acceptés sont ceux indiqués sur le site, notamment&nbsp;:</p>
       <ul>
-        <li>Les commandes se passent en ligne via le formulaire prévu à cet effet.</li>
-        <li>Une confirmation vous est envoyée par courriel après réception.</li>
-        <li>Pour les événements (mariage, baptême, corporatif...), une soumission personnalisée est établie avant confirmation.</li>
-        <li>Nous nous réservons le droit de refuser toute commande manifestement abusive ou frauduleuse.</li>
+        <li>Virement Interac&nbsp;;</li>
+        <li>PayPal&nbsp;;</li>
+        <li>Paiement selon les modalités convenues avec Délices Mikaté Royal.</li>
       </ul>
+      <p>La commande peut nécessiter une confirmation du paiement avant sa préparation.</p>
 
-      <h2>4. Paiement</h2>
-      <p>Les modes de paiement acceptés sont&nbsp;:</p>
+      <h2>7. Commandes pour événements</h2>
+      <p>
+        Pour les commandes importantes ou les événements, des informations supplémentaires peuvent être
+        demandées&nbsp;:
+      </p>
       <ul>
-        <li><strong>Virement Interac</strong> (recommandé) — instructions transmises par courriel;</li>
-        <li><strong>PayPal</strong>;</li>
-        <li><strong>Comptant à la livraison</strong>;</li>
-        <li>Autres modes sur entente.</li>
+        <li>date de l&apos;événement&nbsp;;</li>
+        <li>nombre de personnes&nbsp;;</li>
+        <li>quantité souhaitée&nbsp;;</li>
+        <li>besoins particuliers.</li>
       </ul>
-      <div className="callout">
-        <p>
-          <strong>Aucune donnée bancaire n&apos;est collectée ni stockée par Délices Mikaté Royal.</strong>
-          Les paiements sont traités par des services sécurisés externes.
-        </p>
-      </div>
-
-      <h2>5. Livraison</h2>
       <p>
-        Les modalités et zones de livraison sont détaillées dans notre
-        <a href="/politique-livraison"> Politique de livraison</a>.
+        Une soumission ou une confirmation spécifique peut être établie selon la nature de la demande.
       </p>
 
-      <h2>6. Droit de rétractation et remboursement</h2>
+      <h2>8. Préparation et disponibilité</h2>
+      <p>Les commandes sont préparées selon les disponibilités et les délais indiqués au client.</p>
       <p>
-        En raison du caractère périssable de nos produits alimentaires, le droit de rétractation ne
-        s&apos;applique pas. Toutefois, en cas de problème, notre
-        <a href="/politique-remboursement"> Politique de remboursement et de retour</a> précise les cas
-        pris en charge.
+        Délices Mikaté Royal s&apos;engage à préparer les commandes avec soin, mais ne peut être tenu
+        responsable des retards causés par des événements hors de son contrôle.
       </p>
 
-      <h2>7. Allergènes et sécurité alimentaire</h2>
+      <h2>9. Responsabilités du client</h2>
+      <p>Le client doit fournir des informations exactes lors de sa commande, notamment&nbsp;:</p>
+      <ul>
+        <li>coordonnées&nbsp;;</li>
+        <li>adresse de livraison&nbsp;;</li>
+        <li>informations nécessaires à la préparation de la commande.</li>
+      </ul>
+      <p>Le client est responsable de vérifier l&apos;exactitude des informations transmises.</p>
+
+      <h2>10. Produits allergènes</h2>
       <p>
-        Nos produits peuvent contenir ou avoir été en contact avec du blé (gluten), du lait, des œufs et
-        des fruits à coque. Merci de nous signaler toute allergie ou intolérance dans le champ
-        «&nbsp;Message&nbsp;» du formulaire de commande.
+        Le client doit informer Délices Mikaté Royal de toute allergie ou restriction alimentaire avant
+        de commander.
+      </p>
+      <p>
+        Bien que nous prenions des précautions raisonnables, certains produits peuvent contenir ou avoir
+        été en contact avec des allergènes.
       </p>
 
-      <h2>8. Responsabilité</h2>
+      <h2>11. Annulation et remboursement</h2>
       <p>
-        Notre responsabilité est limitée au prix des produits commandés. Nous ne pourrons être tenus
-        responsables des dommages indirects (perte de temps, préjudice moral, etc.).
+        Les conditions d&apos;annulation et de remboursement sont décrites dans notre
+        <a href="/politique-remboursement"> Politique de remboursement et de retour</a>.
       </p>
 
-      <h2>9. Droit applicable et litiges</h2>
+      <h2>12. Protection des renseignements personnels</h2>
       <p>
-        Les présentes CGV sont régies par les lois de la province de Québec et les lois fédérales du
-        Canada applicables. Tout litige sera soumis aux tribunaux compétents du district judiciaire de
-        Richelieu (Sorel-Tracy).
+        Les renseignements recueillis lors d&apos;une commande sont traités conformément à notre
+        <a href="/politique-confidentialite"> Politique de confidentialité</a>.
       </p>
 
-      <h2>10. Contact</h2>
+      <h2>13. Modifications des conditions générales</h2>
       <p>
-        Toute question relative aux présentes CGV peut être adressée à
-        <a href="mailto:contact@mikateroyal.com"> contact@mikateroyal.com</a>.
+        Délices Mikaté Royal se réserve le droit de modifier les présentes conditions générales de vente
+        à tout moment.
+      </p>
+      <p>La version applicable est celle publiée sur le site au moment de la commande.</p>
+
+      <h2>14. Contact</h2>
+      <p>
+        <strong>Délices Mikaté Royal</strong><br />
+        Site Web&nbsp;: <a href="https://www.mikateroyal.com" target="_blank" rel="noreferrer">www.mikateroyal.com</a><br />
+        Courriel&nbsp;: <a href="mailto:contact@mikateroyal.com">contact@mikateroyal.com</a>
       </p>
     </LegalLayout>
   );
