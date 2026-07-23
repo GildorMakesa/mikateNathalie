@@ -2,58 +2,102 @@ import LegalLayout from "./LegalLayout";
 
 export default function ShippingPolicy() {
   return (
-    <LegalLayout title="Politique de livraison" updated="24 juin 2026">
+    <LegalLayout title="Politique de livraison" updated="23 juillet 2026">
       <p>
-        Nous livrons vos mikatés fraîchement préparés dans la région métropolitaine et ses environs. La
-        présente politique précise nos zones, délais et modalités de livraison.
+        Chez <strong>Délices Mikaté Royal</strong>, nous préparons chaque commande avec soin afin
+        d&apos;offrir à nos clients des produits frais et de qualité.
+      </p>
+      <p>
+        Cette politique explique les modalités de livraison et de récupération des commandes effectuées
+        sur notre site.
       </p>
 
-      <h2>1. Zones desservies</h2>
+      <h2>1. Zones de livraison</h2>
+      <p>
+        Délices Mikaté Royal offre des options de livraison selon les zones desservies et les
+        disponibilités.
+      </p>
+      <p>Les frais de livraison et les conditions applicables peuvent varier selon&nbsp;:</p>
       <ul>
-        <li><strong>Sorel-Tracy</strong> et environs;</li>
-        <li><strong>Montréal</strong> (île);</li>
-        <li><strong>Rive-Nord</strong> (Laval, Terrebonne, Repentigny et environs);</li>
-        <li><strong>Rive-Sud</strong> (Longueuil, Brossard, Boucherville et environs).</li>
+        <li>la distance&nbsp;;</li>
+        <li>le montant de la commande&nbsp;;</li>
+        <li>le lieu de livraison&nbsp;;</li>
+        <li>les besoins spécifiques du client.</li>
+      </ul>
+      <p>Les détails de livraison sont communiqués au client avant la confirmation finale de la commande.</p>
+
+      <h2>2. Retrait de commande</h2>
+      <p>
+        Les clients peuvent également récupérer leur commande selon les modalités convenues avec Délices
+        Mikaté Royal.
+      </p>
+      <p>Les informations concernant&nbsp;:</p>
+      <ul>
+        <li>l&apos;heure de récupération&nbsp;;</li>
+        <li>le lieu de retrait&nbsp;;</li>
+        <li>les instructions particulières</li>
+      </ul>
+      <p>seront confirmées au moment de la commande.</p>
+
+      <h2>3. Délais de préparation</h2>
+      <p>Les délais de préparation varient selon&nbsp;:</p>
+      <ul>
+        <li>la quantité commandée&nbsp;;</li>
+        <li>le type de produits&nbsp;;</li>
+        <li>la période de l&apos;année&nbsp;;</li>
+        <li>les commandes spéciales ou événements.</li>
       </ul>
       <p>
-        Vous êtes en dehors de ces zones&nbsp;? Écrivez-nous à
-        <a href="mailto:contact@mikateroyal.com"> contact@mikateroyal.com</a> — nous étudierons votre
-        demande au cas par cas.
+        Nous recommandons aux clients de commander à l&apos;avance pour les grandes quantités ou les
+        événements.
       </p>
 
-      <h2>2. Délais</h2>
+      <h2>4. Livraison de produits alimentaires</h2>
+      <p>
+        Nos produits sont préparés artisanalement et doivent être consommés selon les recommandations
+        fournies.
+      </p>
+      <p>
+        Le client est responsable de s&apos;assurer qu&apos;une personne est disponible pour recevoir la
+        commande au moment prévu.
+      </p>
+
+      <h2>5. Retards de livraison</h2>
+      <p>Délices Mikaté Royal met tout en œuvre pour respecter les délais convenus.</p>
+      <p>
+        Cependant, certains événements indépendants de notre volonté peuvent occasionner des retards,
+        notamment&nbsp;:
+      </p>
       <ul>
-        <li><strong>Commande régulière</strong>&nbsp;: généralement livrée sous 24 à 48&nbsp;heures.</li>
-        <li><strong>Événement</strong>&nbsp;: nous recommandons de réserver au moins <strong>7&nbsp;jours à l&apos;avance</strong>.</li>
-        <li>Les horaires exacts sont convenus par courriel après confirmation de commande.</li>
+        <li>conditions météorologiques&nbsp;;</li>
+        <li>problèmes de circulation&nbsp;;</li>
+        <li>circonstances exceptionnelles.</li>
       </ul>
+      <p>Nous communiquerons avec le client lorsque des changements importants surviennent.</p>
 
-      <h2>3. Frais de livraison</h2>
-      <p>
-        Les frais varient selon la distance et la taille de la commande. Ils sont indiqués dans la
-        soumission ou la confirmation de commande. Un <strong>seuil de livraison gratuite</strong>
-        peut s&apos;appliquer selon la zone (consultez-nous).
-      </p>
-
-      <h2>4. Réception</h2>
+      <h2>6. Exactitude des informations fournies</h2>
+      <p>Le client est responsable de fournir des informations exactes&nbsp;:</p>
       <ul>
-        <li>La personne réceptionnaire doit être présente à l&apos;adresse indiquée à l&apos;heure convenue.</li>
-        <li>Merci de vérifier la commande <strong>en présence du livreur</strong> — toute réclamation doit être signalée immédiatement.</li>
-        <li>Une absence non signalée peut entraîner des frais supplémentaires pour une nouvelle livraison.</li>
+        <li>nom&nbsp;;</li>
+        <li>numéro de téléphone&nbsp;;</li>
+        <li>adresse de livraison&nbsp;;</li>
+        <li>instructions particulières.</li>
       </ul>
+      <p>Des informations incorrectes peuvent entraîner des retards ou empêcher la livraison.</p>
 
-      <h2>5. Retards et imprévus</h2>
+      <h2>7. Commandes pour événements</h2>
       <p>
-        Nous faisons tout notre possible pour respecter les horaires. En cas de retard indépendant de
-        notre volonté (météo, circulation, force majeure), nous vous en informons dans les plus brefs
-        délais.
+        Pour les événements, mariages, festivals, entreprises ou grandes commandes, les modalités de
+        livraison peuvent être adaptées selon les besoins spécifiques du client.
       </p>
+      <p>Une confirmation détaillée sera établie avant la préparation.</p>
 
-      <h2>6. Contact</h2>
+      <h2>8. Contact</h2>
+      <p>Pour toute question concernant une livraison&nbsp;:</p>
       <p>
-        Une question sur votre livraison&nbsp;? Écrivez-nous à
-        <a href="mailto:contact@mikateroyal.com"> contact@mikateroyal.com</a> ou discutez avec notre
-        assistante Nancy directement sur le site.
+        <strong>Délices Mikaté Royal</strong><br />
+        Site Web&nbsp;: <a href="https://www.mikateroyal.com" target="_blank" rel="noreferrer">www.mikateroyal.com</a><br />
+        Courriel&nbsp;: <a href="mailto:contact@mikateroyal.com">contact@mikateroyal.com</a>
       </p>
     </LegalLayout>
   );
