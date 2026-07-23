@@ -111,14 +111,48 @@
                     }),
                     (e.__SV = 1));
         })(document, window.posthog || []);
-        posthog.init("phc_xAvL2Iq4tFmANRE7kzbKwaSqp1HJjN7x48s3vr0CMjs", {
-            api_host: "https://us.i.posthog.com",
-            person_profiles: "identified_only", // or 'always' to create profiles for anonymous users as well,
-            session_recording: {
-                recordCrossOriginIframes: true,
-                capturePerformance: false,
-            },
-        });
+        // ⚖️ Loi 25 / RGPD — PostHog n'est initialisé qu'après consentement explicite (analytics=true).
+        (function () {
+            var CONSENT_KEY = "mr_cookie_consent_v1";
+            var initialized = false;
+
+            function hasAnalyticsConsent() {
+                try {
+                    var raw = localStorage.getItem(CONSENT_KEY);
+                    if (!raw) return false;
+                    var parsed = JSON.parse(raw);
+                    return !!parsed && parsed.analytics === true;
+                } catch (e) { return false; }
+            }
+
+            function initPosthog() {
+                if (initialized) return;
+                initialized = true;
+                posthog.init("phc_xAvL2Iq4tFmANRE7kzbKwaSqp1HJjN7x48s3vr0CMjs", {
+                    api_host: "https://us.i.posthog.com",
+                    person_profiles: "identified_only",
+                    session_recording: {
+                        recordCrossOriginIframes: true,
+                        capturePerformance: false,
+                    },
+                });
+            }
+
+            if (hasAnalyticsConsent()) {
+                initPosthog();
+            }
+
+            // Se déclenche quand l'utilisateur enregistre ses préférences via la bannière.
+            window.addEventListener("mr:consent-updated", function (e) {
+                var prefs = (e && e.detail) || {};
+                if (prefs.analytics === true) {
+                    initPosthog();
+                } else if (initialized && typeof posthog.opt_out_capturing === "function") {
+                    // L'utilisateur a retiré son consentement pendant la session.
+                    posthog.opt_out_capturing();
+                }
+            });
+        })();
     </script>
 </body>
 

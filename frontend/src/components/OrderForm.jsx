@@ -349,6 +349,33 @@ export default function OrderForm({ preselected, onConsume, mode = "regular", on
               <textarea data-testid={TID.orderMessage} name="message" value={form.message} onChange={onChange} rows={3} className={`${isEvent ? "dark-input" : "input"} resize-none`} placeholder="Allergies, horaire préféré, occasion..." />
             </Field>
 
+            {/* Avis allergènes — visible et obligatoire à la lecture */}
+            <div
+              role="note"
+              aria-label="Avis allergènes"
+              data-testid="allergen-notice"
+              className={`mt-6 flex items-start gap-3 rounded-2xl border-l-4 p-4 ${
+                isEvent
+                  ? "border-l-brand-ochre bg-white/5 border-y border-r border-white/10"
+                  : "border-l-brand-ochre bg-brand-ochre/10 border-y border-r border-brand-ochre/20"
+              }`}
+            >
+              <span
+                aria-hidden="true"
+                className={`shrink-0 mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
+                  isEvent ? "bg-brand-ochre text-brand-ink" : "bg-brand-ochre text-white"
+                }`}
+              >
+                !
+              </span>
+              <p className={`text-sm leading-relaxed ${isEvent ? "text-brand-sand" : "text-brand-ink"}`}>
+                <strong className="uppercase tracking-wide">Avis allergènes&nbsp;:</strong>{" "}
+                Nos produits peuvent contenir ou avoir été en contact avec des allergènes tels que les
+                arachides, le gluten, les œufs, le lait ou d&apos;autres ingrédients allergènes. Veuillez
+                nous informer de toute allergie ou restriction alimentaire avant de commander.
+              </p>
+            </div>
+
             {/* Consentement Loi 25 */}
             <label
               className={`mt-6 flex items-start gap-3 rounded-2xl border p-4 cursor-pointer transition-colors ${
