@@ -1,12 +1,33 @@
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Facebook, Mail, MessageCircle, MapPin, Globe } from "lucide-react";
 import { SOCIALS } from "@/lib/api";
 import { TID } from "@/constants/testIds";
 
+const LEGAL_LINKS = [
+  { to: "/politique-confidentialite", label: "Politique de confidentialité" },
+  { to: "/conditions-generales-vente", label: "Conditions générales de vente" },
+  { to: "/politique-remboursement", label: "Politique de remboursement et de retour" },
+  { to: "/politique-livraison", label: "Politique de livraison" },
+  { to: "/politique-cookies", label: "Politique sur les cookies" },
+  { to: "/conditions-utilisation", label: "Conditions d'utilisation" },
+];
+
 export default function Footer() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const scrollTo = (id) => {
+    if (location.pathname !== "/") {
+      navigate("/");
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 200);
+      return;
+    }
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
   return (
     <footer className="bg-brand-ink text-brand-sand">
       <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-16 py-20 md:py-28">
@@ -72,8 +93,36 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between text-xs text-brand-sand/60">
-          <p>© {new Date().getFullYear()} Délices Mikaté Royal. Tous droits réservés.</p>
+        {/* Legal links block */}
+        <div className="mt-16 pt-10 border-t border-white/10">
+          <p className="text-brand-ochre font-display text-xl mb-5">Informations légales</p>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2 text-sm">
+            {LEGAL_LINKS.map((l) => (
+              <li key={l.to}>
+                <Link
+                  to={l.to}
+                  className="text-brand-sand/80 hover:text-white transition-colors"
+                  data-testid={`footer-link-${l.to.slice(1)}`}
+                >
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent("mr:open-cookie-prefs"))}
+                className="text-brand-sand/80 hover:text-white transition-colors text-left"
+                data-testid="footer-cookie-prefs"
+              >
+                Préférences cookies
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between text-xs text-brand-sand/60">
+          <p data-testid="footer-copyright">© 2026 Délices Mikaté Royal. Tous droits réservés.</p>
           <p className="font-display italic text-brand-sand/70">Des saveurs qui rassemblent, une culture qui se partage.</p>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Plus, Minus, X, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 import { api, SOCIALS } from "@/lib/api";
 import { TID } from "@/constants/testIds";
 
@@ -47,6 +48,7 @@ export default function OrderForm({ preselected, onConsume, mode = "regular", on
   const [items, setItems] = useState([]); // {product_id, product_name, quantity, option_label, unit_price_cad}
   const [form, setForm] = useState(emptyForm);
   const [eventInfo, setEventInfo] = useState(emptyEvent);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -116,6 +118,10 @@ export default function OrderForm({ preselected, onConsume, mode = "regular", on
       toast.error("Veuillez préciser le type d'événement.");
       return;
     }
+    if (!acceptedTerms) {
+      toast.error("Veuillez accepter la Politique de confidentialité et les Conditions générales de vente pour continuer.");
+      return;
+    }
     setSubmitting(true);
     try {
       const payload = {
@@ -153,6 +159,7 @@ export default function OrderForm({ preselected, onConsume, mode = "regular", on
       setItems([]);
       setForm(emptyForm);
       setEventInfo(emptyEvent);
+      setAcceptedTerms(false);
     } catch (err) {
       console.error(err);
       toast.error("Impossible d'envoyer votre demande. Réessayez ou écrivez-nous à contact@mikateroyal.com.");
@@ -341,6 +348,48 @@ export default function OrderForm({ preselected, onConsume, mode = "regular", on
             <Field label="Message (optionnel)" className="mt-6" dark={isEvent}>
               <textarea data-testid={TID.orderMessage} name="message" value={form.message} onChange={onChange} rows={3} className={`${isEvent ? "dark-input" : "input"} resize-none`} placeholder="Allergies, horaire préféré, occasion..." />
             </Field>
+
+            {/* Consentement Loi 25 */}
+            <label
+              className={`mt-6 flex items-start gap-3 rounded-2xl border p-4 cursor-pointer transition-colors ${
+                isEvent
+                  ? "border-white/15 bg-white/5 hover:border-brand-ochre"
+                  : "border-brand-line bg-white hover:border-brand-ruby"
+              }`}
+              data-testid="order-consent-row"
+            >
+              <input
+                type="checkbox"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                required
+                data-testid="order-consent-checkbox"
+                className="mt-1 h-4 w-4 shrink-0 accent-brand-ruby"
+              />
+              <span className={`text-sm leading-relaxed ${isEvent ? "text-brand-sand/90" : "text-brand-ink"}`}>
+                J&apos;ai lu et j&apos;accepte la{" "}
+                <Link
+                  to="/politique-confidentialite"
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`underline underline-offset-2 ${isEvent ? "text-brand-ochre hover:text-white" : "text-brand-ruby hover:text-brand-ink"}`}
+                  data-testid="order-consent-link-privacy"
+                >
+                  Politique de confidentialité
+                </Link>{" "}
+                ainsi que les{" "}
+                <Link
+                  to="/conditions-generales-vente"
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`underline underline-offset-2 ${isEvent ? "text-brand-ochre hover:text-white" : "text-brand-ruby hover:text-brand-ink"}`}
+                  data-testid="order-consent-link-terms"
+                >
+                  Conditions générales de vente
+                </Link>
+                .
+              </span>
+            </label>
 
             <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>

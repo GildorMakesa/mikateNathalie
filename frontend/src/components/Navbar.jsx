@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { TID } from "@/constants/testIds";
 import LogoMikate from '../assets/logo_removed_2.png';
@@ -16,7 +16,13 @@ const links = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolledRaw, setScrolled] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Force "scrolled" appearance on non-home pages (light backgrounds)
+  const isHome = location.pathname === "/";
+  const scrolled = isHome ? scrolledRaw : true;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,6 +37,13 @@ export default function Navbar() {
 
   const go = (id) => {
     setOpen(false);
+    if (location.pathname !== "/") {
+      navigate("/");
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 200);
+      return;
+    }
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
