@@ -2,78 +2,114 @@ import LegalLayout from "./LegalLayout";
 
 export default function TermsOfUse() {
   return (
-    <LegalLayout title="Conditions d'utilisation" updated="24 juin 2026">
+    <LegalLayout title="Conditions d'utilisation" updated="23 juillet 2026">
+      <p>Bienvenue sur le site de <strong>Délices Mikaté Royal</strong>.</p>
       <p>
-        Bienvenue sur <strong>mikateroyal.com</strong>. En accédant à ce site, vous acceptez les
-        présentes conditions d&apos;utilisation. Si vous n&apos;êtes pas d&apos;accord avec ces
-        conditions, merci de ne pas utiliser le site.
+        En consultant ou en utilisant le site{" "}
+        <a href="https://www.mikateroyal.com" target="_blank" rel="noreferrer">www.mikateroyal.com</a>,
+        vous acceptez les présentes conditions d&apos;utilisation. Si vous n&apos;acceptez pas ces
+        conditions, veuillez ne pas utiliser le site.
       </p>
 
-      <h2>1. Objet du site</h2>
-      <p>
-        Le site présente les produits et services de <strong>Délices Mikaté Royal</strong> et permet la
-        commande en ligne de mikatés, boissons et soumissions événementielles.
-      </p>
-
-      <h2>2. Accès au site</h2>
-      <p>
-        L&apos;accès est ouvert 24/7, sous réserve de maintenance ou de force majeure. Nous nous
-        efforçons d&apos;assurer une disponibilité continue mais ne pouvons la garantir.
-      </p>
-
-      <h2>3. Propriété intellectuelle</h2>
-      <p>
-        Tous les éléments du site (textes, images, logos, code, marques) sont la propriété exclusive de
-        Délices Mikaté Royal ou de ses partenaires. Toute reproduction, représentation ou utilisation,
-        même partielle, sans autorisation écrite préalable est strictement interdite.
-      </p>
-
-      <h2>4. Comportement de l&apos;utilisateur</h2>
-      <p>Vous vous engagez à ne pas&nbsp;:</p>
+      <h2>1. Utilisation du site</h2>
+      <p>Le site de Délices Mikaté Royal permet aux visiteurs de&nbsp;:</p>
       <ul>
-        <li>Utiliser le site à des fins frauduleuses ou illégales;</li>
-        <li>Perturber le bon fonctionnement du site ou de ses services (injection, brute-force, scraping abusif);</li>
-        <li>Tenter d&apos;accéder à des zones réservées sans autorisation;</li>
-        <li>Publier ou transmettre des contenus offensants ou diffamatoires via les formulaires ou l&apos;assistante virtuelle.</li>
+        <li>découvrir nos produits&nbsp;;</li>
+        <li>consulter nos offres&nbsp;;</li>
+        <li>effectuer des demandes d&apos;information&nbsp;;</li>
+        <li>effectuer des commandes lorsque cette fonctionnalité est disponible.</li>
+      </ul>
+      <p>L&apos;utilisateur s&apos;engage à utiliser le site de manière légale et responsable.</p>
+
+      <h2>2. Exactitude des informations</h2>
+      <p>
+        Délices Mikaté Royal fait des efforts raisonnables pour maintenir les informations présentées
+        sur son site à jour.
+      </p>
+      <p>Toutefois, certaines informations peuvent être modifiées sans préavis, notamment&nbsp;:</p>
+      <ul>
+        <li>les prix&nbsp;;</li>
+        <li>la disponibilité des produits&nbsp;;</li>
+        <li>les descriptions&nbsp;;</li>
+        <li>les offres promotionnelles.</li>
       </ul>
 
-      <h2>5. Assistante virtuelle «&nbsp;Nancy&nbsp;»</h2>
+      <h2>3. Commandes et transactions</h2>
+      <p>Toute commande effectuée sur le site est soumise aux&nbsp;:</p>
       <p>
-        Notre site propose une assistante virtuelle basée sur l&apos;intelligence artificielle. Ses
-        réponses sont fournies à titre indicatif et ne sauraient constituer un engagement contractuel.
-        Pour toute question importante, contactez-nous directement à
-        <a href="mailto:contact@mikateroyal.com"> contact@mikateroyal.com</a>.
+        <a href="/conditions-generales-vente">Conditions générales de vente</a>
+      </p>
+      <p>ainsi qu&apos;aux politiques applicables de Délices Mikaté Royal.</p>
+      <p>
+        Le client est responsable de fournir des informations exactes lors de toute demande ou commande.
       </p>
 
-      <h2>6. Liens externes</h2>
+      <h2>4. Propriété intellectuelle</h2>
+      <p>Tout le contenu présent sur le site, incluant notamment&nbsp;:</p>
+      <ul>
+        <li>textes&nbsp;;</li>
+        <li>images&nbsp;;</li>
+        <li>logos&nbsp;;</li>
+        <li>éléments graphiques&nbsp;;</li>
+        <li>photos de produits&nbsp;;</li>
+        <li>marques et contenus promotionnels</li>
+      </ul>
+      <p>appartient à Délices Mikaté Royal ou est utilisé avec autorisation.</p>
       <p>
-        Le site peut contenir des liens vers des sites tiers (Facebook, PayPal, etc.). Nous ne sommes pas
-        responsables de leur contenu ou de leurs pratiques en matière de confidentialité.
+        Toute reproduction, modification ou utilisation commerciale du contenu sans autorisation écrite
+        préalable est interdite.
       </p>
 
-      <h2>7. Limitation de responsabilité</h2>
+      <h2>5. Utilisation des images et contenus</h2>
+      <p>Les images présentées sur le site servent à illustrer nos produits.</p>
       <p>
-        Le site est fourni «&nbsp;tel quel&nbsp;». Nous ne pouvons être tenus responsables d&apos;éventuels
-        dommages indirects (perte de données, interruption de service, etc.) résultant de l&apos;utilisation
-        du site.
+        La présentation réelle des produits peut varier légèrement en raison de leur fabrication
+        artisanale.
       </p>
 
-      <h2>8. Modifications</h2>
+      <h2>6. Liens vers des sites externes</h2>
+      <p>Le site peut contenir des liens vers des services ou sites externes.</p>
       <p>
-        Nous nous réservons le droit de modifier ces conditions à tout moment. La version en vigueur est
-        celle publiée sur cette page.
+        Délices Mikaté Royal n&apos;est pas responsable du contenu, de la sécurité ou des pratiques de
+        confidentialité de ces sites externes.
       </p>
 
-      <h2>9. Droit applicable</h2>
+      <h2>7. Disponibilité du site</h2>
+      <p>Nous faisons des efforts raisonnables pour maintenir le site accessible.</p>
       <p>
-        Les présentes conditions sont régies par les lois de la province de Québec et les lois fédérales
-        du Canada. Tout litige relève de la compétence des tribunaux du district judiciaire de
-        Richelieu (Sorel-Tracy).
+        Cependant, nous ne pouvons garantir une disponibilité continue sans interruption, notamment en
+        cas de maintenance, de problème technique ou d&apos;événement indépendant de notre volonté.
       </p>
 
-      <h2>10. Contact</h2>
+      <h2>8. Limitation de responsabilité</h2>
+      <p>Délices Mikaté Royal ne peut être tenu responsable des dommages résultant&nbsp;:</p>
+      <ul>
+        <li>d&apos;une mauvaise utilisation du site&nbsp;;</li>
+        <li>d&apos;informations incorrectes fournies par l&apos;utilisateur&nbsp;;</li>
+        <li>d&apos;une interruption temporaire du service&nbsp;;</li>
+        <li>de circonstances indépendantes de notre contrôle.</li>
+      </ul>
+
+      <h2>9. Protection des renseignements personnels</h2>
       <p>
-        Pour toute question&nbsp;: <a href="mailto:contact@mikateroyal.com">contact@mikateroyal.com</a>.
+        La collecte et l&apos;utilisation des renseignements personnels sont régies par notre&nbsp;:
+      </p>
+      <p>
+        <a href="/politique-confidentialite">Politique de confidentialité</a>
+      </p>
+
+      <h2>10. Modifications des conditions d&apos;utilisation</h2>
+      <p>
+        Délices Mikaté Royal se réserve le droit de modifier ces conditions d&apos;utilisation à tout
+        moment.
+      </p>
+      <p>La version publiée sur le site est celle applicable au moment de votre utilisation.</p>
+
+      <h2>11. Contact</h2>
+      <p>
+        <strong>Délices Mikaté Royal</strong><br />
+        Site Web&nbsp;: <a href="https://www.mikateroyal.com" target="_blank" rel="noreferrer">www.mikateroyal.com</a><br />
+        Courriel&nbsp;: <a href="mailto:contact@mikateroyal.com">contact@mikateroyal.com</a>
       </p>
     </LegalLayout>
   );
