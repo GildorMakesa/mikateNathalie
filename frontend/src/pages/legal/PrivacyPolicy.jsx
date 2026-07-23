@@ -2,7 +2,7 @@ import LegalLayout from "./LegalLayout";
 
 export default function PrivacyPolicy() {
   return (
-    <LegalLayout title="Politique de confidentialité" updated="24 juin 2026">
+    <LegalLayout title="Politique de confidentialité" updated="23 juillet 2026">
       <p>
         Chez <strong>Délices Mikaté Royal</strong>, nous accordons une grande importance à la protection de
         vos renseignements personnels. La présente politique explique quels renseignements nous
@@ -16,7 +16,8 @@ export default function PrivacyPolicy() {
       <p>
         <strong>Délices Mikaté Royal</strong><br />
         Adresse&nbsp;: Sorel-Tracy (Québec), Canada<br />
-        Courriel&nbsp;: <a href="mailto:contact@mikateroyal.com">contact@mikateroyal.com</a>
+        Courriel&nbsp;: <a href="mailto:contact@mikateroyal.com">contact@mikateroyal.com</a><br />
+        Site Web&nbsp;: <a href="https://www.mikateroyal.com" target="_blank" rel="noreferrer">www.mikateroyal.com</a>
       </p>
 
       <h2>2. Renseignements que nous recueillons</h2>
@@ -88,10 +89,32 @@ export default function PrivacyPolicy() {
         Nous vous répondrons dans un délai maximal de 30 jours.
       </p>
 
-      <h2>8. Modifications</h2>
+      <h2>8. Témoins de connexion (cookies)</h2>
+      <p>
+        Notre site utilise des témoins (cookies) nécessaires au bon fonctionnement du site ainsi que,
+        lorsque applicable, des cookies de mesure d&apos;audience afin d&apos;améliorer l&apos;expérience
+        utilisateur.
+      </p>
+      <p>
+        Les visiteurs peuvent gérer leurs préférences grâce à la bannière de consentement affichée lors
+        de leur première visite.
+      </p>
+      <p>
+        Pour plus d&apos;informations, veuillez consulter notre
+        <a href="/politique-cookies"> Politique sur les cookies</a>.
+      </p>
+
+      <h2>9. Modifications</h2>
       <p>
         Cette politique peut être mise à jour à tout moment. La date de la dernière modification est
         indiquée en haut du document.
+      </p>
+
+      <h2>10. Nous joindre</h2>
+      <p>
+        <strong>Délices Mikaté Royal</strong><br />
+        Courriel&nbsp;: <a href="mailto:contact@mikateroyal.com">contact@mikateroyal.com</a><br />
+        Site Web&nbsp;: <a href="https://www.mikateroyal.com" target="_blank" rel="noreferrer">www.mikateroyal.com</a>
       </p>
     </LegalLayout>
   );
