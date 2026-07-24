@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 const MIKATE_IMG = "/products/mikate-sucre-impalpable.png";
 const BISSAP_IMG =
   "https://images.unsplash.com/photo-1601390395693-364c0e22031a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwyfHxoaWJpc2N1cyUyMHRlYSUyMHJlZCUyMGRyaW5rfGVufDB8fHx8MTc4MTU3Mzc1OXww&ixlib=rb-4.1.0&q=85";
-const GINGER_IMG = "/products/jus-gingembre-luxe.png";
+const GINGER_IMG = "/products/jus-gingembre-luxe.jpg";
 
 export default function Story() {
   return (
