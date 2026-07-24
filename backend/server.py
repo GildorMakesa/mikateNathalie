@@ -159,7 +159,7 @@ CATALOGUE & PRIX (commandes régulières) :
 
 👑 COMBO VEDETTE :
 - Combo Découverte (5 mikatés + 1 bissap 300 ml) : 10 $
-- Combo Gingembre (5 mikatés + 1 jus de gingembre 300 ml) : 9 $
+- Combo Gingembre (5 mikatés + 1 jus de gingembre 300 ml) : 10 $
 
 🎉 ÉVÉNEMENTS (mariages, baptêmes, anniversaires, réunions familiales, événements d'église, événements corporatifs) → soumission personnalisée via la section « Événements et réceptions ».
 
@@ -321,7 +321,7 @@ PRODUCTS: List[ProductOut] = [
         category="Combos",
         description="5 Mikatés au choix + 1 Jus de Gingembre (300 ml). Énergie, fraîcheur et gourmandise dans un seul combo.",
         image_url="/products/jus-gingembre-luxe.png",
-        options=[PriceOption(label="5 Mikatés + 1 Gingembre 300 ml", price_cad=9.0)],
+        options=[PriceOption(label="5 Mikatés + 1 Gingembre 300 ml", price_cad=10.0)],
         badge="👑 Vedette",
     ),
 ]
