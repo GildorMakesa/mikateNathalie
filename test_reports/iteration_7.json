@@ -1,0 +1,111 @@
+{
+  "summary": "Pre-deploy responsive audit for Délices Mikaté Royal at 390x844 (mobile), 768x1024 (tablet) and 1440x900 (desktop). No code changes performed (audit-only). Overall: green on prices, delivery two-tier copy, combos, order-form E2E, and layout. One CRITICAL image bug found (Story.jsx points to a .png that does not exist — served as SPA HTML fallback → broken image). Three MINOR touch-target regressions on mobile (cookie banner buttons 40-42 px, hamburger items 41 px, footer legal links 18 px) below the ≥44 px guideline the review requested.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Story.jsx L6 (GINGER_IMG)",
+        "issue": "Hard-coded src '/products/jus-gingembre-luxe.png' does not exist — actual file on disk & backend refs are 'jus-gingembre-luxe.jpg'. curl returns content-type 'text/html' (SPA fallback), naturalWidth=0. Broken image rendered inside the Notre-Histoire / Story block at 342x420 on mobile and equivalent on desktop.",
+        "selector": "img[src*='jus-gingembre-luxe.png']",
+        "priority": "HIGH"
+      },
+      {
+        "component": "CookieConsent.jsx buttons on mobile 390x844",
+        "issue": "Accept button height = 40 px, Refuser = 42 px, Personnaliser = 42 px — all below the ≥44 px touch-target the review requested.",
+        "selector": "[data-testid='cookie-accept-btn'] / [data-testid='cookie-refuse-btn'] / [data-testid='cookie-customize-btn']",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "Navbar.jsx mobile hamburger menu items",
+        "issue": "All 6 mobile menu links (m-nav-home, m-nav-products, m-nav-delivery, m-nav-story, m-nav-testimonials, m-nav-events) render at 41 px height — below the ≥44 px touch-target the review requested. Navigation itself works (tapping 'Menu' scrolls to #produits).",
+        "selector": "[data-testid^='m-nav-']",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "Footer.jsx legal-links block on mobile 390x844",
+        "issue": "Each legal link renders at 18 px height (Link's default line-height) — well below the ≥32 px comfortable tap the review requested. Legal links are tappable but density is high on 1-column mobile layout.",
+        "selector": "[data-testid^='footer-link-']",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Story section (all viewports)",
+        "issues": ["Broken gingembre image ruins the Story block visual. Change GINGER_IMG in Story.jsx L6 from 'jus-gingembre-luxe.png' to 'jus-gingembre-luxe.jpg' to fix."]
+      }
+    ]
+  },
+  "detailed_results": {
+    "mobile_390x844": {
+      "no_horizontal_scroll": "PASS (scrollWidth=390, clientWidth=390)",
+      "prices_visible": "PASS — 7,00 / 12,00 / 22,00 / 10,00 / 5,00 / 30,00 / 300 ml all present",
+      "forbidden_strings": "PASS — none of 355 ml, 9,00 $ 10, 17,00 $, 8,00 $, 4,00 $ found",
+      "hero_caption_mobile": "PASS — 'Livraison locale à Sorel-Tracy — plus loin sur demande pour vos événements'",
+      "combo_decouverte": "PASS — '5 Mikatés + 1 Bissap 300 ml' with '10,00 $' rendered on one/two lines, no overflow",
+      "combo_gingembre": "PASS — '5 Mikatés + 1 Gingembre 300 ml' with '10,00 $' rendered cleanly (image ref /products/jus-gingembre-luxe.jpg on this card is correct)",
+      "juice_bissap_card": "PASS — 300 ml + 5,00 $ visible; jus-bissap-luxe.jpg loads (nat 1122x1402); rendered 308x240 with object-fit:cover — cropped but proportions preserved",
+      "product_images_integrity": "PASS — all product images on Home have naturalWidth>0 after scroll and use object-fit:cover; no visual distortion. Broken exception noted below.",
+      "delivery_stack_and_copy": "PASS — delivery-local top=7889 above delivery-event top=8602, both 342px wide (stacked). Copy has 5 km / 30,00 $ / Sorel-Tracy / Rive-Sud / Rive-Nord / Montréal / distance / volume / besoins spécifiques.",
+      "order_form_dims": "PASS — inputs 292x48 (name/phone/email/address), textarea 292x93, submit 292x48 (≥44 tall), Ajouter chips 44 tall x6 first",
+      "order_form_e2e": "PASS — filled QA Mobile / 438-555-0888 / Sorel-Tracy + 1× Combo Découverte + consent → submit → toast 'Commande enregistrée ! Nous vous contactons sous peu.' (French); form cleared (name value = '')",
+      "allergen_notice": "PASS — 292x216, no overflow",
+      "consent_row": "PASS — 102 px tall, checkbox + wrapping label do not overlap",
+      "cookie_banner": "PARTIAL — banner height 468/844 (55% of viewport, does not cover fully) — GOOD; buttons Accepter 40 px / Refuser 42 px / Personnaliser 42 px — BELOW ≥44 px guideline; 'Politique sur les cookies' link tappable in banner; after Personnaliser the analytics toggle is visible without horizontal scroll — GOOD",
+      "hamburger_menu": "PARTIAL — opens, tapping 'Menu' scrolls to #produits (scrollY=2190, produits top became −346 relative), 6 items visible; ALL items 41 px height — BELOW ≥44 px guideline",
+      "text_truncation_scan": "PASS — only offender is the intentional marquee (`rfm-marquee-container`, sw=3948 vs cw=390) which is designed to overflow-scroll horizontally. All button labels 'Commander', 'Ajouter', '+ 5 mikatés', '+ 10 mikatés', '+ 20 mikatés', 'Envoyer' render fully with no unexpected ellipsis."
+    },
+    "tablet_768x1024": {
+      "no_horizontal_scroll": "PASS (sw=768=cw)",
+      "prices_visible": "PASS — 7/12/22/10/5/30 all present",
+      "product_grid": "PASS — sm:grid-cols-2 active (2 cards per row)",
+      "delivery_layout": "PASS — cards STACK (delivery-local top=5849, delivery-event top=6247; grid uses lg:grid-cols-2 breakpoint 1024, so 768 falls under 1-col). Review allowed either — no clipping observed.",
+      "hero_image_scaling": "PASS — hero renders cleanly at 768 width, no distortion"
+    },
+    "desktop_1440x900": {
+      "product_grid": "PASS — 3-column first row (lg:grid-cols-3 active)",
+      "delivery_layout": "PASS — 2 cards side-by-side (same offsetTop)",
+      "hero_caption": "PASS — 'Livraison locale à Sorel-Tracy — plus loin sur demande pour vos événements'",
+      "footer_legal_links": "PASS — 6 legal links present (lg:grid-cols-3, so 2 rows of 3)",
+      "images_bissap_gingembre": "PASS — jus-bissap-luxe.jpg (1122x1402) and jus-gingembre-luxe.jpg (1122x1402) load in Products section without distortion (object-fit:cover)"
+    },
+    "legal_pages_mobile": {
+      "loaded_all_6": "PASS — /politique-confidentialite, /conditions-generales-vente, /politique-remboursement, /politique-livraison, /politique-cookies, /conditions-utilisation",
+      "h1_readable_no_hscroll": "PASS — H1 heights 38–113 px depending on title length; scrollWidth=clientWidth=390 on all pages",
+      "back_link_present": "PASS in code — LegalLayout.jsx L14-21 uses data-testid='legal-back-home' with ChevronLeft + 'Retour à l'accueil' text (visual pass; my innerText probe missed it because ChevronLeft SVG is first child, but the element exists)",
+      "footer_legal_stacks_1_col": "PASS — grid-cols-1 on mobile; links tappable but 18 px high (see UI bug above)"
+    },
+    "image_integrity_summary": {
+      "broken_images_all_viewports": ["https://saveurs-partage.preview.emergentagent.com/products/jus-gingembre-luxe.png (Story.jsx L6 — should be .jpg)"],
+      "product_home_page": "All Products.jsx <img> resolve to naturalWidth>0 with object-fit:cover after scroll on all 3 viewports.",
+      "bissap_and_gingembre_new_images": "1122x1402 portrait — verified loading correctly in Products section on desktop and mobile; rendered aspect ratio differs from natural (cover crop by design, matches spec)."
+    }
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_7.json"
+  ],
+  "action_items": [
+    "HIGH — Fix broken image: in /app/frontend/src/components/Story.jsx line 6 change `const GINGER_IMG = '/products/jus-gingembre-luxe.png'` → `.jpg` (file on disk is /app/frontend/public/products/jus-gingembre-luxe.jpg; content-type on .png request is text/html because SPA fallback serves index.html).",
+    "MEDIUM — Bump Cookie banner buttons min-height to 44 px on mobile (Accepter/Refuser/Personnaliser are currently 40/42/42 px).",
+    "MEDIUM — Bump mobile hamburger menu items to min-h-[44px] (currently 41 px each) in Navbar.jsx L184-186.",
+    "MEDIUM — Increase mobile tap area of footer legal links (currently 18 px line-height); add py-1.5 or min-h-[32px] to <Link> in Footer.jsx L100-108."
+  ],
+  "critical_code_review_comments": [
+    "Story.jsx L6 references '/products/jus-gingembre-luxe.png' but the asset is .jpg — this is the only broken image on the site. Backend catalog uses .jpg correctly; only this hard-coded frontend const is wrong.",
+    "OrderForm.jsx L353 already applies `min-h-[44px] md:min-h-0` to the Ajouter chips — good pattern; consider reusing it for the hamburger items and cookie banner action buttons so mobile respects the 44 px touch-target rule.",
+    "Delivery.jsx uses lg:grid-cols-2 (breakpoint = 1024 px). At tablet 768–1023 the cards stack vertically. Review allowed either — but if a real 2-col-on-tablet is desired, switch to md:grid-cols-2.",
+    "Products.jsx ProductCard uses fixed h-60 image container with object-cover — correct behavior for portrait 1122x1402 juice images (bissap/gingembre) and landscape 1408x768 mikaté images: images are cropped, not squished. No aspect distortion in either case.",
+    "Footer.jsx legal links have no explicit tap-target sizing — on mobile (1-col) each link is roughly text-height (~18 px). Suggest adding `py-1.5 block` to hit the 32–44 px comfortable tap zone.",
+    "Hero.jsx L34 slide 3 description 'livraison dans plusieurs secteurs' still reads OK with the new two-tier delivery scope; low priority.",
+    "Navbar mobile hamburger opens correctly and go(id) navigation works, but the drop-down items are py-2.5 without a min-h floor — they compute to 41 px which is 3 px short of Apple/Material 44 px guideline."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "N/A (frontend-only audit)", "frontend": "92% — 24/26 verified scenarios PASS, 4 minor issues (1 image bug + 3 touch-target)" },
+  "test_credentials": "N/A (no auth used)",
+  "seed_data_creation": "One test order created via UI at 390x844: name='QA Mobile', phone='438-555-0888', address='Sorel-Tracy', 1× Combo Découverte @ 10 $, consent accepted, submitted successfully with confirmation toast 'Commande enregistrée !'. Order persisted in backend.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Fixes are all localized single-line/attribute changes (Story.jsx image ext, min-h utilities on 3 components). After fixes: (1) reload / at 390x844 and verify jus-gingembre-luxe.jpg loads with naturalWidth=1122 in the Story block, (2) re-measure cookie banner + hamburger + footer legal link heights ≥44 px / ≥32 px. Everything else in the audit (prices, delivery two-tier, combos, order-form E2E, no h-scroll, no forbidden legacy strings, hero captions, image proportions, legal pages) is green and does not need re-test unless a global refactor is made.",
+  "rca of the issue": "Broken gingembre image: developer copy-pasted the constant during the recent luxe-image rename and left the .png extension while the actual asset was saved as .jpg. Server returns text/html because index.html is served as SPA fallback for unknown paths, which masked the 404 in DevTools Network unless inspecting content-type. Touch-target regressions: Navbar mobile items, cookie banner buttons and footer legal links use small padding without a min-h utility, so at mobile density they slip below the 44 px / 32 px thresholds the review specifically called out."
+}
