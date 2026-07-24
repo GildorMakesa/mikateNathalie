@@ -1,0 +1,120 @@
+{
+  "summary": "Read-only compliance & UX audit of the order flow on Délices Mikaté Royal (fr-FR). All 11 audit scenarios executed via Playwright on the public preview URL (desktop 1440x900 and mobile 390x844). Regular order form and event quote form both submit successfully with professional French confirmation toasts, POST /api/orders → 200. Allergen notice contains ALL 7 required fragments in both sections. HTTPS confirmed on `/`, `/politique-confidentialite`, and on the /api/orders POST endpoint. Zero card input fields; POST body contains no card-related keys. One CLIENT-VISIBLE COMPLIANCE GAP confirmed: the REGULAR order form (#commander) has NO 'date souhaitée' field — only 7 of the 8 client-requested fields are present.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Mobile 390x844 — #commander quick-add chips",
+        "issues": [
+          "'Ajouter rapidement' chips (data-testid=order-add-item) render at ~30px tall on mobile — below the 40–44px recommended tap-target size. Not blocking (they are secondary, chip-style adds and users have alternate paths from the catalog), but flagged for tap-comfort."
+        ]
+      }
+    ]
+  },
+  "audit_results": {
+    "regular_form_field_presence_8of8": {
+      "customer_name (order-name)": "PRESENT",
+      "email (order-email)": "PRESENT",
+      "phone (order-phone)": "PRESENT",
+      "address (order-address)": "PRESENT",
+      "products (order-add-item x23)": "PRESENT",
+      "quantities (+/- via aria-label Augmenter/Réduire)": "PRESENT (visible after item added; no dedicated data-testid on qty buttons — uses aria-labels 'Augmenter'/'Réduire')",
+      "date_souhaitee (input type=date OR label 'Date')": "MISSING — 0 matching inputs, 0 label elements matching /date/i inside #commander. CONFIRMED as reported by main agent.",
+      "commentaires (order-message textarea)": "PRESENT"
+    },
+    "event_form_field_presence": {
+      "customer_name": "PRESENT",
+      "email": "PRESENT",
+      "phone": "PRESENT",
+      "address": "PRESENT",
+      "products (order-add-item)": "PRESENT",
+      "quantities (+/-)": "PRESENT",
+      "event_type (event-type select)": "PRESENT (options: Mariage, Baptême, Anniversaire, Église, Réunion familiale, Événement corporatif, Autre)",
+      "event_attendees (event-attendees)": "PRESENT",
+      "event_date (event-date input[type=date])": "PRESENT",
+      "event_comments (event-comments textarea)": "PRESENT",
+      "message textarea (order-message)": "PRESENT (in addition to event-comments)"
+    },
+    "regular_submit_confirmation": {
+      "payload_sent": "customer_name='Audit QA Regular', phone='438-555-0199', email='qa+regular@example.com', address='Test 123, Sorel-Tracy', 1x Mikaté Sucré 5 pièces, consent checked",
+      "toast_exact_text": "Commande enregistrée ! Nous vous contactons sous peu.",
+      "form_cleared": "YES (name='', phone='', address='', cart_rows=0, consent unchecked)",
+      "network": "POST https://saveurs-partage.preview.emergentagent.com/api/orders → 200. Body has no card keys. order_type='regular'."
+    },
+    "event_submit_confirmation": {
+      "payload_sent": "customer_name='Audit QA Event', phone='438-555-0198', email='qa+event@example.com', address='Test 456, Montréal', event_type='Mariage', attendees=50, event_date='2026-08-15', comments='Test audit - allergie aux arachides', 1x Mikaté Sucré",
+      "toast_exact_text": "Demande envoyée ! Notre équipe vous reviendra avec une soumission personnalisée.",
+      "form_cleared": "YES",
+      "network": "POST /api/orders → 200. Body contains order_type='event' + event_info={event_type,attendees,event_date,comments}. No card keys."
+    },
+    "allergen_notice": {
+      "commander_text": "AVIS ALLERGÈNES : Nos produits peuvent contenir ou avoir été en contact avec des allergènes tels que les arachides, le gluten, les œufs, le lait ou d'autres ingrédients allergènes. Veuillez nous informer de toute allergie ou restriction alimentaire avant de commander.",
+      "evenements_text": "AVIS ALLERGÈNES : Nos produits peuvent contenir ou avoir été en contact avec des allergènes tels que les arachides, le gluten, les œufs, le lait ou d'autres ingrédients allergènes. Veuillez nous informer de toute allergie ou restriction alimentaire avant de commander.",
+      "required_fragments_check": "ALL 7 PRESENT in BOTH sections: 'AVIS ALLERGÈNES', 'arachides', 'gluten', 'œufs', 'lait', 'ingrédients allergènes', 'Veuillez nous informer de toute allergie'."
+    },
+    "payment_options": {
+      "options_seen": [
+        "— Choisir —",
+        "Virement Interac (recommandé)",
+        "PayPal",
+        "Carte de crédit",
+        "Carte de débit",
+        "Comptant à la livraison",
+        "Autre (préciser dans le message)"
+      ],
+      "note": "Interac + PayPal + 'autres modalités' all present. NB: 'Carte de crédit' and 'Carte de débit' are only SELECT option labels (user's stated preference), NOT actual card input fields — no PAN/CVV captured on the site."
+    },
+    "mobile_ux_390x844": {
+      "horizontal_scroll": "NONE (scrollWidth=clientWidth=390)",
+      "input_widths": "customer_name/phone/email/address = 292px (>=280 required) ✓",
+      "input_heights": "48px each — comfortable tap target",
+      "submit_button": "292x48 — tappable ✓",
+      "add_item_chips": "217x30 — BELOW 40px recommended (see design_issues)",
+      "consent_checkbox": "16x16 checkbox inside a 292x102 label — label wraps properly, fully visible",
+      "allergen_notice": "292x216 — no text overflow (scrollW=clientW=287)",
+      "empty_required_submit": "Native browser validation on 'customer_name' shows tooltip 'Please fill out this field.' — submission blocked (as reported in iteration_2)",
+      "no_products_submit": "Toast 'Veuillez ajouter au moins un produit.' shown when required inputs filled but cart empty ✓",
+      "full_mobile_submit": "Toast 'Commande enregistrée ! Nous vous contactons sous peu.' — form clears, no layout breakage"
+    },
+    "https_security": {
+      "home_url": "https://saveurs-partage.preview.emergentagent.com/  → HTTPS ✓",
+      "politique_confidentialite": "https://saveurs-partage.preview.emergentagent.com/politique-confidentialite → HTTPS ✓",
+      "api_orders_post_url": "https://saveurs-partage.preview.emergentagent.com/api/orders → HTTPS ✓",
+      "note": "CSP / HSTS headers not audited in this pass (per request — inspection only, not requirement)."
+    },
+    "no_card_data_stored": {
+      "form_input_scan": "0 inputs matching /card|cvv|cvc|ccnumber|expiry|credit/i in name/id/placeholder/type across the entire page",
+      "post_body_scan": "Regular POST body: no card_number/cvv/cvc/ccnumber/expiry/credit_card keys. Event POST body: same, no card keys.",
+      "verdict": "COMPLIANT — payments are handled off-site via Interac/PayPal; only a preferred-method label is captured."
+    },
+    "professional_tone": {
+      "regular_confirmation": "'Commande enregistrée ! Nous vous contactons sous peu.' — professional French, no emoji spam, no dev leftovers",
+      "event_confirmation": "'Demande envoyée ! Notre équipe vous reviendra avec une soumission personnalisée.' — professional French",
+      "verdict": "Both toasts are appropriately branded and professional"
+    }
+  },
+  "test_report_links": [],
+  "action_items": [
+    "COMPLIANCE (client decision): The REGULAR order form (#commander) is MISSING a 'Date souhaitée' field. Client requested 8 fields; only 7 are present (customer_name, email, phone, address, products, quantities, comments — no date). The EVENT form correctly has event_date. Main agent should surface this to the user for a go/no-go decision before adding.",
+    "MINOR UX (optional): 'Ajouter rapidement' chips (order-add-item) render at ~30px tall on mobile 390x844 — under the 40–44px recommended tap-target. Consider increasing padding or provide product-card 'Add' buttons as primary path on mobile.",
+    "OPTIONAL (from iteration_2, still applies): consent checkbox uses HTML5 `required` + JS toast — the branded toast in onSubmit L122 is unreachable because native validation short-circuits it. Pick one path.",
+    "OPTIONAL (a11y/testability): consider adding `data-testid` (e.g., order-inc-qty / order-dec-qty) to the +/- quantity buttons in the cart. Currently only aria-labels 'Augmenter' / 'Réduire' are available."
+  ],
+  "critical_code_review_comments": [
+    "OrderForm.jsx line 11–18 `emptyForm` has no `preferred_delivery_date` field — matches the observed MISSING date field in the regular form. To add: extend `emptyForm`, add a Field with input[type=date] name='preferred_delivery_date', and include it in the payload.",
+    "OrderForm.jsx line 152–158 confirmation toasts are hard-coded (professional French, good). No i18n concern raised.",
+    "OrderForm.jsx line 27–34 PAYMENT_OPTIONS include 'Carte de crédit' / 'Carte de débit' as SELECT choices only — no capture of card data. Compliant.",
+    "OrderForm.jsx line 296–345 cart rows use aria-label 'Augmenter' / 'Réduire' for qty; adding data-testid would improve QA regression coverage."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "N/A (frontend-only audit)", "frontend": "100% (11/11 audit scenarios executed; 1 confirmed compliance gap: missing 'date souhaitée' in regular form — reporting only, per read-only mandate)" },
+  "test_credentials": "N/A",
+  "seed_data_creation": "Submitted 3 test orders via UI on the live preview backend: (1) 'Audit QA Regular' desktop, (2) 'Audit QA Event' desktop with event_info, (3) 'Mobile QA' mobile viewport. All three returned 200 from POST /api/orders. Backend may accumulate these — orders prefixed 'Audit QA' or 'Mobile QA' can be purged if needed.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Read-only audit — no code touched. Regular order form (#commander) MISSING 'date souhaitée' — this was the specific question from the client and is CONFIRMED missing. Event form (#evenements) has event_date. All other 7 client-requested fields present in both forms. Allergen notice contains all 7 required fragments verbatim. Payment select: 6 options (Interac, PayPal, Carte crédit, Carte débit, Comptant, Autre) — Interac + PayPal + 'autres modalités' all present. NO card input fields anywhere. POST /api/orders → 200 with clean JSON (no card keys). Toasts: 'Commande enregistrée ! Nous vous contactons sous peu.' (regular) and 'Demande envoyée ! Notre équipe vous reviendra avec une soumission personnalisée.' (event). HTTPS on `/`, `/politique-confidentialite`, `/api/orders`. Mobile 390x844: no horizontal scroll, inputs 292px, submit 48px, only nit is order-add-item chips 30px tall.",
+  "rca of the issue": "No blocking bugs. The single reported gap — REGULAR form missing 'date souhaitée' input — is a design decision confirmed by scanning OrderForm.jsx: `emptyForm` has no date field and the only input[type=date] in the form lives inside the `isEvent && (...)` block. To fix (if client requests): add a `preferred_delivery_date` string to `emptyForm`, render an input[type=date] Field outside the isEvent block (e.g., between Adresse and payment_method), and include it in the payload. Backend server.py Order model would need the new optional field too."
+}
