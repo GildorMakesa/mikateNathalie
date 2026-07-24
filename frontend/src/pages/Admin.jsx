@@ -527,6 +527,9 @@ function OrderCard({ order: o, onUpdateStatus, onMarkRead, onRemove, onGenerateS
         <Info label="Adresse" value={o.address} className="md:col-span-2" />
         <Info label="Paiement préféré" value={PAY_LABELS[o.payment_method] || "Non précisé"} />
         <Info label="Date" value={new Date(o.created_at).toLocaleString("fr-CA")} />
+        {o.preferred_delivery_date && (
+          <Info label="Date souhaitée par le client" value={new Date(o.preferred_delivery_date + "T00:00:00").toLocaleDateString("fr-CA", { weekday: "long", year: "numeric", month: "long", day: "numeric" })} />
+        )}
         {o.message && <Info label="Message" value={o.message} className="md:col-span-2" />}
       </div>
 

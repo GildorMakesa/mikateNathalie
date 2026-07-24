@@ -77,6 +77,7 @@ class OrderCreate(BaseModel):
     payment_method: Optional[str] = Field(None, max_length=40)
     message: Optional[str] = Field(None, max_length=1000)
     order_type: str = Field("regular", pattern="^(regular|event)$")
+    preferred_delivery_date: Optional[str] = Field(None, max_length=40)
     event_info: Optional[EventInfo] = None
 
 
@@ -91,6 +92,7 @@ class Order(BaseModel):
     payment_method: Optional[str] = None
     message: Optional[str] = None
     order_type: str = "regular"
+    preferred_delivery_date: Optional[str] = None
     event_info: Optional[EventInfo] = None
     status: str = "new"
     email_sent: bool = False
@@ -547,6 +549,7 @@ def _build_order_email_html(order: Order) -> str:
     )
     email_block = f"<p style='margin:4px 0;color:#1D1914;'><strong>Email :</strong> {order.email}</p>" if order.email else ""
     pay_block = f"<p style='margin:4px 0;'><strong>Mode de paiement préféré :</strong> {order.payment_method}</p>" if order.payment_method else ""
+    date_block = f"<p style='margin:4px 0;'><strong>Date souhaitée :</strong> {order.preferred_delivery_date}</p>" if order.preferred_delivery_date else ""
     return f"""
     <div style="font-family:Georgia,serif;background:#FAF8F5;padding:32px;color:#1D1914;">
       <div style="max-width:600px;margin:0 auto;background:#FFFFFF;border:1px solid #E8E2D9;border-radius:16px;padding:32px;">
@@ -557,6 +560,7 @@ def _build_order_email_html(order: Order) -> str:
         <p style="margin:4px 0;"><strong>Téléphone :</strong> {order.phone}</p>
         {email_block}
         <p style="margin:4px 0;"><strong>Adresse :</strong> {order.address}</p>
+        {date_block}
         {pay_block}
         <h2 style="font-size:18px;color:#D19627;margin:24px 0 8px 0;">Commande</h2>
         <table style="width:100%;border-collapse:collapse;">

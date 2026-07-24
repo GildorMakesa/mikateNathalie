@@ -13,6 +13,7 @@ const emptyForm = {
   phone: "",
   email: "",
   address: "",
+  preferred_delivery_date: "",
   payment_method: "",
   message: "",
 };
@@ -106,8 +107,12 @@ export default function OrderForm({ preselected, onConsume, mode = "regular", on
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (!form.customer_name || !form.phone || !form.address) {
-      toast.error("Merci de remplir nom, téléphone et adresse.");
+    if (!form.customer_name.trim() || !form.phone.trim() || !form.address.trim()) {
+      toast.error("Merci de remplir votre nom, votre téléphone et votre adresse.");
+      return;
+    }
+    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      toast.error("Le format du courriel est invalide. Veuillez le corriger ou le laisser vide.");
       return;
     }
     if (items.length === 0) {
@@ -132,6 +137,7 @@ export default function OrderForm({ preselected, onConsume, mode = "regular", on
         payment_method: form.payment_method || null,
         message: form.message || null,
         order_type: mode,
+        preferred_delivery_date: mode === "regular" ? (form.preferred_delivery_date || null) : null,
         items: items.map(({ product_id, product_name, quantity, option_label, unit_price_cad }) => ({
           product_id,
           product_name,
@@ -238,6 +244,7 @@ export default function OrderForm({ preselected, onConsume, mode = "regular", on
 
           <motion.form
             onSubmit={onSubmit}
+            noValidate
             data-testid={TID.orderForm}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -251,7 +258,7 @@ export default function OrderForm({ preselected, onConsume, mode = "regular", on
             {isEvent && (
               <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Field label="Type d'événement *" dark={isEvent}>
-                  <select required name="event_type" value={eventInfo.event_type} onChange={onChangeEvent} className={isEvent ? "dark-input" : "input"} data-testid="event-type">
+                  <select name="event_type" value={eventInfo.event_type} onChange={onChangeEvent} className={isEvent ? "dark-input" : "input"} data-testid="event-type">
                     <option value="">— Choisir —</option>
                     {EVENT_TYPES.map((e) => <option key={e} value={e}>{e}</option>)}
                   </select>
@@ -271,18 +278,31 @@ export default function OrderForm({ preselected, onConsume, mode = "regular", on
             {/* Coordonnées */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Field label="Nom complet *" dark={isEvent}>
-                <input required data-testid={TID.orderName} name="customer_name" value={form.customer_name} onChange={onChange} className={isEvent ? "dark-input" : "input"} placeholder="Aminata D." />
+                <input data-testid={TID.orderName} name="customer_name" value={form.customer_name} onChange={onChange} className={isEvent ? "dark-input" : "input"} placeholder="Aminata D." />
               </Field>
               <Field label="Téléphone *" dark={isEvent}>
-                <input required data-testid={TID.orderPhone} name="phone" value={form.phone} onChange={onChange} className={isEvent ? "dark-input" : "input"} placeholder="+1 (438) ..." />
+                <input data-testid={TID.orderPhone} name="phone" value={form.phone} onChange={onChange} className={isEvent ? "dark-input" : "input"} placeholder="+1 (438) ..." />
               </Field>
               <Field label="Courriel (recommandé pour confirmation)" dark={isEvent}>
                 <input type="email" data-testid={TID.orderEmail} name="email" value={form.email} onChange={onChange} className={isEvent ? "dark-input" : "input"} placeholder="vous@exemple.com" />
               </Field>
               <Field label="Adresse de livraison *" dark={isEvent}>
-                <input required data-testid={TID.orderAddress} name="address" value={form.address} onChange={onChange} className={isEvent ? "dark-input" : "input"} placeholder="Quartier, ville, code postal..." />
+                <input data-testid={TID.orderAddress} name="address" value={form.address} onChange={onChange} className={isEvent ? "dark-input" : "input"} placeholder="Quartier, ville, code postal..." />
               </Field>
-              <Field label="Mode de paiement préféré" className="md:col-span-2" dark={isEvent}>
+              {!isEvent && (
+                <Field label="Date souhaitée (optionnel)" dark={isEvent}>
+                  <input
+                    type="date"
+                    name="preferred_delivery_date"
+                    value={form.preferred_delivery_date}
+                    onChange={onChange}
+                    min={new Date().toISOString().split("T")[0]}
+                    className={isEvent ? "dark-input" : "input"}
+                    data-testid="order-preferred-date"
+                  />
+                </Field>
+              )}
+              <Field label="Mode de paiement préféré" className={isEvent ? "md:col-span-2" : ""} dark={isEvent}>
                 <select data-testid="order-payment-method" name="payment_method" value={form.payment_method} onChange={onChange} className={isEvent ? "dark-input" : "input"}>
                   <option value="">— Choisir —</option>
                   {PAYMENT_OPTIONS.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
@@ -330,7 +350,7 @@ export default function OrderForm({ preselected, onConsume, mode = "regular", on
                         key={`${p.id}-${opt.label}`}
                         type="button"
                         onClick={() => addItem(p, opt)}
-                        className={`text-xs rounded-full border px-3 py-1.5 transition-colors ${
+                        className={`text-xs rounded-full border px-4 min-h-[44px] md:min-h-0 md:py-1.5 py-2 inline-flex items-center transition-colors ${
                           isEvent
                             ? "border-white/20 bg-white/5 hover:border-brand-ochre hover:text-brand-ochre"
                             : "border-brand-line bg-white hover:border-brand-ruby hover:text-brand-ruby"
@@ -389,7 +409,6 @@ export default function OrderForm({ preselected, onConsume, mode = "regular", on
                 type="checkbox"
                 checked={acceptedTerms}
                 onChange={(e) => setAcceptedTerms(e.target.checked)}
-                required
                 data-testid="order-consent-checkbox"
                 className="mt-1 h-4 w-4 shrink-0 accent-brand-ruby"
               />

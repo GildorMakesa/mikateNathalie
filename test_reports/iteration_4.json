@@ -1,0 +1,50 @@
+{
+  "summary": "Full E2E validation of the 3 targeted OrderForm improvements (Date souhaitée field, ≥44px mobile chips, no-native-validation with French toasts) plus regression on cookie banner, PostHog gating and 6 legal pages. Backend: 11/11 pytest passing (7 regression + 4 new tests dedicated to preferred_delivery_date). Frontend: 15/15 Playwright scenarios passing. Admin dashboard correctly displays 'DATE SOUHAITÉE PAR LE CLIENT: mercredi 29 juillet 2026' in French format (screenshot-confirmed). All three iteration_3 gaps are fully resolved.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "detailed_results": {
+    "date_souhaitee_regular_form": "PASS — [data-testid=order-preferred-date] present in #commander, type='date', label='Date souhaitée (optionnel)', min='2026-07-24' (today ISO). Correctly scoped: NOT rendered in #evenements (only event-date there).",
+    "date_souhaitee_submit_persistence": "PASS — POST /api/orders payload has preferred_delivery_date='2026-07-29', response 200 echoes same value, DB persisted (fetched via admin GET). Admin card shows 'DATE SOUHAITÉE PAR LE CLIENT · mercredi 29 juillet 2026' (French toLocaleDateString('fr-CA') formatting, screenshot verified). Order id=34f3eb26-2364-427e-9009-47a551f83f60.",
+    "date_souhaitee_optional_null": "PASS — Empty date field → POST body preferred_delivery_date=null, response 200, response.preferred_delivery_date=null.",
+    "mobile_chips_44px": "PASS — Mobile 390x844: order-add-item chip bounding box = 225x44px (h=44 satisfies ≥44). No horizontal overflow (scrollW=clientW=390).",
+    "desktop_chips_unchanged": "PASS — Desktop 1440x900: same chip = 225x30px (h=30, small as before). Confirms responsive min-h-[44px] md:min-h-0.",
+    "novalidate_attr": "PASS — form.noValidate === true.",
+    "no_native_validation_empty_name": "PASS — French toast 'Merci de remplir votre nom, votre téléphone et votre adresse.' fired, 0 POST calls to /api/orders.",
+    "no_native_validation_invalid_email": "PASS — Toast 'Le format du courriel est invalide. Veuillez le corriger ou le laisser vide.', 0 POSTs. After correcting email → POST 200 succeeds with success toast.",
+    "no_native_validation_consent": "PASS — Toast 'Veuillez accepter la Politique de confidentialité et les Conditions générales de vente pour continuer.', 0 POSTs.",
+    "no_native_validation_event_type": "PASS — Toast 'Veuillez préciser le type d'événement.', 0 POSTs.",
+    "regression_happy_path_regular": "PASS — Success toast 'Commande enregistrée ! Nous vous contactons sous peu.', form fully cleared (name='', preferred_delivery_date='', consent unchecked, cart empty).",
+    "regression_cookies_posthog": "PASS — Fresh localStorage: cookie banner visible, window.posthog.__loaded=false. After Accepter click: banner gone, window.posthog loaded (capture function present).",
+    "regression_legal_pages": "PASS — All 6 pages return 200 with correct h1 and 'Dernière mise à jour : 23 juillet 2026' present: politique-confidentialite, conditions-generales-vente, politique-remboursement, politique-livraison, politique-cookies, conditions-utilisation."
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_preferred_delivery_date.py",
+    "/app/backend/tests/test_mikate_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "OrderForm.jsx L108-129: French-toast validation branch is now the SOLE path (noValidate on form + no required attrs on inputs). Clean, single-source-of-truth validation. ✓",
+    "OrderForm.jsx L292-304: preferred_delivery_date field correctly gated with !isEvent. Uses min={today ISO} for visual guardrail (client-only, backend does not enforce — acceptable per problem statement). ✓",
+    "OrderForm.jsx L353: chip class 'min-h-[44px] md:min-h-0 md:py-1.5 py-2' — clean responsive rule, verified 44px mobile / 30px desktop. ✓",
+    "server.py OrderCreate & Order both include preferred_delivery_date: Optional[str] (L80 / L95). Email HTML L552 uses conditional date_block. ✓",
+    "Admin.jsx L530-532 renders French-formatted date via toLocaleDateString('fr-CA', {weekday:'long', year:'numeric', month:'long', day:'numeric'}) — note the 'T00:00:00' suffix trick to avoid TZ off-by-one which is correctly applied. ✓",
+    "Minor: iteration_2/3 note about consent-checkbox HTML5 required is now moot (removed). No remaining dual-path validation."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_mikate_api.py (updated stale expectations: catalog=11 products, testimonials=8, status='new', admin-auth for orders list)",
+    "/app/backend/tests/test_preferred_delivery_date.py (new — 4 tests for preferred_delivery_date + admin login)"
+  ],
+  "success_rate": { "backend": "100% (11/11 pytest)", "frontend": "100% (15/15 Playwright scenarios)" },
+  "test_credentials": "Admin: password mikate2025",
+  "seed_data_creation": "Created several orders on live preview DB during testing (customer names prefixed 'QA'/'TEST_QA'). Test 'QA Date' order kept intentionally for admin visual verification screenshot. Backend tests self-cleanup via admin delete for the persistence test.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All 3 iteration_3 gaps CLOSED: (1) Date souhaitée field present in regular form only with min=today, submitted as preferred_delivery_date, persisted & displayed in French on admin; (2) mobile order-add-item chips at 44px (h=44), desktop at 30px; (3) noValidate on form + all `required`/`type=email` removed from inputs → uniform French JS toasts. No native browser tooltips fire. Cookie banner + PostHog gating still work. All 6 legal pages 200 with '23 juillet 2026'. Screenshot on file (took during admin verification) confirms 'DATE SOUHAITÉE PAR LE CLIENT · mercredi 29 juillet 2026'.",
+  "rca of the issue": "N/A — no bugs found. All improvements from main agent's iteration verified working end-to-end (frontend UI, network payload, backend persistence, admin display)."
+}
