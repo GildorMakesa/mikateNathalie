@@ -1,0 +1,54 @@
+{
+  "summary": "Iteration 6 e2e validation of the TWO-TIER delivery scope: (1) local Sorel-Tracy + 5 km + 30 $ min, (2) extended Rive-Sud / Rive-Nord / Montréal / autres régions for events/large orders with distance/volume/besoins pricing. Backend: 30/30 pytest passing (added 4 new two-tier tests + adjusted the stale iter-5 Nancy-delivery test that used to forbid Rive-*/Montréal). Frontend: Delivery section has 2 cards (delivery-local + delivery-event) with all required copy; Hero desktop AND mobile (390x844) show 'Livraison locale à Sorel-Tracy — plus loin sur demande pour vos événements'; Footer shows 'Sorel-Tracy · Livraison étendue sur demande pour événements' and does NOT list Montréal/Rive-*; FAQ delivery answer mentions both tiers (Sorel-Tracy + 5 km + 30$ AND Rive-Sud/Rive-Nord/Montréal + distance/volume); /politique-livraison Section 1 has both subsections and the 'Aucune adresse personnelle, adresse de production ou point de retrait public' disclaimer; Nancy Montréal question returns event/large-order guidance with distance/volume pricing (no flat refusal); Nancy small-order-in-Sorel-Tracy pushes toward 30$ minimum; Cookie banner + PostHog gating works; Order submission via UI end-to-end succeeded (order 42be0202-... visible in admin with Combo Découverte @ 10 $). Zero restrictive-phrasing residue; zero street address / postal code leak.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "detailed_results": {
+    "delivery_section_two_cards": "PASS — /#livraison shows TWO articles side-by-side. delivery-local card: 'Livraison locale régulière' / 'Sorel-Tracy et secteurs proches' / '5 km' / '30,00 $'. delivery-event card: 'Grandes commandes & événements' / 'Livraison étendue sur demande' / lists Rive-Sud + Rive-Nord + Montréal + autres régions / mentions distance + volume + besoins spécifiques.",
+    "hero_caption_desktop_and_mobile": "PASS — Both desktop (1920) and mobile (390x844) render 'Livraison locale à Sorel-Tracy — plus loin sur demande pour vos événements'. Does NOT imply delivery is exclusively 5 km.",
+    "footer_wording": "PASS — Footer contact line = 'Sorel-Tracy · Livraison étendue sur demande pour événements'. No Montréal / Rive-Nord / Rive-Sud in compact footer as required.",
+    "faq_two_tier_answer": "PASS — FAQ 'Y a-t-il des frais de livraison ?' answer contains both: (a) 'Livraison locale régulière à Sorel-Tracy et secteurs proches (rayon habituel de 5 km) ... minimum de 30,00 $', AND (b) 'Rive-Sud, Rive-Nord, Montréal et autres régions ... calculés selon la distance, le volume et les besoins spécifiques'.",
+    "politique_livraison_section_1": "PASS — /politique-livraison §1 'Zones de livraison' has TWO subsections: 'Livraison locale régulière' (Sorel-Tracy + 5 km + 30,00 $) and 'Grandes commandes et événements' (Rive-Sud, Rive-Nord, Montréal, autres régions, distance/volume/besoins). Explicit disclaimer 'Aucune adresse personnelle, adresse de production ou point de retrait public n'est affiché sur le site' present.",
+    "nancy_montreal_question": "PASS — POST /api/chat 'Est-ce que vous livrez à Montréal ?' → Nancy references événements/grandes commandes/entreprises/groupes/soumission/distance/volume; NEVER says 'nous ne livrons qu'à Sorel-Tracy' or 'uniquement à Sorel-Tracy'.",
+    "nancy_small_order": "PASS — POST /api/chat 'Livraison à Sorel-Tracy pour une commande de 4 mikatés ?' → reply mentions Sorel-Tracy and the 30 $ minimum requirement.",
+    "products_pricing_regression": "PASS — GET /api/products still returns mikatés 7/12/22, juices 300 ml @ 5 $, Combo Découverte 10 $, Combo Gingembre 9 $. No 355, no old prices.",
+    "order_submit_regression_backend": "PASS — POST /api/orders with QA Livraison v2 + Combo Découverte returned 200; order id 1065615d-... persisted (visible via admin GET /api/orders with X-Admin-Password: mikate2025).",
+    "order_submit_regression_ui": "PASS — Filled name='QA Livraison v2', phone='438-555-0777', address='Sorel-Tracy', preferred_delivery_date=2026-08-20, +1 Combo Découverte, consent checked, submit → form reset (name input empty) and page scrolled to top / French confirmation flow. Order 42be0202-83c8-4014-8589-dece432641a0 visible in admin with Combo Découverte @ 10.0 $.",
+    "cookie_banner_posthog_gating": "PASS — Fresh localStorage: banner visible + posthog.__loaded=false. After 'Accepter': banner gone + posthog.__loaded=true.",
+    "no_address_leak": "PASS — Regex scan on home + /politique-livraison for 'rue|avenue|boulevard|chemin + Word + digits' and 'J[0-9][A-Z] ?[0-9][A-Z][0-9]' → zero matches. City-level 'Sorel-Tracy' remains (allowed).",
+    "restrictive_phrasing_residue": "PASS — grep for 'uniquement dans un rayon' / 'limitée au rayon' / 'seulement à sorel-tracy' / 'ne livrons qu'à' across /app/frontend/src and /app/backend/*.py → zero hits."
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_two_tier_delivery.py",
+    "/app/backend/tests/test_pricing_and_delivery.py",
+    "/app/backend/tests/test_mikate_api.py",
+    "/app/backend/tests/test_preferred_delivery_date.py",
+    "/app/test_reports/pytest/iteration_6.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Delivery.jsx: clean two-card layout using LOCAL_ITEMS and EVENT_ITEMS; both cards have data-testid='delivery-local' / 'delivery-event'; event card explicitly enumerates Rive-Sud / Rive-Nord / Montréal / autres régions + distance/volume/besoins basis. ✓",
+    "Hero.jsx L157-159 (desktop) & L346-351 (mobile): both banners now read 'Livraison locale à Sorel-Tracy — plus loin sur demande pour vos événements'. Consistent across viewports; no longer suggests 5 km cap. ✓",
+    "Footer.jsx L73: compact contact line 'Sorel-Tracy · Livraison étendue sur demande pour événements' — keeps promise of 'no Montréal in compact footer'. ✓",
+    "FAQ.jsx L19-21 delivery Q&A rewritten with two-tier explicit answer. Reads well and stays under a comfortable length. ✓",
+    "ShippingPolicy.jsx §1: two subsections + explicit 'Aucune adresse personnelle, adresse de production ou point de retrait public' disclaimer verbatim. ✓",
+    "server.py L166-170 NANCY_SYSTEM_PROMPT: two-tier delivery block correctly enumerates local vs extended with distance/volume/besoins basis and the 'no personal address' rule; Nancy's live LLM answers match the spec (verified for two distinct queries).",
+    "Cosmetic note (pre-existing, not blocking): Hero.jsx line 34 slide description still says 'livraison dans plusieurs secteurs' — accurate now with two-tier scope; can stay.",
+    "Test hygiene: previous iteration-5 test 'test_nancy_delivery_answer_local_sorel_tracy' would have failed under the new prompt (asserted Nancy MUST NOT mention Montréal / Rive-*). Updated in-place to only forbid removed zones (Laval, Longueuil) and require Sorel-Tracy — aligns with new two-tier spec. ✓"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_two_tier_delivery.py (new — 4 tests: pricing regression, Nancy Montréal answer, Nancy small-order 30$ min, order submit regression)",
+    "/app/backend/tests/test_pricing_and_delivery.py (updated — renamed & relaxed the stale iter-5 Nancy delivery test to match new two-tier scope)"
+  ],
+  "success_rate": { "backend": "100% (30/30 pytest)", "frontend": "100% (12/12 verified scenarios across home, /politique-livraison, mobile hero, cookie/PostHog, order submit e2e)" },
+  "test_credentials": "Admin: password mikate2025",
+  "seed_data_creation": "Two orders created via /api/orders during this pass: 'QA Livraison v2' (UI submission, id 42be0202-83c8-4014-8589-dece432641a0) and 'TEST_QA Livraison v2' (pytest submission, id 1065615d-c0c5-4609-aa30-c788e88c66ca). Both contain 1× Combo Découverte at 10 $. Kept for regression traceability.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Two-tier delivery is now fully aligned across backend (Nancy prompt + catalog), frontend (Hero desktop + mobile, Delivery section 2 cards, Footer compact line, FAQ answer, /politique-livraison §1) and Nancy LLM answers (verified with two distinct queries). No regression on pricing (7/12/22, 300 ml @ 5$, combos 10$/9$), on order submission end-to-end, on cookie/PostHog gating, or on address-leak protection. Iteration-5 test that FORBADE Rive-*/Montréal in Nancy replies has been relaxed to only forbid Laval/Longueuil (which remain out of scope).",
+  "rca of the issue": "N/A — no bugs. Iteration 6 changes applied cleanly."
+}

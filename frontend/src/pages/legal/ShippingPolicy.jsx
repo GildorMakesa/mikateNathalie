@@ -13,24 +13,35 @@ export default function ShippingPolicy() {
       </p>
 
       <h2>1. Zones de livraison</h2>
+
+      <h3>Livraison locale régulière</h3>
       <p>
-        Délices Mikaté Royal offre un service de livraison locale à <strong>Sorel-Tracy</strong> dans un
-        rayon de 5&nbsp;km, selon les disponibilités.
+        Délices Mikaté Royal offre un service de livraison locale à <strong>Sorel-Tracy et secteurs
+        proches</strong>, dans un rayon habituel de <strong>5&nbsp;km</strong>, selon les
+        disponibilités.
       </p>
       <p>
-        La livraison est disponible pour les commandes d&apos;un montant minimum de{" "}
-        <strong>30,00&nbsp;$</strong>.
+        Cette livraison est disponible pour toute commande d&apos;un montant minimum de{" "}
+        <strong>30,00&nbsp;$</strong>. Les modalités et les frais de livraison sont confirmés avec le
+        client avant la préparation de la commande.
       </p>
-      <p>Les frais de livraison et les conditions applicables peuvent varier selon&nbsp;:</p>
+
+      <h3>Grandes commandes et événements</h3>
+      <p>
+        Pour les commandes importantes, les événements, les entreprises, les groupes ou toute occasion
+        spéciale, la livraison peut également être organisée dans des secteurs plus éloignés, notamment{" "}
+        <strong>Rive-Sud</strong>, <strong>Rive-Nord</strong>, <strong>Montréal</strong> et d&apos;autres
+        régions sur demande.
+      </p>
+      <p>Dans ces cas, les frais de livraison sont calculés selon&nbsp;:</p>
       <ul>
-        <li>la distance à l&apos;intérieur de la zone desservie&nbsp;;</li>
-        <li>le montant de la commande&nbsp;;</li>
+        <li>la distance&nbsp;;</li>
+        <li>le volume de la commande&nbsp;;</li>
         <li>les besoins spécifiques du client.</li>
       </ul>
       <p>
-        Les modalités et les frais de livraison sont confirmés avec le client avant la préparation de la
-        commande. Aucune adresse personnelle, adresse de production ou point de retrait public n&apos;est
-        affiché sur le site.
+        Une soumission personnalisée est transmise au client avant confirmation. Aucune adresse
+        personnelle, adresse de production ou point de retrait public n&apos;est affiché sur le site.
       </p>
 
       <h2>2. Retrait de commande</h2>

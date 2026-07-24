@@ -137,8 +137,11 @@ def test_nancy_returns_new_prices_no_355ml(session):
         assert forbidden not in reply, f"Nancy still mentions old value {forbidden!r}: {reply}"
 
 
-# ===== NANCY PROMPT — DELIVERY ANSWER =====
-def test_nancy_delivery_answer_local_sorel_tracy(session):
+# ===== NANCY PROMPT — DELIVERY ANSWER (updated: two-tier scope) =====
+def test_nancy_delivery_answer_mentions_sorel_tracy_local_scope(session):
+    """Nancy must mention Sorel-Tracy as the local regular scope. Extended
+    zones (Rive-Sud, Rive-Nord, Montréal) are now allowed for events / large orders,
+    so we no longer forbid them here."""
     payload = {
         "session_id": "qa-delivery-check",
         "message": "Où livrez-vous ?",
@@ -152,14 +155,9 @@ def test_nancy_delivery_answer_local_sorel_tracy(session):
     assert reply, "Empty reply from Nancy"
     print("\n[Nancy delivery reply]\n", reply)
     assert "Sorel-Tracy" in reply, f"Missing 'Sorel-Tracy' in Nancy delivery reply: {reply}"
-    assert ("5 km" in reply) or ("5\u00a0km" in reply) or ("rayon" in reply.lower()), \
-        f"Missing '5 km' or 'rayon' in Nancy delivery reply: {reply}"
-    assert ("30 $" in reply) or ("30,00 $" in reply) or ("30$" in reply) or ("30\u00a0$" in reply), \
-        f"Missing minimum 30 $ in Nancy delivery reply: {reply}"
-    for forbidden in ("Rive-Nord", "Rive-Sud", "Rive Nord", "Rive Sud", "Laval", "Longueuil"):
-        assert forbidden not in reply, f"Nancy still mentions old zone {forbidden!r}: {reply}"
-    # Montréal must not appear as active delivery destination (careful — must not appear at all as zone)
-    assert "Montréal" not in reply, f"Nancy still mentions Montréal as delivery: {reply}"
+    # Laval / Longueuil should still NOT appear (never re-introduced)
+    for forbidden in ("Laval", "Longueuil"):
+        assert forbidden not in reply, f"Nancy mentions removed zone {forbidden!r}: {reply}"
 
 
 # ===== ORDER SUBMISSION with new prices =====

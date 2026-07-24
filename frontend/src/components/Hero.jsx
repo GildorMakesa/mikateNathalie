@@ -155,7 +155,7 @@ export default function Hero() {
 
             <p className="mt-10 flex max-w-xl items-center justify-center gap-2 mx-auto text-sm text-white/70">
               <Truck size={16} className="text-brand-ochre" />
-              Livraison locale à Sorel-Tracy (rayon de 5 km) — dès 30&nbsp;$
+              Livraison locale à Sorel-Tracy — plus loin sur demande pour vos événements
             </p>
           </motion.div>
 
@@ -346,7 +346,7 @@ export default function Hero() {
           <p className="mt-5 flex items-start justify-center gap-2 text-center text-xs leading-relaxed text-white/75">
             <Truck size={15} className="mt-0.5 shrink-0 text-brand-ochre" />
             <span>
-              Livraison locale à Sorel-Tracy (rayon de 5&nbsp;km) — dès 30&nbsp;$
+              Livraison locale à Sorel-Tracy — plus loin sur demande pour vos événements
             </span>
           </p>
         </motion.div>
