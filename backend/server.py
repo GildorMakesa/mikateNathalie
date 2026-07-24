@@ -284,7 +284,7 @@ PRODUCTS: List[ProductOut] = [
         name="Jus de Bissap",
         category="Boissons",
         description="Infusion d'hibiscus rouge rubis, gingembre frais et menthe. Rafraîchissant, élégant, sans alcool. Servi dans un verre de luxe.",
-        image_url="/products/jus-bissap-luxe.png",
+        image_url="/products/jus-bissap-luxe.jpg",
         unit_note="300 ml",
         options=[PriceOption(label="300 ml", price_cad=5.0)],
     ),
