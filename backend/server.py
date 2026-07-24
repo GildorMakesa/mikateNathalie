@@ -142,28 +142,28 @@ class ChatRequest(BaseModel):
     history: List[ChatHistoryItem] = Field(default_factory=list)
 
 
-NANCY_SYSTEM_PROMPT = """Tu es Nancy, l'assistante virtuelle chaleureuse et professionnelle de Délices Mikaté Royal, une pâtisserie/boissons artisanale ouest-africaine basée au Québec (zone de livraison : Sorel-Tracy, Montréal, Rive-Nord et Rive-Sud).
+NANCY_SYSTEM_PROMPT = """Tu es Nancy, l'assistante virtuelle chaleureuse et professionnelle de Délices Mikaté Royal, une pâtisserie/boissons artisanale ouest-africaine basée au Québec. Livraison locale à Sorel-Tracy dans un rayon de 5 km (minimum de 30 $).
 
 Tu réponds TOUJOURS en français, vouvoiement, ton amical et accueillant.
 
 CATALOGUE & PRIX (commandes régulières) :
 
 🍩 MIKATÉS (mêmes prix pour toutes les saveurs : Sucré, Salé, Sucre Impalpable, Chocolat, Cannelle, Pâte d'Arachides) :
-- 5 mikatés : 5 $
-- 10 mikatés : 9 $
-- 20 mikatés : 17 $
+- 5 mikatés : 7 $
+- 10 mikatés : 12 $
+- 20 mikatés : 22 $
 
-🥤 BOISSONS (355 ml) :
-- Jus de Bissap : 4 $
+🥤 BOISSONS (300 ml) :
+- Jus de Bissap : 5 $
 - Jus de Gingembre : 5 $
 
 👑 COMBO VEDETTE :
-- Combo Découverte (5 mikatés + 1 bissap) : 8 $
-- Combo Gingembre (5 mikatés + 1 jus de gingembre) : 9 $
+- Combo Découverte (5 mikatés + 1 bissap 300 ml) : 10 $
+- Combo Gingembre (5 mikatés + 1 jus de gingembre 300 ml) : 9 $
 
 🎉 ÉVÉNEMENTS (mariages, baptêmes, anniversaires, réunions familiales, événements d'église, événements corporatifs) → soumission personnalisée via la section « Événements et réceptions ».
 
-ZONE DE LIVRAISON : Sorel-Tracy, Montréal, Rive-Nord, Rive-Sud. Frais de livraison confirmés lors de la soumission.
+LIVRAISON : locale à Sorel-Tracy dans un rayon de 5 km, selon les disponibilités. Commande minimum de 30 $. Les modalités et frais sont confirmés avec le client avant la préparation. Aucune adresse personnelle ou point de retrait public n'est communiqué sur le site — les détails sont partagés directement avec le client.
 
 PROCESSUS DE COMMANDE :
 1. Le client choisit ses produits avec les prix affichés sur le site.
@@ -177,6 +177,7 @@ CONTACT : contact@mikateroyal.com — site : mikateroyal.com
 
 CONSIGNES :
 - Donne les prix directement quand on te demande (ils sont publics maintenant).
+- Ne partage JAMAIS d'adresse personnelle, d'adresse de production ni de point de retrait public.
 - Pour un événement / grand groupe → guide vers « Événements et réceptions » sur le site.
 - Pour question médicale sur le bissap/gingembre, rappelle de consulter un professionnel de santé.
 - Tu ne prends PAS les commandes toi-même — tu invites à utiliser le formulaire sur le site.
@@ -220,9 +221,9 @@ class ProductOut(BaseModel):
 
 # ===== Static catalog =====
 MIKATE_OPTIONS = [
-    PriceOption(label="5 mikatés", price_cad=5.0),
-    PriceOption(label="10 mikatés", price_cad=9.0),
-    PriceOption(label="20 mikatés", price_cad=17.0),
+    PriceOption(label="5 mikatés", price_cad=7.0),
+    PriceOption(label="10 mikatés", price_cad=12.0),
+    PriceOption(label="20 mikatés", price_cad=22.0),
 ]
 
 PRODUCTS: List[ProductOut] = [
@@ -280,8 +281,8 @@ PRODUCTS: List[ProductOut] = [
         category="Boissons",
         description="Infusion d'hibiscus rouge rubis, gingembre frais et menthe. Rafraîchissant, élégant, sans alcool. Servi dans un verre de luxe.",
         image_url="/products/jus-bissap-luxe.png",
-        unit_note="355 ml",
-        options=[PriceOption(label="355 ml", price_cad=4.0)],
+        unit_note="300 ml",
+        options=[PriceOption(label="300 ml", price_cad=5.0)],
     ),
     ProductOut(
         id="jus-tropical",
@@ -289,8 +290,8 @@ PRODUCTS: List[ProductOut] = [
         category="Boissons",
         description="Cocktail maison mangue, ananas et fruit de la passion. Le soleil de l'Afrique dans un verre, présenté avec élégance.",
         image_url="/products/jus-tropical-luxe.png",
-        unit_note="355 ml",
-        options=[PriceOption(label="355 ml", price_cad=5.0)],
+        unit_note="300 ml",
+        options=[PriceOption(label="300 ml", price_cad=5.0)],
     ),
     ProductOut(
         id="jus-gingembre",
@@ -298,25 +299,25 @@ PRODUCTS: List[ProductOut] = [
         category="Boissons",
         description="Notre signature : gingembre frais pressé, citron vert et une pointe de miel. Servi dans un verre élégant — vivifiant et raffiné.",
         image_url="/products/jus-gingembre-luxe.png",
-        unit_note="355 ml",
-        options=[PriceOption(label="355 ml", price_cad=5.0)],
+        unit_note="300 ml",
+        options=[PriceOption(label="300 ml", price_cad=5.0)],
     ),
     ProductOut(
         id="combo-decouverte",
         name="Combo Découverte",
         category="Combos",
-        description="5 Mikatés au choix + 1 Jus de Bissap (355 ml). Le combo parfait pour découvrir notre signature.",
+        description="5 Mikatés au choix + 1 Jus de Bissap (300 ml). Le combo parfait pour découvrir notre signature.",
         image_url="/products/mikate-sucre-impalpable.png",
-        options=[PriceOption(label="5 Mikatés + 1 Bissap", price_cad=8.0)],
+        options=[PriceOption(label="5 Mikatés + 1 Bissap 300 ml", price_cad=10.0)],
         badge="👑 Vedette",
     ),
     ProductOut(
         id="combo-gingembre",
         name="Combo Gingembre",
         category="Combos",
-        description="5 Mikatés au choix + 1 Jus de Gingembre (355 ml). Énergie, fraîcheur et gourmandise dans un seul combo.",
+        description="5 Mikatés au choix + 1 Jus de Gingembre (300 ml). Énergie, fraîcheur et gourmandise dans un seul combo.",
         image_url="/products/jus-gingembre-luxe.png",
-        options=[PriceOption(label="5 Mikatés + 1 Gingembre", price_cad=9.0)],
+        options=[PriceOption(label="5 Mikatés + 1 Gingembre 300 ml", price_cad=9.0)],
         badge="👑 Vedette",
     ),
 ]

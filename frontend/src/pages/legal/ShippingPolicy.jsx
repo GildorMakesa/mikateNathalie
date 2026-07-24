@@ -14,17 +14,24 @@ export default function ShippingPolicy() {
 
       <h2>1. Zones de livraison</h2>
       <p>
-        Délices Mikaté Royal offre des options de livraison selon les zones desservies et les
-        disponibilités.
+        Délices Mikaté Royal offre un service de livraison locale à <strong>Sorel-Tracy</strong> dans un
+        rayon de 5&nbsp;km, selon les disponibilités.
+      </p>
+      <p>
+        La livraison est disponible pour les commandes d&apos;un montant minimum de{" "}
+        <strong>30,00&nbsp;$</strong>.
       </p>
       <p>Les frais de livraison et les conditions applicables peuvent varier selon&nbsp;:</p>
       <ul>
-        <li>la distance&nbsp;;</li>
+        <li>la distance à l&apos;intérieur de la zone desservie&nbsp;;</li>
         <li>le montant de la commande&nbsp;;</li>
-        <li>le lieu de livraison&nbsp;;</li>
         <li>les besoins spécifiques du client.</li>
       </ul>
-      <p>Les détails de livraison sont communiqués au client avant la confirmation finale de la commande.</p>
+      <p>
+        Les modalités et les frais de livraison sont confirmés avec le client avant la préparation de la
+        commande. Aucune adresse personnelle, adresse de production ou point de retrait public n&apos;est
+        affiché sur le site.
+      </p>
 
       <h2>2. Retrait de commande</h2>
       <p>

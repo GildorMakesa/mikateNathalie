@@ -1,0 +1,54 @@
+{
+  "summary": "End-to-end validation of the pricing/format/delivery-scope refresh: mikatés 7/12/22 $, all juices 300 ml @ 5 $, Combo Découverte 10 $ (bissap 300 ml), Combo Gingembre 9 $ (gingembre 300 ml), and delivery replaced from 4 zones to Sorel-Tracy local (rayon 5 km, minimum 30 $). Backend: 26/26 pytest passing (including 15 new pricing + Nancy prompt tests). Frontend: home, hero, delivery section, footer, FAQ, politique-livraison and legal pages all reflect new copy with ZERO residue of old prices (5/9/17/4/8 $), old format '355 ml', or old delivery zones (Montréal / Rive-Nord / Rive-Sud / Laval / Longueuil). Order flow re-verified: adding 1× Combo Découverte + 1× Mikaté Sucré 5-pack → subtotal 17,00 $, POST /api/orders returns 200 with unit_price_cad 10.0 and 7.0 respectively, order visible in admin with correct amounts and French date. Cookie banner + PostHog gating regression PASS.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "detailed_results": {
+    "catalog_products_api": "PASS — GET /api/products: 6 mikaté products each have exactly 3 options {5 mikatés:7.0, 10 mikatés:12.0, 20 mikatés:22.0}; 3 juices (bissap-royal, jus-tropical, jus-gingembre) each have unit_note='300 ml' and one option '300 ml' @ 5.0; combo-decouverte option='5 Mikatés + 1 Bissap 300 ml' @ 10.0; combo-gingembre option='5 Mikatés + 1 Gingembre 300 ml' @ 9.0. No '355', no old prices anywhere.",
+    "nancy_prices": "PASS — POST /api/chat with 'Quels sont vos prix pour les mikatés et le bissap ?' returned reply mentioning 7$, 12$, 22$ and 5$ for bissap, with NO mention of 4$/8$/17$/355 ml.",
+    "nancy_delivery": "PASS — POST /api/chat with 'Où livrez-vous ?' returned reply mentioning 'Sorel-Tracy' + 'rayon 5 km' + minimum '30 $'. NO Montréal / Rive-Nord / Rive-Sud / Laval / Longueuil anywhere.",
+    "home_no_stale_text": "PASS — body.innerText contains '7,00 $'×18, '12,00 $'×18, '22,00 $'×18, '5,00 $'×9 (bissap+juices+combos), '10,00 $'×3, '9,00 $'×3. Old patterns (8,00 $, 4,00 $, 5,00 $ + 5 mikatés, 9,00 $ + 10 mikatés, 17,00 $ + 20 mikatés, 355 ml, Rive-Nord, Rive-Sud, Montréal, Laval) — ALL ABSENT.",
+    "home_new_content": "PASS — mikaté cards show 7,00/12,00/22,00 $; combo card 'Combo Découverte' shows '10,00 $' with description '5 Mikatés + 1 Bissap 300 ml'; juice cards show '300 ml' unit note and '5,00 $'; #livraison section shows Sorel-Tracy + 5 km + 30,00 $; Hero desktop and mobile banners say 'Livraison locale à Sorel-Tracy (rayon de 5 km) — dès 30 $'.",
+    "footer": "PASS — Footer contact block reads 'Livraison locale à Sorel-Tracy (rayon 5 km)'. No Montréal / Rive-Nord / Rive-Sud.",
+    "faq": "PASS — FAQ 'Y a-t-il des frais de livraison ?' expanded → 'livraison locale à Sorel-Tracy dans un rayon de 5 km, pour toute commande d'un montant minimum de 30,00 $'. No old zone names.",
+    "politique_livraison": "PASS — Section 1 mentions 'Sorel-Tracy', 'rayon de 5 km', minimum '30,00 $', and 'Aucune adresse personnelle, adresse de production ou point de retrait public n'est affiché sur le site.' No Montréal/Rive-Nord/Rive-Sud/Laval/Longueuil anywhere.",
+    "cart_totals_e2e": "PASS — Manually added 2× Mikaté Sucré 5-pack (7$ each) + 1× Mikaté Chocolat 10-pack (12$) + 1× Combo Découverte (10$) → subtotal displayed '36,00 $' (14+12+10). Each row shows correct unit price and sub-total. Chip labels are '+ Mikaté Sucré (5 mikatés) — 7,00 $', etc.",
+    "order_submit_e2e": "PASS — Filled name='QA Prix', phone='438-555-0500', address='Sorel-Tracy', preferred_delivery_date=today+3d, 1× Combo Découverte + 1× Mikaté Sucré 5-pack, consent checked. POST /api/orders → 200. Response items: Combo Découverte qty=1 unit_price_cad=10.0, Mikaté Sucré qty=1 unit_price_cad=7.0. Order id=0ebb0af5-a1aa-4a04-90c3-d6b1a19de6f3. Admin /admin (mikate2025) shows it at top with 'DATE SOUHAITÉE PAR LE CLIENT · lundi 27 juillet 2026' and Combo Découverte + Mikaté Sucré rows.",
+    "legal_pages_no_address_leak": "PASS — /politique-confidentialite, /conditions-generales-vente, /politique-remboursement, /politique-cookies, /conditions-utilisation: no street-address matches (rue|avenue|boulevard|chemin|route + number) and no J3P/J0P postal-code pattern. City-level 'Sorel-Tracy' remains (which is allowed).",
+    "cookie_banner_posthog_regression": "PASS — Fresh localStorage: banner visible, window.posthog.__loaded=false. After 'Accepter' click: banner gone, window.posthog fully initialised (__loaded=true), mr_cookie_consent_v1 written with analytics=true.",
+    "residue_grep": "PASS — repo-wide grep for '355 ml' / '355ml' / 'Rive-Nord' / 'Rive-Sud' / 'Rive Nord' / 'Rive Sud' / 'Montréal' / 'Laval' / 'Longueuil' in /app/frontend/src and /app/backend returned ZERO hits."
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_pricing_and_delivery.py",
+    "/app/backend/tests/test_mikate_api.py",
+    "/app/backend/tests/test_preferred_delivery_date.py",
+    "/app/test_reports/pytest/pytest_results.xml",
+    "/app/test_reports/pytest/pricing_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "server.py L145-187 NANCY_SYSTEM_PROMPT: correctly replaced with new prices (7/12/22/5) + local Sorel-Tracy 5 km + 30 $ minimum + explicit 'Ne partage JAMAIS d'adresse personnelle'. Nancy LLM response verified live to match. ✓",
+    "server.py L222-323 PRODUCTS catalog: MIKATE_OPTIONS updated to 7/12/22, all juices unit_note='300 ml' with single 300 ml option @ 5.0, combos updated. Clean, no leftover 355 or old prices. ✓",
+    "Frontend Delivery.jsx: refactored to a 3-highlight card (Zone / Rayon / Commande minimum) with Sorel-Tracy · 5 km · 30,00 $. Clean semantics. ✓",
+    "Hero.jsx L156-159 (desktop) & L346-351 (mobile): both banners read 'Livraison locale à Sorel-Tracy (rayon de 5 km) — dès 30 $'. Consistent. ✓",
+    "Footer.jsx L72-74 updated to 'Livraison locale à Sorel-Tracy (rayon 5 km)'. ✓",
+    "FAQ.jsx L19-21 delivery answer rewritten with Sorel-Tracy + 5 km + 30,00 $ + local delivery. ✓",
+    "ShippingPolicy.jsx §1: rewritten to describe local 5 km Sorel-Tracy scope, 30 $ minimum, AND explicit 'Aucune adresse personnelle, adresse de production ou point de retrait public n'est affiché sur le site.' — matches problem-statement requirement verbatim. ✓",
+    "Products.jsx & OrderForm.jsx: 100% driven by /api/products (chips generated dynamically). No hardcoded prices anywhere in frontend. ✓",
+    "Minor cosmetic note (not a bug): Hero.jsx L34 slide description still says 'livraison dans plusieurs secteurs' which is slightly generic but not misleading given the site-wide Sorel-Tracy scope. E1 may want to tighten copy on that slide caption for consistency, but it does NOT mention any forbidden zone."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_pricing_and_delivery.py (new — 15 tests for new pricing, formats and Nancy prompt)"
+  ],
+  "success_rate": { "backend": "100% (26/26 pytest)", "frontend": "100% (12/12 verified scenarios)" },
+  "test_credentials": "Admin: password mikate2025",
+  "seed_data_creation": "One order 'QA Prix' created via /api/orders end-to-end with unit_price_cad 10.0 + 7.0 for e2e submission verification. Present in admin. Prior 'TEST_QA_*' orders from previous iterations also visible; not cleaned up (kept for regression traceability).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All prices, formats, delivery scope changes applied cleanly. Backend + frontend + Nancy LLM prompt all aligned. No residue of 355 ml, no residue of old prices (5/9/17/4/8), no residue of Montréal/Rive-Nord/Rive-Sud/Laval/Longueuil across frontend and backend. Combo Gingembre kept at 9 $ (unchanged), Combo Découverte moved 8→10 $. Slide caption in Hero.jsx line 34 still says 'livraison dans plusieurs secteurs' — cosmetic only, does NOT mention any forbidden zone; can be tightened in a future copy pass if desired.",
+  "rca of the issue": "N/A — no bugs. Refresh applied cleanly across backend catalog, Nancy system prompt, and 6 frontend surfaces (Hero, Delivery, Footer, FAQ, ShippingPolicy, product cards). Verified live via Playwright and pytest."
+}

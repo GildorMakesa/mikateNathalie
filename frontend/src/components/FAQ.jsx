@@ -17,7 +17,7 @@ const FAQS = [
   },
   {
     q: "Y a-t-il des frais de livraison ?",
-    a: "Oui, les frais varient selon votre adresse (Sorel-Tracy, Montréal, Rive-Nord, Rive-Sud). Ils sont précisés lors de la confirmation de votre commande.",
+    a: "Oui. Délices Mikaté Royal offre un service de livraison locale à Sorel-Tracy dans un rayon de 5 km, pour toute commande d'un montant minimum de 30,00 $. Les modalités et frais exacts sont confirmés avec vous avant la préparation de la commande.",
   },
 ];
 

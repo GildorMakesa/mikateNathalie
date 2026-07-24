@@ -1,7 +1,26 @@
 import { motion } from "framer-motion";
-import { MapPin, Truck } from "lucide-react";
+import { MapPin, Truck, Ruler, ShoppingBag } from "lucide-react";
 
-const ZONES = ["Sorel-Tracy", "Montréal", "Rive-Nord", "Rive-Sud"];
+const HIGHLIGHTS = [
+  {
+    icon: MapPin,
+    label: "Zone desservie",
+    value: "Sorel-Tracy",
+    hint: "Livraison locale uniquement",
+  },
+  {
+    icon: Ruler,
+    label: "Rayon",
+    value: "5 km",
+    hint: "Selon les disponibilités",
+  },
+  {
+    icon: ShoppingBag,
+    label: "Commande minimum",
+    value: "30,00 $",
+    hint: "Pour bénéficier de la livraison",
+  },
+];
 
 export default function Delivery() {
   return (
@@ -16,13 +35,19 @@ export default function Delivery() {
             className="md:col-span-6"
           >
             <p className="text-xs uppercase tracking-[0.25em] text-brand-ochre font-semibold inline-flex items-center gap-2">
-              <Truck size={14} /> Livraison disponible
+              <Truck size={14} /> Livraison locale
             </p>
             <h2 className="mt-3 font-display text-4xl sm:text-5xl tracking-tight text-balance">
-              Nous desservons votre <em className="not-italic text-brand-ochre">région</em>
+              Livraison locale à <em className="not-italic text-brand-ochre">Sorel-Tracy</em>
             </h2>
-            <p className="mt-5 text-brand-sand/80 max-w-md">
-              Les frais de livraison sont confirmés lors de la soumission, selon votre adresse et la quantité commandée.
+            <p className="mt-5 text-brand-sand/85 max-w-md leading-relaxed">
+              Délices Mikaté Royal offre un service de livraison locale à Sorel-Tracy dans un rayon de
+              5&nbsp;km selon les disponibilités.
+            </p>
+            <p className="mt-3 text-brand-sand/85 max-w-md leading-relaxed">
+              La livraison est disponible pour les commandes d&apos;un montant minimum de{" "}
+              <strong className="text-brand-ochre">30,00&nbsp;$</strong>. Les modalités et les frais de
+              livraison sont confirmés avec le client avant la préparation de la commande.
             </p>
           </motion.div>
 
@@ -31,18 +56,23 @@ export default function Delivery() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="md:col-span-6 grid grid-cols-2 gap-3"
+            className="md:col-span-6 grid grid-cols-1 sm:grid-cols-3 gap-3"
             data-testid="delivery-zones"
           >
-            {ZONES.map((z) => (
-              <li key={z} className="rounded-2xl border border-white/15 bg-white/5 px-5 py-4 flex items-center gap-3">
-                <MapPin size={18} className="text-brand-ochre" />
-                <div>
-                  <p className="text-xs uppercase tracking-[0.18em] text-brand-sand/60">Zone</p>
-                  <p className="font-display text-xl">{z}</p>
-                </div>
-              </li>
-            ))}
+            {HIGHLIGHTS.map((h) => {
+              const Icon = h.icon;
+              return (
+                <li
+                  key={h.label}
+                  className="rounded-2xl border border-white/15 bg-white/5 px-5 py-5 flex flex-col gap-2"
+                >
+                  <Icon size={18} className="text-brand-ochre" />
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-brand-sand/60">{h.label}</p>
+                  <p className="font-display text-2xl leading-none">{h.value}</p>
+                  <p className="text-xs text-brand-sand/70 leading-relaxed">{h.hint}</p>
+                </li>
+              );
+            })}
           </motion.ul>
         </div>
       </div>
