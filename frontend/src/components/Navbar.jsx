@@ -6,12 +6,37 @@ import LogoMikate from '../assets/logo_removed_2.png';
 import LogoMikateWhite from '../assets/logo_removed_3.png'; // logo blanc transparent
 
 const links = [
-  { id: "accueil", label: "Accueil", tid: TID.navHome },
-  { id: "produits", label: "Menu", tid: TID.navProducts },
-  { id: "livraison", label: "Livraison", tid: "nav-delivery" },
-  { id: "histoire", label: "Notre histoire", tid: "nav-story" },
-  { id: "temoignages", label: "Témoignages", tid: TID.navTestimonials },
-  { id: "evenements", label: "Événements", tid: "nav-events" },
+  {
+    id: "accueil",
+    label: "Accueil",
+    tid: TID.navHome,
+  },
+  {
+    id: "menu",
+    label: "Menu",
+    tid: TID.navProducts,
+    path: "/commander",
+  },
+  {
+    id: "livraison",
+    label: "Livraison",
+    tid: "nav-delivery",
+  },
+  {
+    id: "histoire",
+    label: "Notre histoire",
+    tid: "nav-story",
+  },
+  {
+    id: "temoignages",
+    label: "Témoignages",
+    tid: TID.navTestimonials,
+  },
+  {
+    id: "evenements",
+    label: "Événements",
+    tid: "nav-events",
+  },
 ];
 
 export default function Navbar() {
@@ -75,8 +100,8 @@ export default function Navbar() {
           >
             <div
               className={`overflow-hidden rounded-full border shadow-xl transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-105 ${scrolled
-                  ? "h-12 w-12 border-white/30 bg-black"
-                  : "h-20 w-20 border-white/20 bg-transparent"
+                ? "h-12 w-12 border-white/30 bg-black"
+                : "h-20 w-20 border-white/20 bg-transparent"
                 }`}
             >
               <img
@@ -97,27 +122,41 @@ export default function Navbar() {
             : "border border-white/20 bg-white/10 backdrop-blur-xl px-8 py-3 shadow-[0_8px_30px_rgba(0,0,0,0.08)]"
             }`}>
             <div className="flex items-center justify-center gap-7">
-              {links.map((l) => (
-                <button
-                  key={l.id}
-                  data-testid={l.tid}
-                  onClick={() => go(l.id)}
-                  className={`text-sm font-medium transition-colors duration-500 ${scrolled
-                    ? "text-brand-ink/80 hover:text-brand-ruby"
-                    : "text-white/90 hover:text-white"
-                    }`}
-                >
-                  {l.label}
-                </button>
-              ))}
+              {links.map((l) =>
+                l.path ? (
+                  <Link
+                    key={l.id}
+                    to={l.path}
+                    data-testid={l.tid}
+                    className={`text-sm font-medium transition-colors duration-500 ${scrolled
+                        ? "text-brand-ink/80 hover:text-brand-ruby"
+                        : "text-white/90 hover:text-white"
+                      }`}
+                  >
+                    {l.label}
+                  </Link>
+                ) : (
+                  <button
+                    key={l.id}
+                    data-testid={l.tid}
+                    onClick={() => go(l.id)}
+                    className={`text-sm font-medium transition-colors duration-500 ${scrolled
+                        ? "text-brand-ink/80 hover:text-brand-ruby"
+                        : "text-white/90 hover:text-white"
+                      }`}
+                  >
+                    {l.label}
+                  </button>
+                )
+              )}
             </div>
           </nav>
 
           {/* DROITE : Bouton CTA (S'adapte dynamiquement aux styles) */}
           <div className={`transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] ${scrolled ? "pr-2" : "pr-0"
             }`}>
-            <button
-              onClick={() => go("commander")}
+            <Link
+              to="/commander"
               className={`rounded-full font-semibold transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] ${scrolled
                 ? "bg-[#0E6FD3] border border-[#0E6FD3] px-5 py-2 text-sm text-white shadow-md hover:bg-[#826824] hover:scale-105 active:scale-95"
                 : "bg-white/10 border border-white/30 px-6 py-3 text-sm text-white backdrop-blur-md hover:bg-white/15"
@@ -125,7 +164,7 @@ export default function Navbar() {
               data-testid="nav-order-cta"
             >
               Commander
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -177,24 +216,42 @@ export default function Navbar() {
           <div className={`md:hidden mt-2 rounded-2xl border p-4 shadow-md backdrop-blur-xl transition-all duration-300 ${scrolled ? "border-brand-line bg-white" : "border-white/20 bg-white/90"
             }`}>
             <div className="flex flex-col gap-1">
-              {links.map((l) => (
-                <button
-                  key={l.id}
-                  onClick={() => go(l.id)}
-                  data-testid={`m-${l.tid}`}
-                  className="text-left py-2.5 text-sm font-medium text-brand-ink/90 hover:text-brand-ruby transition-colors border-b border-brand-line/10 last:border-none"
-                >
-                  {l.label}
-                </button>
-              ))}
+              {links.map((l) =>
+                l.path ? (
+                  <Link
+                    key={l.id}
+                    to={l.path}
+                    data-testid={l.tid}
+                    className={`text-sm font-medium transition-colors duration-500 ${scrolled
+                        ? "text-brand-ink/80 hover:text-brand-ruby"
+                        : "text-white/90 hover:text-white"
+                      }`}
+                  >
+                    {l.label}
+                  </Link>
+                ) : (
+                  <button
+                    key={l.id}
+                    data-testid={l.tid}
+                    onClick={() => go(l.id)}
+                    className={`text-sm font-medium transition-colors duration-500 ${scrolled
+                        ? "text-brand-ink/80 hover:text-brand-ruby"
+                        : "text-white/90 hover:text-white"
+                      }`}
+                  >
+                    {l.label}
+                  </button>
+                )
+              )}
 
               {/* Bouton Commander : Mis à jour avec ton magnifique Doré #9B7D2B */}
-              <button
-                onClick={() => go("commander")}
+              <Link
+                to="/commander"
+                onClick={() => setOpen(false)}
                 className="mt-4 rounded-full bg-[#0E6FD3] text-white text-sm font-semibold px-5 py-3 text-center shadow-sm hover:bg-[#0B5BB8] active:scale-98 transition-all"
               >
                 Commander maintenant
-              </button>
+              </Link>
             </div>
           </div>
         )}
