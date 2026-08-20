@@ -105,7 +105,7 @@ export default function Story() {
           <div className="lg:col-span-7 order-2 lg:order-1">
             <p className="text-[11px] uppercase tracking-[0.22em] text-brand-ruby font-semibold">Le Bissap</p>
             <h3 className="mt-3 font-display text-3xl sm:text-4xl text-brand-ink leading-tight">
-              Une boisson naturelle aux <em className="not-italic text-brand-ruby">multiples bienfaits</em>
+              Une boisson traditionnelle aux <em className="not-italic text-brand-ruby">saveurs authentiques</em>
             </h3>
 
             <div className="mt-6 space-y-5 text-brand-muted leading-relaxed text-base md:text-[17px]">
@@ -114,8 +114,8 @@ export default function Story() {
                 séchées d&apos;hibiscus. Reconnaissable à sa belle couleur rouge rubis et à son goût
                 légèrement acidulé, il est apprécié depuis des générations dans plusieurs pays
                 d&apos;Afrique. Rafraîchissant, naturel et savoureux, le bissap est bien plus
-                qu&apos;une simple boisson : il est également reconnu pour ses nombreuses propriétés
-                bénéfiques.
+                qu&apos;une simple boisson : c&apos;est un héritage culinaire riche en histoire et
+                en saveurs.
               </p>
 
               <h4 className="font-display text-xl text-brand-ink pt-2">
@@ -132,8 +132,7 @@ export default function Story() {
                 ))}
               </ul>
 
-              <h4 className="font-display text-xl text-brand-ink pt-2">Une boisson qui rassemble</h4>
-              <p>
+              <h4 className="font-display text-xl text-brand-ink pt-2">Une boisson qui rassemble</h4>              <p>
                 Servi lors des fêtes, des repas en famille ou des moments de détente entre amis, le
                 bissap est un symbole de partage et d&apos;hospitalité dans de nombreuses cultures
                 africaines. Son goût unique et sa fraîcheur naturelle en font une boisson appréciée
@@ -149,9 +148,9 @@ export default function Story() {
               </p>
 
               <p className="text-xs text-brand-muted/80 border-l-2 border-brand-ruby/40 pl-4 italic mt-6">
-                À consommer dans le cadre d&apos;une alimentation équilibrée. Les personnes
-                enceintes ou ayant des conditions médicales particulières devraient demander
-                l&apos;avis d&apos;un professionnel de santé avant une consommation régulière.
+                À déguster dans le cadre d&apos;une alimentation équilibrée. Les personnes
+                enceintes ou ayant des conditions médicales particulières sont invitées à
+                consulter un professionnel de santé avant une consommation régulière.
               </p>
             </div>
           </div>
@@ -177,7 +176,7 @@ export default function Story() {
             <div className="relative overflow-hidden rounded-[2rem] arch-top bg-brand-ochre/10 h-[420px] md:h-[520px]">
               <img
                 src={GINGER_IMG}
-                alt="Verre luxueux de jus de gingembre"
+                alt="Jus de gingembre artisanal"
                 className="absolute inset-0 h-full w-full object-cover"
                 loading="lazy"
               />
@@ -186,17 +185,17 @@ export default function Story() {
           <div className="lg:col-span-7 order-2 lg:order-2">
             <p className="text-[11px] uppercase tracking-[0.22em] text-brand-ochre font-semibold">Le Gingembre</p>
             <h3 className="mt-3 font-display text-3xl sm:text-4xl text-brand-ink leading-tight">
-              Une racine aux <em className="not-italic text-brand-ochre">mille vertus</em>
+              Une racine aux <em className="not-italic text-brand-ochre">saveurs uniques</em>
             </h3>
 
             <div className="mt-6 space-y-5 text-brand-muted leading-relaxed text-base md:text-[17px]">
               <p>
-                Le gingembre est une plante reconnue depuis des siècles pour ses qualités gustatives
-                et ses nombreux bienfaits. Utilisé dans les cuisines et les traditions de nombreuses
-                cultures à travers le monde, il est particulièrement apprécié en Afrique pour la
-                préparation de boissons rafraîchissantes et revigorantes. Avec sa saveur unique, à
-                la fois épicée et parfumée, le gingembre apporte une touche de caractère à chaque
-                dégustation.
+                Le gingembre est une plante reconnue depuis des siècles pour ses qualités
+                gustatives et culinaires. Utilisé dans les cuisines et les traditions de
+                nombreuses cultures à travers le monde, il est particulièrement apprécié en
+                Afrique pour la préparation de boissons rafraîchissantes et parfumées. Avec sa
+                saveur unique, à la fois épicée et parfumée, le gingembre apporte une touche de
+                caractère à chaque dégustation.
               </p>
 
               <h4 className="font-display text-xl text-brand-ink pt-2">
@@ -242,66 +241,66 @@ export default function Story() {
 
 const BENEFITS = [
   {
-    title: "Riche en vitamines et antioxydants",
+    title: "Une saveur unique et authentique",
     text:
-      "il contient notamment de la vitamine C, qui contribue au bon fonctionnement du système immunitaire.",
+      "sa couleur rouge rubis et son goût légèrement acidulé en font une boisson typique et rafraîchissante.",
   },
   {
-    title: "Contribue au bien-être cardiovasculaire",
+    title: "Un héritage culturel",
     text:
-      "plusieurs études suggèrent que l'hibiscus peut aider à maintenir une pression artérielle normale lorsqu'il est consommé dans le cadre d'une alimentation équilibrée.",
+      "consommé depuis des générations dans plusieurs pays d'Afrique, il incarne les traditions et le savoir-faire artisanal.",
   },
   {
-    title: "Favorise une bonne digestion",
+    title: "Préparé à partir d'ingrédients naturels",
     text:
-      "il est traditionnellement consommé pour soutenir le confort digestif et le transit intestinal.",
+      "fleurs d'hibiscus séchées, gingembre frais et menthe — sans arômes artificiels ni colorants ajoutés.",
   },
   {
-    title: "Propriétés anti-inflammatoires naturelles",
+    title: "Rafraîchissant et désaltérant",
     text:
-      "l'hibiscus est reconnu pour ses composés antioxydants qui participent à la protection de l'organisme.",
+      "servi bien frais, il accompagne à merveille les journées ensoleillées et les repas conviviaux.",
   },
   {
-    title: "Source de fraîcheur et d'énergie",
+    title: "Sans alcool",
     text:
-      "sa saveur désaltérante en fait une boisson idéale pour accompagner les journées actives.",
+      "une alternative festive et savoureuse, idéale pour toutes les générations.",
   },
   {
-    title: "Beauté de la peau et des cheveux",
+    title: "Une boisson de partage",
     text:
-      "grâce à sa richesse en antioxydants, l'hibiscus est souvent utilisé dans les soins naturels pour la peau et les cheveux.",
+      "présent lors des fêtes et des rassemblements familiaux, il évoque l'hospitalité africaine.",
   },
 ];
 
 const GINGER_BENEFITS = [
   {
-    title: "Source naturelle d'antioxydants",
+    title: "Une saveur épicée et parfumée",
     text:
-      "le gingembre contient des composés qui contribuent à protéger l'organisme contre le stress oxydatif.",
+      "sa signature à la fois piquante et rafraîchissante en fait une boisson au caractère affirmé.",
   },
   {
-    title: "Favorise la digestion",
+    title: "Préparé à partir de gingembre frais pressé",
     text:
-      "il est traditionnellement utilisé pour soutenir le confort digestif et réduire les sensations d'inconfort après les repas.",
+      "chaque bouteille est préparée artisanalement avec de la racine fraîche, du citron vert et une pointe de miel.",
   },
   {
-    title: "Aide à combattre la fatigue",
+    title: "Une racine ancestrale",
     text:
-      "sa saveur tonique et stimulante en fait une boisson appréciée pour retrouver de l'énergie au quotidien.",
+      "utilisée depuis des siècles dans les cuisines et traditions du monde entier, elle porte l'histoire de nombreuses cultures.",
   },
   {
-    title: "Contribue au bien-être général",
+    title: "Sans alcool ni arômes artificiels",
     text:
-      "le gingembre est reconnu pour ses propriétés naturelles qui participent au maintien d'une bonne santé.",
+      "une boisson naturelle qui met en valeur les ingrédients tels qu'ils sont.",
   },
   {
-    title: "Soutient le système immunitaire",
+    title: "Un accompagnement idéal",
     text:
-      "grâce à ses composés naturels, il est souvent consommé durant les périodes de changement de saison.",
+      "se déguste seule ou en accord parfait avec nos mikatés pour une expérience gustative complète.",
   },
   {
-    title: "Procure une sensation de chaleur et de réconfort",
+    title: "Une chaleur naturelle et conviviale",
     text:
-      "servi chaud ou froid, il apporte une agréable sensation de bien-être.",
+      "servi frais ou tempéré, il apporte une touche de réconfort à chaque instant partagé.",
   },
 ];

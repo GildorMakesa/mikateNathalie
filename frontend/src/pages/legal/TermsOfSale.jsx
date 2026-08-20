@@ -53,13 +53,16 @@ export default function TermsOfSale() {
       </p>
 
       <h2>6. Paiement</h2>
-      <p>Les modes de paiement acceptés sont ceux indiqués sur le site, notamment&nbsp;:</p>
+      <p>Les modes de paiement acceptés sont ceux indiqués sur le site&nbsp;:</p>
       <ul>
-        <li>Virement Interac&nbsp;;</li>
+        <li>Virement Interac (recommandé)&nbsp;;</li>
         <li>PayPal&nbsp;;</li>
-        <li>Paiement selon les modalités convenues avec Délices Mikaté Royal.</li>
+        <li>Argent comptant à la livraison.</li>
       </ul>
-      <p>La commande peut nécessiter une confirmation du paiement avant sa préparation.</p>
+      <p>
+        La commande peut nécessiter une confirmation du paiement avant sa préparation. Aucune donnée
+        bancaire n&apos;est collectée ni stockée par Délices Mikaté Royal.
+      </p>
 
       <h2>7. Commandes pour événements</h2>
       <p>

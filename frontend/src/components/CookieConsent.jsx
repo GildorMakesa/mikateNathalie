@@ -81,15 +81,16 @@ export default function CookieConsent() {
               Vos préférences cookies
             </p>
             <h3 className="mt-1 font-display text-xl md:text-2xl text-brand-ink leading-tight">
-              Un instant, gourmand·e — on respecte votre vie privée.
+              Un instant, nous protégeons votre expérience en ligne.
             </h3>
             <p className="mt-2 text-sm text-brand-muted leading-relaxed">
-              Nous utilisons des cookies strictement nécessaires au fonctionnement du site. Avec votre
-              accord, nous mesurons aussi son audience pour l&apos;améliorer. Consultez notre{" "}
+              Nous utilisons des cookies essentiels au fonctionnement du site. Avec votre accord, nous
+              pouvons également mesurer l&apos;utilisation du site afin d&apos;améliorer nos services.
+              Vous pouvez accepter, refuser ou personnaliser vos choix. Consultez notre{" "}
               <Link to="/politique-cookies" className="underline text-brand-ruby hover:text-brand-ink">
                 Politique sur les cookies
-              </Link>
-              .
+              </Link>{" "}
+              pour plus d&apos;informations.
             </p>
           </div>
           <button

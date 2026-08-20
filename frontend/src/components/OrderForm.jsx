@@ -28,10 +28,7 @@ const emptyEvent = {
 const PAYMENT_OPTIONS = [
   { value: "interac", label: "Virement Interac (recommandé)" },
   { value: "paypal", label: "PayPal" },
-  { value: "carte_credit", label: "Carte de crédit" },
-  { value: "carte_debit", label: "Carte de débit" },
   { value: "comptant", label: "Comptant à la livraison" },
-  { value: "autre", label: "Autre (préciser dans le message)" },
 ];
 
 const EVENT_TYPES = [
@@ -117,6 +114,10 @@ export default function OrderForm({ preselected, onConsume, mode = "regular", on
     }
     if (items.length === 0) {
       toast.error("Veuillez ajouter au moins un produit.");
+      return;
+    }
+    if (mode === "regular" && !form.preferred_delivery_date) {
+      toast.error("Veuillez sélectionner une date souhaitée pour votre commande.");
       return;
     }
     if (mode === "event" && !eventInfo.event_type) {
@@ -290,7 +291,7 @@ export default function OrderForm({ preselected, onConsume, mode = "regular", on
                 <input data-testid={TID.orderAddress} name="address" value={form.address} onChange={onChange} className={isEvent ? "dark-input" : "input"} placeholder="Quartier, ville, code postal..." />
               </Field>
               {!isEvent && (
-                <Field label="Date souhaitée (optionnel)" dark={isEvent}>
+                <Field label="Date souhaitée *" dark={isEvent}>
                   <input
                     type="date"
                     name="preferred_delivery_date"

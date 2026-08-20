@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 const FAQS = [
   {
     q: "Comment payer ma commande ?",
-    a: "Les paiements sont acceptés par virement Interac. Les instructions de paiement (adresse, question de sécurité, réponse) sont envoyées avec votre soumission par courriel — dès réception du paiement, votre commande est confirmée et préparée.",
+    a: "Les paiements sont acceptés par virement Interac (recommandé), PayPal ou en argent comptant à la livraison. Les instructions de paiement Interac (adresse, question de sécurité, réponse) sont envoyées avec votre soumission par courriel — dès réception du paiement, votre commande est confirmée et préparée. Aucune information bancaire n'est stockée sur notre site.",
   },
   {
     q: "Quels sont les délais de livraison ?",

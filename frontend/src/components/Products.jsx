@@ -31,7 +31,7 @@ export default function Products({ onOrder }) {
                 <Crown size={14} /> Combo Vedette
               </p>
               <h2 className="mt-3 font-display text-4xl sm:text-5xl tracking-tight text-balance">
-                Nos duos signature
+                Nos combos signature
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

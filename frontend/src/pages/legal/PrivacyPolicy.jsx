@@ -30,7 +30,7 @@ export default function PrivacyPolicy() {
       </ul>
 
       <div className="callout">
-        <p><strong>Aucune information bancaire n&apos;est stockée sur notre site.</strong> Les paiements se font par virement Interac, PayPal, ou directement à la livraison. Nous ne conservons jamais de numéro de carte.</p>
+        <p><strong>Aucune information bancaire n&apos;est stockée sur notre site.</strong> Les paiements se font par virement Interac, PayPal, ou en argent comptant à la livraison. Nous ne demandons ni ne conservons aucune donnée de carte bancaire.</p>
       </div>
 
       <h2>3. Finalités de la collecte</h2>
