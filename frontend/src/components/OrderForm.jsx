@@ -4,7 +4,7 @@ import {
   Minus,
   X,
   Loader2,
-  ShoppingBag,
+  ShoppingCart,
   Truck,
   Check,
   Crown,
@@ -71,6 +71,10 @@ export default function OrderForm({
   // Nouvelle UX
   const [step, setStep] = useState(1);
   const [activeCategory, setActiveCategory] = useState("all");
+  const [mobileProduct, setMobileProduct] = useState(null);
+  const [mobileOption, setMobileOption] = useState(null);
+  const [mobileQuantity, setMobileQuantity] = useState(1);
+  const [mobileCartOpen, setMobileCartOpen] = useState(false);
 
   const isEvent = mode === "event";
 
@@ -93,6 +97,23 @@ export default function OrderForm({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preselected]);
+
+  useEffect(() => {
+    const sheetOpen =
+      Boolean(mobileProduct) || mobileCartOpen;
+
+    if (!sheetOpen) return;
+
+    const previousOverflow =
+      document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow =
+        previousOverflow;
+    };
+  }, [mobileProduct, mobileCartOpen]);
 
   const groups = useMemo(() => {
     return {
@@ -122,7 +143,7 @@ export default function OrderForm({
      PANIER
   ================================= */
 
-  const addItem = (p, opt) => {
+  const addItem = (p, opt, quantityToAdd = 1) => {
     if (!opt) return;
 
     const key = `${p.id}::${opt.label}`;
@@ -135,7 +156,10 @@ export default function OrderForm({
       if (exists) {
         return curr.map((it) =>
           `${it.product_id}::${it.option_label}` === key
-            ? { ...it, quantity: it.quantity + 1 }
+            ? {
+              ...it,
+              quantity: it.quantity + quantityToAdd,
+            }
             : it
         );
       }
@@ -147,13 +171,42 @@ export default function OrderForm({
           product_name: p.name,
           option_label: opt.label,
           unit_price_cad: opt.price_cad,
-          quantity: 1,
+          quantity: quantityToAdd,
         },
       ];
     });
 
     toast.success(`${p.name} ajouté au panier`);
   };
+
+  const openMobileProduct = (product) => {
+    setMobileProduct(product);
+    setMobileOption(product.options?.[0] || null);
+    setMobileQuantity(1);
+  };
+
+  const closeMobileProduct = () => {
+    setMobileProduct(null);
+    setMobileOption(null);
+    setMobileQuantity(1);
+  };
+
+  const addMobileSelection = () => {
+    if (!mobileProduct || !mobileOption) return;
+
+    const quantityToAdd = mobileQuantity;
+
+    for (let i = 0; i < quantityToAdd; i += 1) {
+      addItem(mobileProduct, mobileOption, quantityToAdd);
+    }
+
+    closeMobileProduct();
+  };
+
+  const getProductCartQuantity = (productId) =>
+    items
+      .filter((item) => item.product_id === productId)
+      .reduce((total, item) => total + item.quantity, 0);
 
   const removeItem = (key) => {
     setItems((curr) =>
@@ -330,8 +383,8 @@ export default function OrderForm({
         mode === "event"
           ? "Demande envoyée ! Notre équipe vous reviendra avec une soumission personnalisée."
           : data.email_sent
-          ? "Commande envoyée ! Une confirmation vous attend dans votre boîte courriel."
-          : "Commande enregistrée ! Nous vous contactons sous peu."
+            ? "Commande envoyée ! Une confirmation vous attend dans votre boîte courriel."
+            : "Commande enregistrée ! Nous vous contactons sous peu."
       );
 
       setItems([]);
@@ -627,18 +680,39 @@ export default function OrderForm({
 
               <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px]">
                 {/* Catalogue */}
-                <div className="grid gap-6 sm:grid-cols-2">
-                  {catalogueProducts.map((product) => (
-                    <OrderProductCard
-                      key={product.id}
-                      product={product}
-                      onAdd={addItem}
-                    />
-                  ))}
+                <div>
+                  {/* =========================================
+                          MOBILE — LISTE COMPACTE
+                      ========================================== */}
+                  <div className="md:hidden">
+                    <div className="divide-y divide-brand-line">
+                      {catalogueProducts.map((product) => (
+                        <MobileProductRow
+                          key={product.id}
+                          product={product}
+                          cartQuantity={getProductCartQuantity(product.id)}
+                          onOpen={() => openMobileProduct(product)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* =========================================
+      DESKTOP — CARTES PREMIUM ACTUELLES
+  ========================================== */}
+                  <div className="hidden gap-6 md:grid md:grid-cols-2">
+                    {catalogueProducts.map((product) => (
+                      <OrderProductCard
+                        key={product.id}
+                        product={product}
+                        onAdd={addItem}
+                      />
+                    ))}
+                  </div>
                 </div>
 
                 {/* Panier */}
-                <aside className="lg:sticky lg:top-28 lg:self-start">
+                <aside className="hidden md:block md:self-start lg:sticky lg:top-28">
                   <CartSummary
                     items={items}
                     subtotal={subtotal}
@@ -940,6 +1014,56 @@ export default function OrderForm({
         </AnimatePresence>
       </form>
 
+      {/* =========================================
+          MOBILE — FICHE PRODUIT
+      ========================================== */}
+      <AnimatePresence>
+        {mobileProduct && (
+          <MobileProductSheet
+            product={mobileProduct}
+            selectedOption={mobileOption}
+            setSelectedOption={setMobileOption}
+            quantity={mobileQuantity}
+            setQuantity={setMobileQuantity}
+            onClose={closeMobileProduct}
+            onAdd={addMobileSelection}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* =========================================
+          MOBILE — BARRE PANIER STICKY
+      ========================================== */}
+      {step === 1 &&
+        items.length > 0 &&
+        !mobileProduct &&
+        !mobileCartOpen && (
+          <MobileCartBar
+            items={items}
+            subtotal={subtotal}
+            onOpen={() => setMobileCartOpen(true)}
+          />
+        )}
+
+      {/* =========================================
+          MOBILE — PANIER BOTTOM SHEET
+      ========================================== */}
+      <AnimatePresence>
+        {mobileCartOpen && (
+          <MobileCartSheet
+            items={items}
+            subtotal={subtotal}
+            updateQty={updateQty}
+            removeItem={removeItem}
+            onClose={() => setMobileCartOpen(false)}
+            onContinue={() => {
+              setMobileCartOpen(false);
+              goToDelivery();
+            }}
+          />
+        )}
+      </AnimatePresence>
+
       <InputStyles />
     </section>
   );
@@ -951,7 +1075,7 @@ export default function OrderForm({
 
 function StepProgress({ step }) {
   const steps = [
-    { number: 1, label: "Mon panier", icon: ShoppingBag },
+    { number: 1, label: "Mon panier", icon: ShoppingCart },
     { number: 2, label: "Livraison", icon: Truck },
     { number: 3, label: "Confirmation", icon: Check },
   ];
@@ -967,22 +1091,20 @@ function StepProgress({ step }) {
             <div key={number} className="relative text-center">
               {index !== 0 && (
                 <div
-                  className={`absolute right-1/2 top-[18px] h-px w-full ${
-                    step >= number
-                      ? "bg-brand-ochre"
-                      : "bg-brand-line"
-                  }`}
+                  className={`absolute right-1/2 top-[18px] h-px w-full ${step >= number
+                    ? "bg-brand-ochre"
+                    : "bg-brand-line"
+                    }`}
                 />
               )}
 
               <div
-                className={`relative z-10 mx-auto flex h-9 w-9 items-center justify-center rounded-full ${
-                  active
-                    ? "bg-brand-ruby text-white"
-                    : completed
+                className={`relative z-10 mx-auto flex h-9 w-9 items-center justify-center rounded-full ${active
+                  ? "bg-brand-ruby text-white"
+                  : completed
                     ? "bg-brand-ochre text-brand-ink"
                     : "border border-brand-line bg-white text-brand-muted"
-                }`}
+                  }`}
               >
                 {completed ? (
                   <Check size={15} />
@@ -992,11 +1114,10 @@ function StepProgress({ step }) {
               </div>
 
               <p
-                className={`mt-2 text-xs ${
-                  active
-                    ? "font-semibold text-brand-ink"
-                    : "text-brand-muted"
-                }`}
+                className={`mt-2 text-xs ${active
+                  ? "font-semibold text-brand-ink"
+                  : "text-brand-muted"
+                  }`}
               >
                 {label}
               </p>
@@ -1013,16 +1134,698 @@ function CategoryTab({ active, onClick, children }) {
     <button
       type="button"
       onClick={onClick}
-      className={`whitespace-nowrap rounded-full px-4 py-2.5 text-xs font-medium transition-all sm:px-5 sm:text-sm ${
-        active
-          ? "bg-brand-ink text-white shadow-sm"
-          : "text-brand-muted hover:bg-brand-sand hover:text-brand-ink"
-      }`}
+      className={`whitespace-nowrap rounded-full px-4 py-2.5 text-xs font-medium transition-all sm:px-5 sm:text-sm ${active
+        ? "bg-brand-ink text-white shadow-sm"
+        : "text-brand-muted hover:bg-brand-sand hover:text-brand-ink"
+        }`}
     >
       {children}
     </button>
   );
 }
+function MobileProductRow({
+  product: p,
+  cartQuantity = 0,
+  onOpen,
+}) {
+  const startingPrice =
+    p.options?.length > 0
+      ? Math.min(...p.options.map((opt) => opt.price_cad))
+      : 0;
+
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      className="
+        group
+        flex
+        w-full
+        items-center
+        gap-4
+        py-5
+        text-left
+        transition-colors
+        active:bg-brand-sand/70
+      "
+    >
+      {/* TEXTE */}
+      <div className="min-w-0 flex-1">
+        <p className="font-display text-[1.35rem] leading-tight text-brand-ink">
+          {p.name}
+        </p>
+
+        <p className="mt-1.5 text-sm font-semibold text-brand-ruby">
+          {p.options?.length > 1
+            ? `À partir de ${formatCAD(startingPrice)}`
+            : formatCAD(startingPrice)}
+        </p>
+
+        {/* Description volontairement courte ici */}
+        <p className="mt-1.5 line-clamp-1 text-sm leading-relaxed text-brand-muted">
+          {p.description}
+        </p>
+      </div>
+
+      {/* IMAGE */}
+      <div className="relative h-24 w-24 shrink-0">
+        <img
+          src={p.image_url}
+          alt={p.name}
+          loading="lazy"
+          className="h-full w-full rounded-2xl object-cover"
+        />
+
+        {/* + ou compteur */}
+        <span
+          className={`
+            absolute
+            -bottom-2
+            -right-2
+            flex
+            h-10
+            min-w-10
+            items-center
+            justify-center
+            rounded-full
+            border-2
+            border-white
+            px-2
+            text-sm
+            font-bold
+            shadow-lg
+            ${cartQuantity > 0
+              ? "bg-brand-ink text-brand-ochre"
+              : "bg-white text-brand-ink"
+            }
+          `}
+        >
+          {cartQuantity > 0 ? (
+            cartQuantity
+          ) : (
+            <Plus size={19} />
+          )}
+        </span>
+      </div>
+    </button>
+  );
+}
+
+function MobileProductSheet({
+  product: p,
+  selectedOption,
+  setSelectedOption,
+  quantity,
+  setQuantity,
+  onClose,
+  onAdd,
+}) {
+  if (!p || !selectedOption) return null;
+
+  const total = selectedOption.price_cad * quantity;
+
+  return (
+    <>
+      {/* BACKDROP */}
+      <motion.button
+        type="button"
+        aria-label="Fermer"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="fixed inset-0 z-[90] bg-black/55 backdrop-blur-[2px] md:hidden"
+      />
+
+      {/* BOTTOM SHEET */}
+      <motion.div
+        initial={{ y: "100%" }}
+        animate={{ y: 0 }}
+        exit={{ y: "100%" }}
+        transition={{
+          type: "spring",
+          damping: 28,
+          stiffness: 280,
+        }}
+        className="
+          fixed
+          inset-x-0
+          bottom-0
+          z-[100]
+          max-h-[92dvh]
+          overflow-hidden
+          rounded-t-[2rem]
+          bg-[#faf8f5]
+          shadow-[0_-20px_80px_rgba(0,0,0,0.3)]
+          md:hidden
+        "
+      >
+        {/* CONTENU SCROLLABLE */}
+        <div className="max-h-[92dvh] overflow-y-auto pb-28">
+
+          {/* HANDLE */}
+          <div className="sticky top-0 z-20 flex justify-center bg-[#faf8f5]/95 py-3 backdrop-blur">
+            <div className="h-1.5 w-12 rounded-full bg-brand-line" />
+          </div>
+
+          {/* IMAGE HERO */}
+          <div className="relative px-5">
+            <div className="h-[260px] overflow-hidden rounded-[1.75rem]">
+              <img
+                src={p.image_url}
+                alt={p.name}
+                className="h-full w-full object-cover"
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Fermer"
+              className="
+                absolute
+                right-8
+                top-4
+                flex
+                h-10
+                w-10
+                items-center
+                justify-center
+                rounded-full
+                bg-white
+                text-brand-ink
+                shadow-lg
+              "
+            >
+              <X size={19} />
+            </button>
+          </div>
+
+          {/* PRODUIT */}
+          <div className="px-6 pt-6">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-ruby">
+              {p.category}
+            </p>
+
+            <h3 className="mt-2 font-display text-3xl leading-tight text-brand-ink">
+              {p.name}
+            </h3>
+
+            {/* DESCRIPTION COMPLÈTE ICI */}
+            <p className="mt-4 text-sm leading-7 text-brand-muted">
+              {p.description}
+            </p>
+
+            {/* FORMAT */}
+            <div className="mt-8 border-t border-brand-line pt-6">
+              <div className="flex items-end justify-between">
+                <div>
+                  <h4 className="text-lg font-semibold text-brand-ink">
+                    Choisir le format
+                  </h4>
+
+                  <p className="mt-1 text-sm text-brand-muted">
+                    Sélectionnez une option
+                  </p>
+                </div>
+
+                <span className="rounded-lg bg-brand-sand px-2.5 py-1 text-xs font-semibold text-brand-muted">
+                  Obligatoire
+                </span>
+              </div>
+
+              <div className="mt-5 divide-y divide-brand-line">
+                {p.options.map((opt) => {
+                  const selected =
+                    selectedOption?.label === opt.label;
+
+                  return (
+                    <button
+                      key={opt.label}
+                      type="button"
+                      onClick={() =>
+                        setSelectedOption(opt)
+                      }
+                      className="
+                        flex
+                        w-full
+                        items-center
+                        justify-between
+                        gap-4
+                        py-5
+                        text-left
+                      "
+                    >
+                      <div>
+                        <p className="font-medium text-brand-ink">
+                          {opt.label}
+                        </p>
+
+                        <p className="mt-1 text-sm text-brand-muted">
+                          {formatCAD(opt.price_cad)}
+                        </p>
+                      </div>
+
+                      {/* RADIO */}
+                      <span
+                        className={`
+                          flex
+                          h-6
+                          w-6
+                          items-center
+                          justify-center
+                          rounded-full
+                          border-2
+                          ${selected
+                            ? "border-brand-ruby"
+                            : "border-brand-line"
+                          }
+                        `}
+                      >
+                        {selected && (
+                          <span className="h-3 w-3 rounded-full bg-brand-ruby" />
+                        )}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* QUANTITÉ */}
+            <div className="mt-3 border-t border-brand-line py-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-lg font-semibold text-brand-ink">
+                    Quantité
+                  </h4>
+
+                  <p className="mt-1 text-sm text-brand-muted">
+                    Nombre de lots
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-4 rounded-full border border-brand-line bg-white p-1.5">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setQuantity((q) =>
+                        Math.max(1, q - 1)
+                      )
+                    }
+                    className="flex h-9 w-9 items-center justify-center rounded-full text-brand-ink active:bg-brand-sand"
+                  >
+                    <Minus size={17} />
+                  </button>
+
+                  <span className="min-w-6 text-center text-base font-semibold text-brand-ink">
+                    {quantity}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setQuantity((q) => q + 1)
+                    }
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-ink text-white"
+                  >
+                    <Plus size={17} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* CTA STICKY */}
+        <div
+          className="
+            absolute
+            inset-x-0
+            bottom-0
+            border-t
+            border-brand-line
+            bg-[#faf8f5]/95
+            px-5
+            pb-[max(1.25rem,env(safe-area-inset-bottom))]
+            pt-4
+            backdrop-blur-xl
+          "
+        >
+          <button
+            type="button"
+            onClick={onAdd}
+            className="
+              flex
+              w-full
+              items-center
+              justify-center
+              gap-2
+              rounded-2xl
+              bg-brand-ink
+              px-6
+              py-4
+              text-base
+              font-semibold
+              text-white
+              shadow-lg
+              active:scale-[0.99]
+            "
+          >
+            Ajouter {quantity} au panier
+            <span className="text-white/50">•</span>
+            {formatCAD(total)}
+          </button>
+        </div>
+      </motion.div>
+    </>
+  );
+}
+
+function MobileCartBar({
+  items,
+  subtotal,
+  onOpen,
+}) {
+  const totalQuantity = items.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
+
+  return (
+    <div
+      className="
+        fixed
+        inset-x-0
+        bottom-0
+        z-[70]
+        border-t
+        border-brand-line
+        bg-[#faf8f5]/95
+        px-4
+        pb-[max(1rem,env(safe-area-inset-bottom))]
+        pt-3
+        backdrop-blur-xl
+        md:hidden
+      "
+    >
+      <button
+        type="button"
+        onClick={onOpen}
+        className="
+          flex
+          w-full
+          items-center
+          justify-between
+          rounded-2xl
+          bg-brand-ink
+          px-5
+          py-4
+          text-white
+          shadow-xl
+          active:scale-[0.99]
+        "
+      >
+        <div className="flex items-center gap-3">
+          <ShoppingCart size={18} />
+
+          <span className="text-sm font-medium">
+            {totalQuantity}{" "}
+            {totalQuantity > 1
+              ? "articles"
+              : "article"}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <span className="font-semibold">
+            {formatCAD(subtotal)}
+          </span>
+
+          <span className="text-sm text-brand-ochre">
+            Voir panier
+          </span>
+        </div>
+      </button>
+    </div>
+  );
+}
+
+function MobileCartSheet({
+  items,
+  subtotal,
+  updateQty,
+  removeItem,
+  onClose,
+  onContinue,
+}) {
+  return (
+    <>
+      {/* Backdrop */}
+      <motion.button
+        type="button"
+        aria-label="Fermer le panier"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="
+          fixed
+          inset-0
+          z-[90]
+          bg-black/55
+          backdrop-blur-[2px]
+          md:hidden
+        "
+      />
+
+      {/* Sheet */}
+      <motion.div
+        initial={{ y: "100%" }}
+        animate={{ y: 0 }}
+        exit={{ y: "100%" }}
+        transition={{
+          type: "spring",
+          damping: 28,
+          stiffness: 280,
+        }}
+        className="
+          fixed
+          inset-x-0
+          bottom-0
+          z-[100]
+          max-h-[88dvh]
+          overflow-hidden
+          rounded-t-[2rem]
+          bg-[#faf8f5]
+          shadow-[0_-20px_80px_rgba(0,0,0,0.3)]
+          md:hidden
+        "
+      >
+        {/* Handle */}
+        <div className="flex justify-center py-3">
+          <div className="h-1.5 w-12 rounded-full bg-brand-line" />
+        </div>
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 pb-4">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-ruby">
+              Mon panier
+            </p>
+
+            <h3 className="mt-1 font-display text-3xl text-brand-ink">
+              Votre sélection
+            </h3>
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fermer"
+            className="
+              flex
+              h-10
+              w-10
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-brand-line
+              bg-white
+              text-brand-ink
+            "
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Liste */}
+        <div
+          className="
+            max-h-[52dvh]
+            overflow-y-auto
+            divide-y
+            divide-brand-line
+            px-5
+          "
+        >
+          {items.map((it) => {
+            const key =
+              `${it.product_id}::${it.option_label}`;
+
+            return (
+              <div
+                key={key}
+                className="py-5"
+              >
+                <div className="flex justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="font-semibold text-brand-ink">
+                      {it.product_name}
+                    </p>
+
+                    <p className="mt-1 text-sm text-brand-muted">
+                      {it.option_label}
+                    </p>
+                  </div>
+
+                  <p className="shrink-0 font-semibold text-brand-ruby">
+                    {formatCAD(
+                      it.unit_price_cad *
+                      it.quantity
+                    )}
+                  </p>
+                </div>
+
+                {/* Quantité */}
+                <div className="mt-4 flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      updateQty(key, -1)
+                    }
+                    className="
+                      flex
+                      h-9
+                      w-9
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-brand-line
+                      bg-white
+                      text-brand-ink
+                    "
+                  >
+                    <Minus size={14} />
+                  </button>
+
+                  <span className="w-7 text-center font-semibold text-brand-ink">
+                    {it.quantity}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      updateQty(key, 1)
+                    }
+                    className="
+                      flex
+                      h-9
+                      w-9
+                      items-center
+                      justify-center
+                      rounded-full
+                      bg-brand-ink
+                      text-white
+                    "
+                  >
+                    <Plus size={14} />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      removeItem(key)
+                    }
+                    className="
+                      ml-auto
+                      flex
+                      items-center
+                      gap-1
+                      text-sm
+                      font-medium
+                      text-brand-ruby
+                    "
+                  >
+                    <X size={15} />
+                    Retirer
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Footer */}
+        <div
+          className="
+            border-t
+            border-brand-line
+            bg-[#faf8f5]/95
+            px-5
+            pb-[max(1.25rem,env(safe-area-inset-bottom))]
+            pt-5
+            backdrop-blur-xl
+          "
+        >
+          <div className="flex items-end justify-between">
+            <div>
+              <p className="text-xs text-brand-muted">
+                Sous-total
+              </p>
+
+              <p className="mt-1 text-xs text-brand-muted">
+                Livraison à confirmer
+              </p>
+            </div>
+
+            <span className="font-display text-3xl text-brand-ink">
+              {formatCAD(subtotal)}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={onContinue}
+            className="
+              mt-5
+              flex
+              w-full
+              items-center
+              justify-center
+              gap-2
+              rounded-2xl
+              bg-brand-ruby
+              px-6
+              py-4
+              text-base
+              font-semibold
+              text-white
+              shadow-lg
+              active:scale-[0.99]
+            "
+          >
+            Continuer vers la livraison
+            <Truck size={17} />
+          </button>
+        </div>
+      </motion.div>
+    </>
+  );
+}
+
 
 function OrderProductCard({ product: p, onAdd, dark = false }) {
   const [selectedOption, setSelectedOption] = useState(
@@ -1036,11 +1839,10 @@ function OrderProductCard({ product: p, onAdd, dark = false }) {
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className={`overflow-hidden rounded-[1.75rem] border p-4 ${
-        dark
-          ? "border-white/15 bg-white/5"
-          : "border-brand-line bg-white"
-      }`}
+      className={`overflow-hidden rounded-[1.75rem] border p-4 ${dark
+        ? "border-white/15 bg-white/5"
+        : "border-brand-line bg-white"
+        }`}
     >
       <div className="arch-top h-56 overflow-hidden bg-brand-sand">
         <img
@@ -1053,33 +1855,29 @@ function OrderProductCard({ product: p, onAdd, dark = false }) {
 
       <div className="px-1 pb-2 pt-5">
         <p
-          className={`text-[10px] font-semibold uppercase tracking-[0.2em] ${
-            dark ? "text-brand-ochre" : "text-brand-ruby"
-          }`}
+          className={`text-[10px] font-semibold uppercase tracking-[0.2em] ${dark ? "text-brand-ochre" : "text-brand-ruby"
+            }`}
         >
           {p.category}
         </p>
 
         <h3
-          className={`mt-2 font-display text-2xl ${
-            dark ? "text-white" : "text-brand-ink"
-          }`}
+          className={`mt-2 font-display text-2xl ${dark ? "text-white" : "text-brand-ink"
+            }`}
         >
           {p.name}
         </h3>
 
         <p
-          className={`mt-2 text-sm leading-relaxed ${
-            dark ? "text-brand-sand/65" : "text-brand-muted"
-          }`}
+          className={`mt-2 text-sm leading-relaxed ${dark ? "text-brand-sand/65" : "text-brand-muted"
+            }`}
         >
           {p.description}
         </p>
 
         <p
-          className={`mt-5 text-[10px] font-semibold uppercase tracking-[0.18em] ${
-            dark ? "text-brand-sand/60" : "text-brand-muted"
-          }`}
+          className={`mt-5 text-[10px] font-semibold uppercase tracking-[0.18em] ${dark ? "text-brand-sand/60" : "text-brand-muted"
+            }`}
         >
           Choisir le format
         </p>
@@ -1094,15 +1892,14 @@ function OrderProductCard({ product: p, onAdd, dark = false }) {
                 key={opt.label}
                 type="button"
                 onClick={() => setSelectedOption(opt)}
-                className={`rounded-full border px-3 py-2 text-xs transition ${
-                  selected
-                    ? dark
-                      ? "border-brand-ochre bg-brand-ochre text-brand-ink"
-                      : "border-brand-ruby bg-brand-ruby text-white"
-                    : dark
+                className={`rounded-full border px-3 py-2 text-xs transition ${selected
+                  ? dark
+                    ? "border-brand-ochre bg-brand-ochre text-brand-ink"
+                    : "border-brand-ruby bg-brand-ruby text-white"
+                  : dark
                     ? "border-white/20 text-brand-sand"
                     : "border-brand-line text-brand-ink hover:border-brand-ruby"
-                }`}
+                  }`}
               >
                 {opt.label} · {formatCAD(opt.price_cad)}
               </button>
@@ -1114,11 +1911,10 @@ function OrderProductCard({ product: p, onAdd, dark = false }) {
           type="button"
           onClick={() => onAdd(p, selectedOption)}
           data-testid={TID.orderAddItem}
-          className={`mt-5 flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition ${
-            dark
-              ? "bg-brand-ochre text-brand-ink hover:bg-white"
-              : "bg-brand-ink text-white hover:bg-brand-ruby"
-          }`}
+          className={`mt-5 flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition ${dark
+            ? "bg-brand-ochre text-brand-ink hover:bg-white"
+            : "bg-brand-ink text-white hover:bg-brand-ruby"
+            }`}
         >
           <Plus size={15} />
           Ajouter au panier
@@ -1137,43 +1933,38 @@ function CartSummary({
 }) {
   return (
     <div
-      className={`rounded-[1.75rem] border p-5 ${
-        dark
-          ? "border-white/15 bg-white/5"
-          : "border-brand-line bg-white shadow-sm"
-      }`}
+      className={`rounded-[1.75rem] border p-5 ${dark
+        ? "border-white/15 bg-white/5"
+        : "border-brand-line bg-white shadow-sm"
+        }`}
     >
       <p
-        className={`text-xs font-semibold uppercase tracking-[0.18em] ${
-          dark ? "text-brand-ochre" : "text-brand-ruby"
-        }`}
+        className={`text-xs font-semibold uppercase tracking-[0.18em] ${dark ? "text-brand-ochre" : "text-brand-ruby"
+          }`}
       >
         Mon panier
       </p>
 
       <h3
-        className={`mt-2 font-display text-2xl ${
-          dark ? "text-white" : "text-brand-ink"
-        }`}
+        className={`mt-2 font-display text-2xl ${dark ? "text-white" : "text-brand-ink"
+          }`}
       >
         Votre sélection
       </h3>
 
       {!items.length ? (
         <div
-          className={`mt-6 rounded-2xl p-5 text-sm ${
-            dark
-              ? "bg-white/5 text-brand-sand/60"
-              : "bg-brand-sand text-brand-muted"
-          }`}
+          className={`mt-6 rounded-2xl p-5 text-sm ${dark
+            ? "bg-white/5 text-brand-sand/60"
+            : "bg-brand-sand text-brand-muted"
+            }`}
         >
           Votre panier est vide.
         </div>
       ) : (
         <div
-          className={`mt-5 divide-y ${
-            dark ? "divide-white/10" : "divide-brand-line"
-          }`}
+          className={`mt-5 divide-y ${dark ? "divide-white/10" : "divide-brand-line"
+            }`}
         >
           {items.map((it) => {
             const key = `${it.product_id}::${it.option_label}`;
@@ -1187,30 +1978,27 @@ function CartSummary({
                 <div className="flex justify-between gap-3">
                   <div>
                     <p
-                      className={`text-sm font-semibold ${
-                        dark ? "text-white" : "text-brand-ink"
-                      }`}
+                      className={`text-sm font-semibold ${dark ? "text-white" : "text-brand-ink"
+                        }`}
                     >
                       {it.product_name}
                     </p>
 
                     <p
-                      className={`mt-1 text-xs ${
-                        dark
-                          ? "text-brand-sand/60"
-                          : "text-brand-muted"
-                      }`}
+                      className={`mt-1 text-xs ${dark
+                        ? "text-brand-sand/60"
+                        : "text-brand-muted"
+                        }`}
                     >
                       {it.option_label}
                     </p>
                   </div>
 
                   <p
-                    className={`text-sm font-semibold ${
-                      dark
-                        ? "text-brand-ochre"
-                        : "text-brand-ruby"
-                    }`}
+                    className={`text-sm font-semibold ${dark
+                      ? "text-brand-ochre"
+                      : "text-brand-ruby"
+                      }`}
                   >
                     {formatCAD(
                       it.unit_price_cad * it.quantity
@@ -1243,11 +2031,10 @@ function CartSummary({
                     type="button"
                     onClick={() => removeItem(key)}
                     data-testid={TID.orderItemRemove}
-                    className={`ml-auto flex h-8 w-8 items-center justify-center rounded-full ${
-                      dark
-                        ? "text-brand-ochre"
-                        : "text-brand-ruby"
-                    }`}
+                    className={`ml-auto flex h-8 w-8 items-center justify-center rounded-full ${dark
+                      ? "text-brand-ochre"
+                      : "text-brand-ruby"
+                      }`}
                   >
                     <X size={14} />
                   </button>
@@ -1259,24 +2046,21 @@ function CartSummary({
       )}
 
       <div
-        className={`mt-5 flex items-end justify-between border-t pt-5 ${
-          dark ? "border-white/10" : "border-brand-line"
-        }`}
+        className={`mt-5 flex items-end justify-between border-t pt-5 ${dark ? "border-white/10" : "border-brand-line"
+          }`}
       >
         <span
-          className={`text-sm ${
-            dark
-              ? "text-brand-sand/60"
-              : "text-brand-muted"
-          }`}
+          className={`text-sm ${dark
+            ? "text-brand-sand/60"
+            : "text-brand-muted"
+            }`}
         >
           Sous-total
         </span>
 
         <span
-          className={`font-display text-3xl ${
-            dark ? "text-brand-ochre" : "text-brand-ink"
-          }`}
+          className={`font-display text-3xl ${dark ? "text-brand-ochre" : "text-brand-ink"
+            }`}
         >
           {formatCAD(subtotal)}
         </span>
@@ -1309,11 +2093,10 @@ function Consent({
 }) {
   return (
     <label
-      className={`mt-6 flex cursor-pointer items-start gap-3 rounded-2xl border p-4 ${
-        dark
-          ? "border-white/15 bg-white/5"
-          : "border-brand-line bg-white"
-      }`}
+      className={`mt-6 flex cursor-pointer items-start gap-3 rounded-2xl border p-4 ${dark
+        ? "border-white/15 bg-white/5"
+        : "border-brand-line bg-white"
+        }`}
     >
       <input
         type="checkbox"
@@ -1324,9 +2107,8 @@ function Consent({
       />
 
       <span
-        className={`text-sm leading-relaxed ${
-          dark ? "text-brand-sand/90" : "text-brand-ink"
-        }`}
+        className={`text-sm leading-relaxed ${dark ? "text-brand-sand/90" : "text-brand-ink"
+          }`}
       >
         J&apos;ai lu et j&apos;accepte la{" "}
         <Link
@@ -1359,9 +2141,8 @@ function Field({
   return (
     <label className={`block ${className}`}>
       <span
-        className={`text-sm font-medium ${
-          dark ? "text-brand-sand" : "text-brand-ink"
-        }`}
+        className={`text-sm font-medium ${dark ? "text-brand-sand" : "text-brand-ink"
+          }`}
       >
         {label}
       </span>
