@@ -1,6 +1,17 @@
+import {
+  Menu,
+  X,
+  Home,
+  UtensilsCrossed,
+  Truck,
+  BookOpenText,
+  MessageCircleHeart,
+  CalendarDays,
+  ArrowRight,
+} from "lucide-react";
+
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
 import { TID } from "@/constants/testIds";
 import LogoMikate from '../assets/logo_removed_2.png';
 import LogoMikateWhite from '../assets/logo_removed_3.png'; // logo blanc transparent
@@ -39,6 +50,16 @@ const links = [
   },
 ];
 
+const mobileIcons = {
+  accueil: Home,
+  menu: UtensilsCrossed,
+  produits: UtensilsCrossed,
+  livraison: Truck,
+  histoire: BookOpenText,
+  temoignages: MessageCircleHeart,
+  evenements: CalendarDays,
+};
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolledRaw, setScrolled] = useState(false);
@@ -59,6 +80,17 @@ export default function Navbar() {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
 
   const go = (id) => {
     setOpen(false);
@@ -129,8 +161,8 @@ export default function Navbar() {
                     to={l.path}
                     data-testid={l.tid}
                     className={`text-sm font-medium transition-colors duration-500 ${scrolled
-                        ? "text-brand-ink/80 hover:text-brand-ruby"
-                        : "text-white/90 hover:text-white"
+                      ? "text-brand-ink/80 hover:text-brand-ruby"
+                      : "text-white/90 hover:text-white"
                       }`}
                   >
                     {l.label}
@@ -141,8 +173,8 @@ export default function Navbar() {
                     data-testid={l.tid}
                     onClick={() => go(l.id)}
                     className={`text-sm font-medium transition-colors duration-500 ${scrolled
-                        ? "text-brand-ink/80 hover:text-brand-ruby"
-                        : "text-white/90 hover:text-white"
+                      ? "text-brand-ink/80 hover:text-brand-ruby"
+                      : "text-white/90 hover:text-white"
                       }`}
                   >
                     {l.label}
@@ -169,92 +201,324 @@ export default function Navbar() {
         </div>
 
         {/* ========================================= */}
-        {/* VERSION MOBILE (OPTIMISÉE)                */}
+        {/* VERSION MOBILE — PREMIUM FULL SCREEN      */}
+        {/* ========================================= */}
+
+        {/* OVERLAY PLEIN ÉCRAN */}
+        {open && (
+          <div
+            className="
+      fixed
+      inset-0
+      z-40
+      bg-[#15120e]
+      md:hidden
+    "
+          >
+            {/* Décor subtil */}
+            <div className="pointer-events-none absolute inset-0 overflow-hidden">
+              <div className="absolute -left-24 top-20 h-72 w-72 rounded-full bg-brand-ochre/[0.06] blur-3xl" />
+              <div className="absolute -right-24 bottom-24 h-72 w-72 rounded-full bg-brand-ruby/[0.08] blur-3xl" />
+            </div>
+
+            {/* CONTENU MENU */}
+            <div
+              className="
+        relative
+        flex
+        min-h-[100dvh]
+        flex-col
+        px-6
+        pb-[max(2rem,env(safe-area-inset-bottom))]
+        pt-32
+      "
+            >
+              {/* Petit label */}
+              <div className="text-center">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-brand-ochre/80">
+                  Navigation
+                </p>
+              </div>
+
+              {/* LIENS */}
+              <div className="mx-auto mt-8 flex w-full max-w-sm flex-1 flex-col justify-center">
+                <div className="flex flex-col">
+                  {links.map((l) => {
+                    const Icon = mobileIcons[l.id] || ArrowRight;
+
+                    return l.path ? (
+                      <Link
+                        key={l.id}
+                        to={l.path}
+                        data-testid={l.tid}
+                        onClick={() => setOpen(false)}
+                        className="
+                  group
+                  flex
+                  min-h-[58px]
+                  items-center
+                  justify-center
+                  gap-3
+                  border-b
+                  border-white/[0.07]
+                  px-4
+                  text-center
+                  text-[17px]
+                  font-medium
+                  text-white/90
+                  transition-all
+                  duration-300
+                  hover:text-brand-ochre
+                  active:bg-white/[0.04]
+                "
+                      >
+                        <Icon
+                          size={18}
+                          strokeWidth={1.7}
+                          className="text-brand-ochre/75 transition-transform duration-300 group-hover:scale-110"
+                        />
+
+                        <span>{l.label}</span>
+                      </Link>
+                    ) : (
+                      <button
+                        key={l.id}
+                        type="button"
+                        data-testid={l.tid}
+                        onClick={() => go(l.id)}
+                        className="
+                  group
+                  flex
+                  min-h-[58px]
+                  w-full
+                  items-center
+                  justify-center
+                  gap-3
+                  border-b
+                  border-white/[0.07]
+                  px-4
+                  text-center
+                  text-[17px]
+                  font-medium
+                  text-white/90
+                  transition-all
+                  duration-300
+                  hover:text-brand-ochre
+                  active:bg-white/[0.04]
+                "
+                      >
+                        <Icon
+                          size={18}
+                          strokeWidth={1.7}
+                          className="text-brand-ochre/75 transition-transform duration-300 group-hover:scale-110"
+                        />
+
+                        <span>{l.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* CTA */}
+                <Link
+                  to="/commander"
+                  onClick={() => setOpen(false)}
+                  className="
+            group
+            mt-9
+            flex
+            w-full
+            items-center
+            justify-center
+            gap-2
+            rounded-full
+            bg-brand-ochre
+            px-6
+            py-4
+            text-sm
+            font-bold
+            text-brand-ink
+            shadow-[0_18px_50px_rgba(0,0,0,0.25)]
+            transition-all
+            duration-300
+            hover:bg-white
+            active:scale-[0.98]
+          "
+                >
+                  Commander maintenant
+
+                  <ArrowRight
+                    size={17}
+                    className="transition-transform duration-300 group-hover:translate-x-1"
+                  />
+                </Link>
+              </div>
+
+              {/* FOOTER DU MENU */}
+              <div className="mt-8 text-center">
+                <p className="text-xs text-white/35">
+                  Délices Mikaté Royale
+                </p>
+
+                <p className="mt-1 text-[11px] text-white/25">
+                  Le goût royal de nos traditions
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+
+        {/* ========================================= */}
+        {/* CAPSULE MOBILE                            */}
         {/* ========================================= */}
         <nav
-          className={`md:hidden mx-auto flex w-full items-center justify-between rounded-full border px-5 py-3 transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] ${scrolled
-            ? "border-brand-line bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgba(29,25,20,0.06)]"
-            : "border-white/20 bg-white/10 backdrop-blur-md shadow-none"
-            }`}
+          className={`
+    relative
+    z-50
+    mx-auto
+    flex
+    w-full
+    items-center
+    justify-between
+    rounded-full
+    border
+    px-5
+    py-3
+    transition-all
+    duration-500
+    ease-[cubic-bezier(0.19,1,0.22,1)]
+    md:hidden
+
+    ${open
+              ? `
+          border-white/10
+          bg-[#1b1712]/95
+          shadow-[0_12px_40px_rgba(0,0,0,0.3)]
+          backdrop-blur-xl
+        `
+              : scrolled
+                ? `
+            border-brand-line
+            bg-white/90
+            shadow-[0_8px_30px_rgba(29,25,20,0.06)]
+            backdrop-blur-xl
+          `
+                : `
+            border-white/20
+            bg-white/10
+            shadow-none
+            backdrop-blur-md
+          `
+            }
+  `}
         >
-          {/* Logo mobile */}
-          <Link to="/" className="no-underline flex items-center relative group shrink-0 z-10" data-testid="brand-logo">
-            <div className="h-12 w-12 overflow-hidden rounded-full border border-white/20 shadow-lg">
-              <img src={LogoMikate} alt="Delice Mikate Logo" className="h-full w-full object-cover scale-105" />
+          {/* Logo */}
+          <Link
+            to="/"
+            onClick={() => setOpen(false)}
+            className="relative z-10 flex shrink-0 items-center no-underline"
+            data-testid="brand-logo"
+          >
+            <div
+              className={`
+        h-12
+        w-12
+        overflow-hidden
+        rounded-full
+        border
+        shadow-lg
+        transition-all
+        duration-300
+
+        ${open
+                  ? "border-brand-ochre/25 bg-black"
+                  : "border-white/20"
+                }
+      `}
+            >
+              <img
+                src={LogoMikate}
+                alt="Delice Mikate Logo"
+                className="h-full w-full object-cover scale-105"
+              />
             </div>
           </Link>
 
-          {/* Titre mobile : Parfaitement centré au pixel près (horizontal + vertical) */}
-          <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-full max-w-[60%] truncate">
-            <span className="text-base font-medium tracking-wide flex justify-center items-center gap-x-1.5">
-              {/* "Mikaté" en Jaune (Ocre/Doré pour rester premium et lisible) */}
-              <span className={scrolled ? "text-[#d4aa12]" : "text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]"}>
+          {/* Nom de marque centré */}
+          <div
+            className="
+      pointer-events-none
+      absolute
+      left-1/2
+      top-1/2
+      w-full
+      max-w-[60%]
+      -translate-x-1/2
+      -translate-y-1/2
+      truncate
+      text-center
+    "
+          >
+            <span className="flex items-center justify-center gap-x-1.5 text-base font-semibold tracking-wide">
+              <span
+                className={
+                  open || scrolled
+                    ? "text-[#d4aa12]"
+                    : "text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]"
+                }
+              >
                 Mikaté
               </span>
 
-              {/* "Royale" en Rouge */}
-              <span className={scrolled ? "text-[#d4aa12]" : "text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]"}>
+              <span
+                className={
+                  open || scrolled
+                    ? "text-[#d4aa12]"
+                    : "text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]"
+                }
+              >
                 Royale
               </span>
             </span>
           </div>
 
-          {/* Bouton menu mobile */}
+          {/* Toggle */}
           <button
-            className={`inline-flex h-9 w-9 items-center justify-center rounded-full border transition-colors duration-300 z-10 ${scrolled ? "border-brand-line text-brand-ink" : "border-white/40 text-white"
-              }`}
+            type="button"
+            className={`
+      relative
+      z-10
+      inline-flex
+      h-10
+      w-10
+      items-center
+      justify-center
+      rounded-full
+      border
+      transition-all
+      duration-300
+      active:scale-95
+
+      ${open
+                ? "border-white/15 bg-white/5 text-white hover:bg-white/10"
+                : scrolled
+                  ? "border-brand-line text-brand-ink hover:bg-brand-sand"
+                  : "border-white/40 text-white hover:bg-white/10"
+              }
+    `}
             onClick={() => setOpen((v) => !v)}
-            aria-label="menu"
+            aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+            aria-expanded={open}
             data-testid="nav-mobile-toggle"
           >
-            {open ? <X size={18} /> : <Menu size={18} />}
+            {open ? (
+              <X size={20} strokeWidth={1.8} />
+            ) : (
+              <Menu size={19} strokeWidth={1.8} />
+            )}
           </button>
         </nav>
-
-        {/* MENU MOBILE DÉROULANT */}
-        {open && (
-          <div className={`md:hidden mt-2 rounded-2xl border p-4 shadow-md backdrop-blur-xl transition-all duration-300 ${scrolled ? "border-brand-line bg-white" : "border-white/20 bg-white/90"
-            }`}>
-            <div className="flex flex-col gap-1">
-              {links.map((l) =>
-                l.path ? (
-                  <Link
-                    key={l.id}
-                    to={l.path}
-                    data-testid={l.tid}
-                    className={`text-sm font-medium transition-colors duration-500 ${scrolled
-                        ? "text-brand-ink/80 hover:text-brand-ruby"
-                        : "text-white/90 hover:text-white"
-                      }`}
-                  >
-                    {l.label}
-                  </Link>
-                ) : (
-                  <button
-                    key={l.id}
-                    data-testid={l.tid}
-                    onClick={() => go(l.id)}
-                    className={`text-sm font-medium transition-colors duration-500 ${scrolled
-                        ? "text-brand-ink/80 hover:text-brand-ruby"
-                        : "text-white/90 hover:text-white"
-                      }`}
-                  >
-                    {l.label}
-                  </button>
-                )
-              )}
-
-              {/* Bouton Commander : Mis à jour avec ton magnifique Doré #9B7D2B */}
-              <Link
-                to="/commander"
-                onClick={() => setOpen(false)}
-                className="mt-4 rounded-full bg-[#0E6FD3] text-white text-sm font-semibold px-5 py-3 text-center shadow-sm hover:bg-[#0B5BB8] active:scale-98 transition-all"
-              >
-                Commander maintenant
-              </Link>
-            </div>
-          </div>
-        )}
       </div>
     </header>
   );

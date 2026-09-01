@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Crown, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { api } from "@/lib/api";
 import { TID } from "@/constants/testIds";
 
 const formatCAD = (n) => new Intl.NumberFormat("fr-CA", { style: "currency", currency: "CAD" }).format(n);
+
 
 export default function Products({ onOrder }) {
   const [products, setProducts] = useState([]);
@@ -45,6 +47,7 @@ export default function Products({ onOrder }) {
     return [...groups.beignets, ...groups.boissons];
   }, [activeCategory, groups]);
 
+  const navigate = useNavigate();
   return (
     <>
       {/* Combo Vedette */}
@@ -343,11 +346,7 @@ export default function Products({ onOrder }) {
     ========================== */}
           <div className="mt-12 flex justify-center px-6 md:mt-16">
             <button
-              onClick={() =>
-                document
-                  .getElementById("commander")
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
+              onClick={() => navigate("/commander")}
               className="
           group
           inline-flex
