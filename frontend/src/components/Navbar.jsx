@@ -23,10 +23,9 @@ const links = [
     tid: TID.navHome,
   },
   {
-    id: "menu",
     label: "Menu",
-    tid: TID.navProducts,
-    path: "/commander",
+    id: "produits",
+    tid: TID.ctaCatalogHero,
   },
   {
     id: "livraison",

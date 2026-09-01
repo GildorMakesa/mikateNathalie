@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Star, Truck, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { TID } from "@/constants/testIds";
 
 const HERO_PASTRY =
@@ -48,6 +49,7 @@ const scrollTo = (id) => {
 
 export default function Hero() {
   const [activeSlide, setActiveSlide] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -134,7 +136,10 @@ export default function Hero() {
             <div className="mt-16 flex flex-wrap justify-center gap-3">
               <button
                 data-testid={TID.ctaOrderHero}
-                onClick={() => scrollTo("commander")}
+                onClick={() => {
+                  scrollTo("commander");
+                  navigate("/commander");
+                }}
                 className="group inline-flex items-center gap-2 rounded-full bg-[#deac22] px-7 py-3.5 text-sm font-semibold text-brand-ink shadow-[0_16px_40px_rgba(0,0,0,0.25)] transition-all hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_20px_50px_rgba(255,201,14,0.2)]"
               >
                 Commander maintenant
@@ -146,7 +151,9 @@ export default function Hero() {
 
               <button
                 data-testid={TID.ctaCatalogHero}
-                onClick={() => scrollTo("produits")}
+                onClick={() => {
+                  scrollTo("produits");
+                }}
                 className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:bg-white/20"
               >
                 Voir le menu
@@ -209,8 +216,8 @@ export default function Hero() {
                     key={slide.label}
                     onClick={() => setActiveSlide(index)}
                     className={`h-20 w-20 overflow-hidden rounded-2xl border transition-all duration-300 ${activeSlide === index
-                        ? "scale-105 border-brand-ochre shadow-lg"
-                        : "border-white/25 opacity-75 hover:opacity-100"
+                      ? "scale-105 border-brand-ochre shadow-lg"
+                      : "border-white/25 opacity-75 hover:opacity-100"
                       }`}
                     aria-label={`Voir ${slide.label}`}
                   >
@@ -230,8 +237,8 @@ export default function Hero() {
                   key={slide.label}
                   onClick={() => setActiveSlide(index)}
                   className={`h-2 rounded-full transition-all duration-300 ${activeSlide === index
-                      ? "w-8 bg-brand-ochre"
-                      : "w-2 bg-white/40 hover:bg-white/70"
+                    ? "w-8 bg-brand-ochre"
+                    : "w-2 bg-white/40 hover:bg-white/70"
                     }`}
                   aria-label={`Aller à ${slide.label}`}
                 />
@@ -292,8 +299,8 @@ export default function Hero() {
                   key={slide.label}
                   onClick={() => setActiveSlide(index)}
                   className={`h-14 w-14 overflow-hidden rounded-2xl border transition-all duration-300 ${activeSlide === index
-                      ? "scale-105 border-brand-ochre shadow-lg"
-                      : "border-white/25 opacity-70"
+                    ? "scale-105 border-brand-ochre shadow-lg"
+                    : "border-white/25 opacity-70"
                     }`}
                   aria-label={`Voir ${slide.label}`}
                 >
@@ -313,8 +320,8 @@ export default function Hero() {
                   key={`indicator-${slide.label}`}
                   onClick={() => setActiveSlide(index)}
                   className={`h-2 rounded-full transition-all duration-300 ${activeSlide === index
-                      ? "w-8 bg-brand-ochre"
-                      : "w-2 bg-white/40"
+                    ? "w-8 bg-brand-ochre"
+                    : "w-2 bg-white/40"
                     }`}
                   aria-label={`Aller à ${slide.label}`}
                 />
@@ -326,7 +333,10 @@ export default function Hero() {
           <div className="mt-7 grid w-full grid-cols-2 gap-3">
             <button
               data-testid={TID.ctaOrderHero}
-              onClick={() => scrollTo("commander")}
+              onClick={() => {
+                scrollTo("commander");
+                navigate("/commander");
+              }}
               className="group inline-flex items-center justify-center gap-1.5 rounded-full bg-[#deac22] px-4 py-3 text-xs font-bold text-brand-ink shadow-[0_16px_40px_rgba(0,0,0,0.25)] transition-all active:scale-95"
             >
               Commander
